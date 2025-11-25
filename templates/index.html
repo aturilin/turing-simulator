@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turing Machine Simulator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- ONBOARDING: Shown first, before simulator -->
+        <div id="onboarding" class="onboarding">
+            <div class="lesson-container">
+                <div class="lesson-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="progress-text">Lesson <span id="lesson-current">1</span> of <span id="lesson-total">8</span></span>
+                </div>
+
+                <div class="lesson-content" id="lesson-content">
+                    <!-- Lesson content loads here -->
+                </div>
+
+                <div class="lesson-nav">
+                    <button id="btn-lesson-prev" class="btn-secondary" disabled>Back</button>
+                    <button id="btn-lesson-next" class="btn-primary">Next</button>
+                    <button id="btn-start-simulator" class="btn-success hidden">Let's Try It!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIMULATOR: Hidden until onboarding complete -->
+        <div id="simulator" class="simulator hidden">
+            <header>
+                <h1>Turing Machine Simulator</h1>
+                <button id="btn-review-lessons" class="tutorial-btn">Review Lessons</button>
+            </header>
+
+            <main>
+                <!-- Tape Section -->
+                <section class="tape-section">
+                    <h2>The Tape</h2>
+                    <div class="tape-input-row">
+                        <label>Your number:</label>
+                        <input type="text" id="tape-input" placeholder="e.g., 1011">
+                        <button id="btn-set-tape" class="btn-small btn-secondary">Change</button>
+                    </div>
+                    <div class="tape-wrapper">
+                        <div class="tape" id="tape">
+                            <!-- Tape cells render here -->
+                        </div>
+                        <div class="head-indicator">HEAD</div>
+                    </div>
+                    <div class="state-display">
+                        <span class="state-emoji" id="state-emoji"></span>
+                        <span class="state-label">Mode: <strong id="current-state">-</strong></span>
+                        <span class="state-description" id="state-description"></span>
+                        <span id="status-badge" class="status-badge"></span>
+                    </div>
+                </section>
+
+                <!-- NEXT ACTION: What WILL happen (shown BEFORE the action) -->
+                <section class="next-action-section">
+                    <h2>Next Action</h2>
+                    <div class="next-action-box" id="next-action-box">
+                        <div class="next-action-situation">
+                            <span>I'm in <strong id="next-state">SCAN</strong> mode and I see: <strong id="next-symbol">1</strong></span>
+                        </div>
+                        <div class="next-action-will-do">
+                            <p id="next-action-text">Keep the 1, move RIGHT, stay in SCAN</p>
+                        </div>
+                        <div class="next-action-why">
+                            <p id="next-action-why">I'm still looking for the end of the number.</p>
+                        </div>
+                    </div>
+                    <div class="goal-display" id="goal-display">
+                        <!-- Goal info shows here -->
+                    </div>
+                </section>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <button id="btn-step" class="btn-primary">Do This Step</button>
+                    <button id="btn-run" class="btn-success">Run All</button>
+                    <button id="btn-pause" class="btn-warning" disabled>Pause</button>
+                    <button id="btn-reset" class="btn-danger">Start Over</button>
+                    <div class="speed-control">
+                        <label>Speed:</label>
+                        <input type="range" id="speed-slider" min="1" max="100" value="50">
+                    </div>
+                </div>
+
+                <!-- Rules Section -->
+                <section class="rules-section">
+                    <div class="rules-header">
+                        <h2>The Rules</h2>
+                    </div>
+                    <div class="rules-groups">
+                        <div class="rules-group" id="rules-scan">
+                            <h3><span class="state-emoji-small">🔍</span> SCAN MODE</h3>
+                            <div class="rules-list" id="rules-list-scan"></div>
+                        </div>
+                        <div class="rules-group" id="rules-add">
+                            <h3><span class="state-emoji-small">➕</span> ADD MODE</h3>
+                            <div class="rules-list" id="rules-list-add"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- History Log -->
+                <section class="history-section">
+                    <h2>What Happened</h2>
+                    <div class="history-log" id="history-log">
+                        <!-- History entries render here -->
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

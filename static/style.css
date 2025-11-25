@@ -1,0 +1,747 @@
+/* Educational Turing Machine Simulator - Learn First, Then Play */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ==================== ONBOARDING SCREENS ==================== */
+
+.onboarding {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+.lesson-progress {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    color: #666;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.lesson-content {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.lesson-content h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.lesson-content p {
+    color: #444;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.lesson-content p.lead {
+    font-size: 1.3rem;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.lesson-content p.muted {
+    color: #888;
+    font-style: italic;
+}
+
+.lesson-content .highlight-box {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
+    border-left: 4px solid #667eea;
+    padding: 20px;
+    border-radius: 0 10px 10px 0;
+    margin: 20px 0;
+}
+
+.lesson-content .highlight-box p {
+    margin-bottom: 10px;
+}
+
+.lesson-content .highlight-box ol,
+.lesson-content .highlight-box ul {
+    margin-left: 20px;
+}
+
+.lesson-content .highlight-box li {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* Tape demo in lessons */
+.tape-demo {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 25px 0;
+}
+
+.tape-demo .tape-cell {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: white;
+}
+
+.tape-demo .tape-cell.head {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #764ba2;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.head-pointer {
+    text-align: center;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* State items in lessons */
+.state-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    font-size: 1.1rem;
+}
+
+.state-emoji {
+    font-size: 1.5rem;
+}
+
+/* Rule template in lessons */
+.rule-template {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin: 20px 0;
+    border: 2px dashed #ddd;
+}
+
+.example-rule {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border-left: 4px solid #ffc107;
+}
+
+.example-rule .badge {
+    background: #667eea;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+/* Rules groups in lessons */
+.rules-group {
+    margin: 15px 0;
+}
+
+.rules-group h3 {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.rules-group .rule {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin: 8px 0;
+    font-size: 1rem;
+}
+
+.rules-group .rule .muted {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* Binary example in lessons */
+.binary-example {
+    background: #f0f4ff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin: 15px 0;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.binary-example code {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Lesson navigation */
+.lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+
+/* ==================== SIMULATOR ==================== */
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.tutorial-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tutorial-btn:hover {
+    background: white;
+    color: #667eea;
+}
+
+/* Main content */
+main {
+    padding: 30px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+section h2 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Tape section */
+.tape-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.tape-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tape-input-row label {
+    color: #555;
+}
+
+.tape-input-row input {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 150px;
+}
+
+.tape-input-row input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.tape-wrapper {
+    position: relative;
+    overflow-x: auto;
+    padding: 20px 0 40px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.tape {
+    display: flex;
+    justify-content: center;
+    min-width: max-content;
+    margin: 0 auto;
+    gap: 2px;
+}
+
+.tape-cell {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: white;
+    transition: all 0.2s;
+}
+
+.tape-cell.head {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #764ba2;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tape-cell.blank {
+    color: #ccc;
+}
+
+.head-indicator {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transition: left 0.15s ease-out;
+}
+
+.state-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.state-emoji {
+    font-size: 1.5rem;
+}
+
+.state-emoji-small {
+    font-size: 1.2rem;
+}
+
+.state-label {
+    color: #333;
+}
+
+.state-label strong {
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.state-description {
+    color: #666;
+    font-style: italic;
+}
+
+.status-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.status-badge.running {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.halted,
+.status-badge.accepted {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.done {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Next Action section - What WILL happen */
+.next-action-section {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 5px solid #4caf50;
+}
+
+.next-action-box {
+    margin-bottom: 15px;
+}
+
+.next-action-situation {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.next-action-situation strong {
+    color: #667eea;
+}
+
+.next-action-will-do {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.next-action-will-do p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2e7d32;
+    margin: 0;
+}
+
+.next-action-why {
+    color: #555;
+}
+
+.next-action-why p {
+    margin: 0;
+    font-style: italic;
+}
+
+.next-action-box.done {
+    text-align: center;
+}
+
+.next-action-box.done .next-action-will-do p {
+    font-size: 1.5rem;
+}
+
+.goal-display {
+    color: #666;
+    font-size: 0.95rem;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-small {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.speed-control label {
+    color: #555;
+}
+
+#speed-slider {
+    width: 100px;
+}
+
+/* Rules section - Card-based layout */
+.rules-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.rules-header {
+    margin-bottom: 15px;
+}
+
+.rules-groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.rules-group {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.rules-group h3 {
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rule-card {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.rule-card.active {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #4caf50;
+    transform: scale(1.02);
+}
+
+.rule-card .see {
+    color: #667eea;
+    font-weight: bold;
+}
+
+.rule-card .action {
+    color: #333;
+}
+
+.rule-card .result {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* History section */
+.history-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.history-log {
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.history-entry {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.history-entry:last-child {
+    margin-bottom: 0;
+}
+
+.history-entry.current {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+    border-left: 3px solid #ffc107;
+}
+
+.history-entry .step-num {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.history-entry .step-text {
+    color: #333;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    .container {
+        border-radius: 0;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .speed-control {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .tape-cell {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .rules-groups {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .lesson-nav button {
+        width: 100%;
+    }
+}
