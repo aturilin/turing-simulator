@@ -10,6 +10,11 @@ class TuringSimulator {
         this.isRunning = false;
         this.runInterval = null;
 
+        // Challenge mode state
+        this.currentChallenge = null;
+        this.generatedRules = null;
+        this.exampleCompleted = false;
+
         this.initElements();
         this.bindEvents();
         this.loadLessons();
@@ -58,6 +63,26 @@ class TuringSimulator {
 
         // History
         this.historyLog = document.getElementById('history-log');
+
+        // Challenge prompt
+        this.challengePrompt = document.getElementById('challenge-prompt');
+        this.btnStartChallenge = document.getElementById('btn-start-challenge');
+
+        // Challenge mode elements
+        this.challengeMode = document.getElementById('challenge-mode');
+        this.btnBackToSimulator = document.getElementById('btn-back-to-simulator');
+        this.challengeTask = document.getElementById('challenge-task');
+        this.challengeExamples = document.getElementById('challenge-examples');
+        this.btnNewChallenge = document.getElementById('btn-new-challenge');
+        this.studentPlan = document.getElementById('student-plan');
+        this.btnCheckPlan = document.getElementById('btn-check-plan');
+        this.feedbackSection = document.getElementById('feedback-section');
+        this.feedbackBox = document.getElementById('feedback-box');
+        this.feedbackIcon = document.getElementById('feedback-icon');
+        this.feedbackMessage = document.getElementById('feedback-message');
+        this.feedbackHint = document.getElementById('feedback-hint');
+        this.btnRunSolution = document.getElementById('btn-run-solution');
+        this.loadingOverlay = document.getElementById('loading-overlay');
     }
 
     bindEvents() {
@@ -73,6 +98,13 @@ class TuringSimulator {
         this.btnPause.addEventListener('click', () => this.pause());
         this.btnReset.addEventListener('click', () => this.reset());
         this.btnSetTape.addEventListener('click', () => this.setTape());
+
+        // Challenge mode
+        this.btnStartChallenge.addEventListener('click', () => this.startChallengeMode());
+        this.btnBackToSimulator.addEventListener('click', () => this.backToSimulator());
+        this.btnNewChallenge.addEventListener('click', () => this.getChallenge());
+        this.btnCheckPlan.addEventListener('click', () => this.checkPlan());
+        this.btnRunSolution.addEventListener('click', () => this.runGeneratedSolution());
     }
 
     // ==================== ONBOARDING ====================
@@ -169,6 +201,10 @@ class TuringSimulator {
             // Clear history
             this.historyLog.innerHTML = '';
 
+            // Hide challenge prompt initially
+            this.challengePrompt.classList.add('hidden');
+            this.exampleCompleted = false;
+
         } catch (error) {
             console.error('Failed to load example:', error);
         }
@@ -234,6 +270,11 @@ class TuringSimulator {
             this.updateUI();
             this.addHistoryEntry(data.machine);
             this.updateNextAction();
+
+            // Check if example completed
+            if (this.machineState.halted && this.machineState.accepted && !this.exampleCompleted) {
+                this.showChallengePrompt();
+            }
         } catch (error) {
             console.error('Step failed:', error);
         }
@@ -296,6 +337,11 @@ class TuringSimulator {
         } catch (error) {
             console.error('Reset failed:', error);
         }
+    }
+
+    showChallengePrompt() {
+        this.exampleCompleted = true;
+        this.challengePrompt.classList.remove('hidden');
     }
 
     // ==================== UI UPDATES ====================
@@ -509,6 +555,222 @@ class TuringSimulator {
 
         this.historyLog.appendChild(entry);
         this.historyLog.scrollTop = this.historyLog.scrollHeight;
+    }
+
+    // ==================== CHALLENGE MODE ====================
+
+    startChallengeMode() {
+        // Hide simulator, show challenge mode
+        this.simulator.classList.add('hidden');
+        this.challengeMode.classList.remove('hidden');
+
+        // Reset challenge state
+        this.currentChallenge = null;
+        this.generatedRules = null;
+        this.studentPlan.value = '';
+        this.feedbackSection.classList.add('hidden');
+        this.btnRunSolution.classList.add('hidden');
+
+        // Get a new challenge
+        this.getChallenge();
+    }
+
+    backToSimulator() {
+        // Hide challenge mode, show simulator
+        this.challengeMode.classList.add('hidden');
+        this.simulator.classList.remove('hidden');
+    }
+
+    async getChallenge() {
+        this.loadingOverlay.classList.remove('hidden');
+        this.challengeTask.innerHTML = '<p class="loading">Loading challenge...</p>';
+        this.challengeExamples.innerHTML = '';
+
+        // Reset feedback
+        this.feedbackSection.classList.add('hidden');
+        this.btnRunSolution.classList.add('hidden');
+        this.studentPlan.value = '';
+
+        try {
+            const response = await fetch('/api/challenge');
+            const challenge = await response.json();
+
+            if (challenge.error) {
+                this.challengeTask.innerHTML = `<p class="error">Error: ${challenge.error}</p>`;
+                return;
+            }
+
+            this.currentChallenge = challenge;
+
+            // Display challenge task
+            this.challengeTask.innerHTML = `<p>${challenge.task}</p>`;
+
+            // Display examples
+            if (challenge.examples && challenge.examples.length > 0) {
+                let examplesHtml = '<h4>Examples:</h4>';
+                challenge.examples.forEach(ex => {
+                    examplesHtml += `
+                        <div class="example-item">
+                            <span class="input">${ex.input}</span>
+                            <span class="arrow">→</span>
+                            <span class="output">${ex.output}</span>
+                        </div>
+                    `;
+                });
+                this.challengeExamples.innerHTML = examplesHtml;
+            }
+
+        } catch (error) {
+            console.error('Failed to get challenge:', error);
+            this.challengeTask.innerHTML = '<p class="error">Failed to load challenge. Please try again.</p>';
+        } finally {
+            this.loadingOverlay.classList.add('hidden');
+        }
+    }
+
+    async checkPlan() {
+        const plan = this.studentPlan.value.trim();
+
+        if (!plan) {
+            alert('Please describe your algorithm first!');
+            return;
+        }
+
+        if (!this.currentChallenge) {
+            alert('No challenge loaded. Please get a new challenge.');
+            return;
+        }
+
+        this.loadingOverlay.classList.remove('hidden');
+
+        try {
+            const response = await fetch('/api/check-plan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    challenge: this.currentChallenge,
+                    plan: plan
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                this.showFeedback(false, `Error: ${result.error}`, '');
+                return;
+            }
+
+            if (result.correct) {
+                this.generatedRules = result.rules;
+                this.showFeedback(true, result.feedback, '');
+                this.btnRunSolution.classList.remove('hidden');
+            } else {
+                this.showFeedback(false, result.feedback, result.hint);
+            }
+
+        } catch (error) {
+            console.error('Failed to check plan:', error);
+            this.showFeedback(false, 'Failed to check plan. Please try again.', '');
+        } finally {
+            this.loadingOverlay.classList.add('hidden');
+        }
+    }
+
+    showFeedback(isCorrect, message, hint) {
+        this.feedbackSection.classList.remove('hidden');
+        this.feedbackBox.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');
+        this.feedbackIcon.textContent = isCorrect ? '🎉' : '💡';
+        this.feedbackMessage.textContent = message;
+        this.feedbackHint.textContent = hint || '';
+    }
+
+    async runGeneratedSolution() {
+        if (!this.generatedRules) return;
+
+        // Go back to simulator with the generated rules
+        this.challengeMode.classList.add('hidden');
+        this.simulator.classList.remove('hidden');
+
+        // Load the generated rules as the current example
+        this.currentExample = this.generatedRules;
+        this.tapeInput.value = this.generatedRules.default_input || '';
+
+        // Load program
+        await this.loadProgram(this.generatedRules);
+
+        // Render rules (dynamically create groups based on states)
+        this.renderDynamicRules(this.generatedRules.rules || []);
+
+        // Show goal
+        this.goalDisplay.innerHTML = `<strong>Your Algorithm:</strong> ${this.generatedRules.name || 'Custom'}`;
+
+        // Update next action
+        this.updateNextAction();
+
+        // Clear history
+        this.historyLog.innerHTML = '';
+
+        // Hide challenge prompt
+        this.challengePrompt.classList.add('hidden');
+    }
+
+    renderDynamicRules(rules) {
+        // Clear existing rules
+        const rulesGroups = document.querySelector('.rules-groups');
+        rulesGroups.innerHTML = '';
+
+        // Group rules by state
+        const rulesByState = {};
+        rules.forEach(rule => {
+            if (!rulesByState[rule.state]) {
+                rulesByState[rule.state] = [];
+            }
+            rulesByState[rule.state].push(rule);
+        });
+
+        // Create a group for each state
+        for (const [state, stateRules] of Object.entries(rulesByState)) {
+            const stateInfo = this.currentExample.states?.[state] || {};
+            const emoji = stateInfo.emoji || '📌';
+            const label = stateInfo.label || state.toUpperCase();
+
+            const group = document.createElement('div');
+            group.className = 'rules-group';
+            group.innerHTML = `
+                <h3><span class="state-emoji-small">${emoji}</span> ${label}</h3>
+                <div class="rules-list" id="rules-list-${state}"></div>
+            `;
+
+            const rulesList = group.querySelector('.rules-list');
+
+            stateRules.forEach(rule => {
+                const card = document.createElement('div');
+                card.className = 'rule-card';
+                card.dataset.state = rule.state;
+                card.dataset.see = rule.see;
+
+                const moveText = {
+                    'right': 'move RIGHT',
+                    'left': 'move LEFT',
+                    'stay': 'STOP'
+                }[rule.move] || rule.move;
+
+                const seeDisplay = rule.see === '_' ? 'blank' : `"${rule.see}"`;
+                const writeDisplay = rule.write === '_' ? 'blank' : `"${rule.write}"`;
+
+                card.innerHTML = `
+                    <div class="action">
+                        See <span class="see">${seeDisplay}</span> →
+                        write ${writeDisplay}, ${moveText}
+                    </div>
+                    <div class="result">→ ${rule.goto.toUpperCase()}</div>
+                `;
+
+                rulesList.appendChild(card);
+            });
+
+            rulesGroups.appendChild(group);
+        }
     }
 }
 

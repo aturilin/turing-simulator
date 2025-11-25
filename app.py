@@ -1,11 +1,21 @@
 """Flask API for the Turing Machine Simulator."""
 
+import os
+import json
 from flask import Flask, render_template, request, jsonify
+from openai import OpenAI
+from dotenv import load_dotenv
 from turing_machine import TuringMachine
 from history import HistoryManager
 from examples import get_example_list, get_example, get_lessons
 
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
+
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 machine = TuringMachine()
 history = HistoryManager()
@@ -179,6 +189,129 @@ def get_example_program(example_id):
     if example:
         return jsonify(example)
     return jsonify({"error": "Example not found"}), 404
+
+
+@app.route("/api/challenge", methods=["GET"])
+def get_challenge():
+    """Generate a new TM challenge using AI."""
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are a Turing machine teacher. Generate a simple challenge for a beginner who just learned how to add 1 to a binary number.
+
+The challenge should be solvable with 2-4 states and use only 0, 1, and blank symbols.
+
+Good challenge examples:
+- Check if a binary number has an even/odd number of 1s
+- Check if a binary string is a palindrome
+- Replace all 1s with 0s and vice versa
+- Count if there are more 1s than 0s
+
+Output ONLY valid JSON (no markdown):
+{
+  "task": "Clear description of what to build",
+  "examples": [
+    {"input": "101", "output": "Description of expected result"}
+  ],
+  "difficulty": "easy",
+  "hint_for_stuck": "A subtle hint without revealing the answer"
+}"""
+                },
+                {
+                    "role": "user",
+                    "content": "Generate a new beginner-friendly Turing machine challenge."
+                }
+            ],
+            temperature=0.8
+        )
+
+        result = response.choices[0].message.content
+        # Parse JSON from response
+        challenge = json.loads(result)
+        return jsonify(challenge)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/check-plan", methods=["POST"])
+def check_plan():
+    """Check if student's algorithm plan is correct."""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    challenge = data.get("challenge")
+    student_plan = data.get("plan")
+
+    if not challenge or not student_plan:
+        return jsonify({"error": "Missing challenge or plan"}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are a Turing machine teacher evaluating a student's algorithm plan.
+
+The student was given a challenge and wrote their algorithm in plain English.
+Evaluate if their logic would work for a Turing machine.
+
+If WRONG:
+- Give an encouraging hint that guides them WITHOUT revealing the answer
+- Focus on what they're missing or what edge case they forgot
+
+If CORRECT:
+- Congratulate them
+- Convert their plan to working Turing machine rules
+
+Output ONLY valid JSON (no markdown):
+{
+  "correct": true or false,
+  "feedback": "Encouraging message about their attempt",
+  "hint": "If wrong, a helpful hint. Empty string if correct.",
+  "rules": null if wrong, or if correct: {
+    "name": "Algorithm name",
+    "initial_state": "start",
+    "accept_states": ["done"],
+    "blank_symbol": "_",
+    "default_input": "example",
+    "states": {
+      "state_name": {"label": "LABEL", "emoji": "🔍", "description": "What this state does"}
+    },
+    "rules": [
+      {"state": "start", "see": "0", "write": "0", "move": "right", "goto": "start"}
+    ],
+    "transitions": {
+      "start,0": ["start", "0", "R"]
+    }
+  }
+}"""
+                },
+                {
+                    "role": "user",
+                    "content": f"""Challenge: {json.dumps(challenge)}
+
+Student's algorithm plan:
+{student_plan}
+
+Evaluate their plan."""
+                }
+            ],
+            temperature=0.3
+        )
+
+        result = response.choices[0].message.content
+        evaluation = json.loads(result)
+        return jsonify(evaluation)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

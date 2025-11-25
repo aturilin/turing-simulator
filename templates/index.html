@@ -115,6 +115,64 @@
                         <!-- History entries render here -->
                     </div>
                 </section>
+
+                <!-- Challenge Mode Button (shows after completing example) -->
+                <section class="challenge-prompt hidden" id="challenge-prompt">
+                    <div class="success-message">
+                        <h2>Great job! You completed the example!</h2>
+                        <p>Ready to design your own algorithm?</p>
+                        <button id="btn-start-challenge" class="btn-success btn-large">Try a Challenge!</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- CHALLENGE MODE: Hidden until user clicks "Try a Challenge" -->
+        <div id="challenge-mode" class="challenge-mode hidden">
+            <header>
+                <h1>Challenge Mode</h1>
+                <button id="btn-back-to-simulator" class="tutorial-btn">Back to Simulator</button>
+            </header>
+
+            <main>
+                <!-- Challenge Display -->
+                <section class="challenge-section">
+                    <h2>Your Challenge</h2>
+                    <div class="challenge-card" id="challenge-card">
+                        <div class="challenge-task" id="challenge-task">
+                            <!-- Challenge task loads here -->
+                            <p class="loading">Loading challenge...</p>
+                        </div>
+                        <div class="challenge-examples" id="challenge-examples">
+                            <!-- Examples load here -->
+                        </div>
+                        <button id="btn-new-challenge" class="btn-secondary btn-small">Get Different Challenge</button>
+                    </div>
+                </section>
+
+                <!-- Student's Plan Input -->
+                <section class="plan-section">
+                    <h2>Your Algorithm Plan</h2>
+                    <p class="plan-instructions">Describe your algorithm in plain English. What states will you use? What should happen when the head sees each symbol?</p>
+                    <textarea id="student-plan" placeholder="Example: I'll start in a SCAN state. When I see a 1, I'll switch to ODD state. When I see another 1, I'll switch back to EVEN state. When I reach a blank, if I'm in EVEN state, the answer is YES..."></textarea>
+                    <button id="btn-check-plan" class="btn-primary btn-large">Check My Plan</button>
+                </section>
+
+                <!-- Feedback Section -->
+                <section class="feedback-section hidden" id="feedback-section">
+                    <div class="feedback-box" id="feedback-box">
+                        <div class="feedback-icon" id="feedback-icon"></div>
+                        <p class="feedback-message" id="feedback-message"></p>
+                        <p class="feedback-hint" id="feedback-hint"></p>
+                    </div>
+                    <button id="btn-run-solution" class="btn-success btn-large hidden">Run My Solution!</button>
+                </section>
+
+                <!-- Loading Indicator -->
+                <div class="loading-overlay hidden" id="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>AI is thinking...</p>
+                </div>
             </main>
         </div>
     </div>
