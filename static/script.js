@@ -1,5 +1,391 @@
 // Educational Turing Machine Simulator - Learn First, Then Play
 
+// ==================== STATE GRAPH VISUALIZATION ====================
+
+class StateGraph {
+    constructor(containerId, states, transitions, options = {}) {
+        this.container = document.getElementById(containerId);
+        if (!this.container) return;
+
+        this.states = states || {};
+        this.transitions = transitions || {};
+        this.options = {
+            width: options.width || 400,
+            height: options.height || 280,
+            nodeRadius: options.nodeRadius || 35,
+            animated: options.animated !== false
+        };
+
+        this.activeState = null;
+        this.activeTransition = null;
+        this.svg = null;
+        this.nodeElements = {};
+        this.edgeElements = {};
+
+        this.render();
+    }
+
+    render() {
+        if (!this.container) return;
+
+        // Clear container
+        this.container.innerHTML = '';
+
+        // Create SVG
+        this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        this.svg.setAttribute('width', '100%');
+        this.svg.setAttribute('height', this.options.height);
+        this.svg.setAttribute('viewBox', `0 0 ${this.options.width} ${this.options.height}`);
+        this.svg.classList.add('state-graph-svg');
+
+        // Add defs for arrow markers and gradients
+        this.addDefs();
+
+        // Calculate node positions
+        const positions = this.calculatePositions();
+
+        // Draw edges first (so they're behind nodes)
+        this.drawEdges(positions);
+
+        // Draw nodes
+        this.drawNodes(positions);
+
+        this.container.appendChild(this.svg);
+    }
+
+    addDefs() {
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+
+        // Arrow marker
+        const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+        marker.setAttribute('id', 'arrowhead');
+        marker.setAttribute('markerWidth', '10');
+        marker.setAttribute('markerHeight', '7');
+        marker.setAttribute('refX', '9');
+        marker.setAttribute('refY', '3.5');
+        marker.setAttribute('orient', 'auto');
+
+        const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        polygon.setAttribute('points', '0 0, 10 3.5, 0 7');
+        polygon.setAttribute('fill', '#888');
+        polygon.classList.add('arrow-head');
+        marker.appendChild(polygon);
+        defs.appendChild(marker);
+
+        // Active arrow marker (green)
+        const markerActive = marker.cloneNode(true);
+        markerActive.setAttribute('id', 'arrowhead-active');
+        markerActive.querySelector('polygon').setAttribute('fill', '#4caf50');
+        defs.appendChild(markerActive);
+
+        // Node gradient
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', 'node-gradient');
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '100%');
+
+        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', '#667eea');
+        gradient.appendChild(stop1);
+
+        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('stop-color', '#764ba2');
+        gradient.appendChild(stop2);
+        defs.appendChild(gradient);
+
+        // Active node gradient (green)
+        const gradientActive = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradientActive.setAttribute('id', 'node-gradient-active');
+        gradientActive.setAttribute('x1', '0%');
+        gradientActive.setAttribute('y1', '0%');
+        gradientActive.setAttribute('x2', '100%');
+        gradientActive.setAttribute('y2', '100%');
+
+        const stopA1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stopA1.setAttribute('offset', '0%');
+        stopA1.setAttribute('stop-color', '#4caf50');
+        gradientActive.appendChild(stopA1);
+
+        const stopA2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stopA2.setAttribute('offset', '100%');
+        stopA2.setAttribute('stop-color', '#2e7d32');
+        gradientActive.appendChild(stopA2);
+        defs.appendChild(gradientActive);
+
+        this.svg.appendChild(defs);
+    }
+
+    calculatePositions() {
+        const stateIds = Object.keys(this.states);
+        const positions = {};
+        const cx = this.options.width / 2;
+        const cy = this.options.height / 2;
+
+        if (stateIds.length === 3) {
+            // Triangle layout for 3 states (scan-add-done)
+            positions[stateIds[0]] = { x: 80, y: 80 };   // SCAN top-left
+            positions[stateIds[1]] = { x: 320, y: 80 };  // ADD top-right
+            positions[stateIds[2]] = { x: 200, y: 220 }; // DONE bottom-center
+        } else {
+            // Circle layout for other cases
+            const angleStep = (2 * Math.PI) / stateIds.length;
+            const radius = Math.min(this.options.width, this.options.height) / 3;
+
+            stateIds.forEach((stateId, i) => {
+                const angle = -Math.PI / 2 + i * angleStep;
+                positions[stateId] = {
+                    x: cx + radius * Math.cos(angle),
+                    y: cy + radius * Math.sin(angle)
+                };
+            });
+        }
+
+        return positions;
+    }
+
+    drawNodes(positions) {
+        const r = this.options.nodeRadius;
+
+        for (const [stateId, state] of Object.entries(this.states)) {
+            const pos = positions[stateId];
+            if (!pos) continue;
+
+            const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            group.classList.add('state-node');
+            group.setAttribute('data-state', stateId);
+
+            // Circle
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', pos.x);
+            circle.setAttribute('cy', pos.y);
+            circle.setAttribute('r', r);
+            circle.setAttribute('fill', 'url(#node-gradient)');
+            circle.classList.add('node-circle');
+            group.appendChild(circle);
+
+            // Emoji
+            const emoji = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            emoji.setAttribute('x', pos.x);
+            emoji.setAttribute('y', pos.y - 5);
+            emoji.setAttribute('text-anchor', 'middle');
+            emoji.setAttribute('dominant-baseline', 'middle');
+            emoji.setAttribute('font-size', '20');
+            emoji.textContent = state.emoji || '●';
+            group.appendChild(emoji);
+
+            // Label
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', pos.x);
+            label.setAttribute('y', pos.y + 18);
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('dominant-baseline', 'middle');
+            label.setAttribute('font-size', '11');
+            label.setAttribute('font-weight', 'bold');
+            label.setAttribute('fill', 'white');
+            label.textContent = state.label || stateId.toUpperCase();
+            group.appendChild(label);
+
+            this.svg.appendChild(group);
+            this.nodeElements[stateId] = group;
+        }
+    }
+
+    drawEdges(positions) {
+        // Group transitions by from-to pair
+        const edgeMap = {};
+
+        for (const [key, value] of Object.entries(this.transitions)) {
+            const [fromState, symbol] = key.split(',');
+            const toState = value[0];
+            const writeSymbol = value[1];
+            const direction = value[2];
+
+            const edgeKey = `${fromState}->${toState}`;
+            if (!edgeMap[edgeKey]) {
+                edgeMap[edgeKey] = [];
+            }
+            edgeMap[edgeKey].push({ symbol, writeSymbol, direction, key });
+        }
+
+        for (const [edgeKey, transitions] of Object.entries(edgeMap)) {
+            const [fromState, toState] = edgeKey.split('->');
+            const fromPos = positions[fromState];
+            const toPos = positions[toState];
+
+            if (!fromPos || !toPos) continue;
+
+            const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            group.classList.add('transition-group');
+            group.setAttribute('data-from', fromState);
+            group.setAttribute('data-to', toState);
+
+            if (fromState === toState) {
+                // Self-loop
+                this.drawSelfLoop(group, fromPos, transitions);
+            } else {
+                // Regular edge
+                this.drawEdge(group, fromPos, toPos, transitions);
+            }
+
+            this.svg.appendChild(group);
+
+            // Store reference for each transition key
+            transitions.forEach(t => {
+                this.edgeElements[t.key] = group;
+            });
+        }
+    }
+
+    drawSelfLoop(group, pos, transitions) {
+        const r = this.options.nodeRadius;
+
+        // Draw loop arc above the node
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const loopRadius = 25;
+        const startX = pos.x - 15;
+        const startY = pos.y - r;
+        const endX = pos.x + 15;
+        const endY = pos.y - r;
+
+        path.setAttribute('d', `M ${startX} ${startY}
+            A ${loopRadius} ${loopRadius} 0 1 1 ${endX} ${endY}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#888');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('marker-end', 'url(#arrowhead)');
+        path.classList.add('transition-arrow');
+        group.appendChild(path);
+
+        // Label
+        const labelText = transitions.map(t => {
+            const sym = t.symbol === '_' ? '␣' : t.symbol;
+            return sym;
+        }).join(',');
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', pos.x);
+        label.setAttribute('y', pos.y - r - loopRadius - 8);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('font-size', '10');
+        label.setAttribute('fill', '#666');
+        label.textContent = labelText;
+        group.appendChild(label);
+    }
+
+    drawEdge(group, fromPos, toPos, transitions) {
+        const r = this.options.nodeRadius;
+
+        // Calculate edge points (from circle edge to circle edge)
+        const dx = toPos.x - fromPos.x;
+        const dy = toPos.y - fromPos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        const startX = fromPos.x + nx * r;
+        const startY = fromPos.y + ny * r;
+        const endX = toPos.x - nx * (r + 8);
+        const endY = toPos.y - ny * (r + 8);
+
+        // Curved path
+        const midX = (startX + endX) / 2;
+        const midY = (startY + endY) / 2;
+        const curvature = 20;
+        const cpX = midX - ny * curvature;
+        const cpY = midY + nx * curvature;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${startX} ${startY} Q ${cpX} ${cpY} ${endX} ${endY}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#888');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('marker-end', 'url(#arrowhead)');
+        path.classList.add('transition-arrow');
+        group.appendChild(path);
+
+        // Label
+        const labelText = transitions.map(t => {
+            const sym = t.symbol === '_' ? '␣' : t.symbol;
+            return sym;
+        }).join(',');
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', cpX);
+        label.setAttribute('y', cpY - 5);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('font-size', '10');
+        label.setAttribute('fill', '#666');
+        label.setAttribute('class', 'edge-label');
+        label.textContent = labelText;
+        group.appendChild(label);
+    }
+
+    setActiveState(stateId) {
+        // Remove active from all nodes
+        for (const [id, node] of Object.entries(this.nodeElements)) {
+            node.classList.remove('active');
+            const circle = node.querySelector('.node-circle');
+            if (circle) {
+                circle.setAttribute('fill', 'url(#node-gradient)');
+            }
+        }
+
+        // Set active node
+        if (stateId && this.nodeElements[stateId]) {
+            const node = this.nodeElements[stateId];
+            node.classList.add('active');
+            const circle = node.querySelector('.node-circle');
+            if (circle) {
+                circle.setAttribute('fill', 'url(#node-gradient-active)');
+            }
+        }
+
+        this.activeState = stateId;
+    }
+
+    animateTransition(fromState, toState, symbol) {
+        if (!this.options.animated) return;
+
+        const key = `${fromState},${symbol}`;
+        const edge = this.edgeElements[key];
+
+        if (edge) {
+            // Add active class
+            edge.classList.add('active');
+            const path = edge.querySelector('.transition-arrow');
+            if (path) {
+                path.setAttribute('stroke', '#4caf50');
+                path.setAttribute('stroke-width', '3');
+                path.setAttribute('marker-end', 'url(#arrowhead-active)');
+            }
+
+            // Remove after animation
+            setTimeout(() => {
+                edge.classList.remove('active');
+                if (path) {
+                    path.setAttribute('stroke', '#888');
+                    path.setAttribute('stroke-width', '2');
+                    path.setAttribute('marker-end', 'url(#arrowhead)');
+                }
+            }, 500);
+        }
+    }
+
+    update(states, transitions) {
+        this.states = states || this.states;
+        this.transitions = transitions || this.transitions;
+        this.nodeElements = {};
+        this.edgeElements = {};
+        this.render();
+    }
+}
+
+// ==================== TURING SIMULATOR ====================
+
 class TuringSimulator {
     constructor() {
         this.lessons = [];
@@ -14,6 +400,9 @@ class TuringSimulator {
         this.currentChallenge = null;
         this.generatedRules = null;
         this.exampleCompleted = false;
+
+        // State graph
+        this.stateGraph = null;
 
         this.initElements();
         this.bindEvents();
@@ -129,6 +518,25 @@ class TuringSimulator {
         // Update content
         this.lessonContent.innerHTML = lesson.content;
 
+        // Initialize lesson graph if this is the "states" lesson
+        if (lesson.id === 'states') {
+            // Binary increment example states and transitions for the lesson graph
+            const states = {
+                scan: { label: 'SCAN', emoji: '🔍', description: 'Looking for end' },
+                add: { label: 'ADD', emoji: '➕', description: 'Adding 1' },
+                done: { label: 'DONE', emoji: '✅', description: 'Finished' }
+            };
+            const transitions = {
+                'scan,0': ['scan', '0', 'R'],
+                'scan,1': ['scan', '1', 'R'],
+                'scan,_': ['add', '_', 'L'],
+                'add,0': ['done', '1', 'N'],
+                'add,1': ['add', '0', 'L'],
+                'add,_': ['done', '1', 'N']
+            };
+            new StateGraph('lesson-graph', states, transitions, { animated: false });
+        }
+
         // Update progress
         this.lessonCurrent.textContent = index + 1;
         const progress = ((index + 1) / this.lessons.length) * 100;
@@ -189,6 +597,16 @@ class TuringSimulator {
 
             // Render rules as cards
             this.renderRules(example.rules || []);
+
+            // Initialize state graph
+            this.stateGraph = new StateGraph(
+                'simulator-graph',
+                example.states,
+                example.transitions,
+                { animated: true }
+            );
+            // Set initial active state
+            this.stateGraph.setActiveState(example.initial_state);
 
             // Show goal
             if (example.goal) {
@@ -270,6 +688,13 @@ class TuringSimulator {
             this.updateUI();
             this.addHistoryEntry(data.machine);
             this.updateNextAction();
+
+            // Update state graph
+            if (this.stateGraph && data.machine.last_transition) {
+                const t = data.machine.last_transition;
+                this.stateGraph.animateTransition(t.from_state, t.to_state, t.read);
+                this.stateGraph.setActiveState(data.machine.current_state);
+            }
 
             // Check if example completed
             if (this.machineState.halted && this.machineState.accepted && !this.exampleCompleted) {

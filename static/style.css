@@ -341,6 +341,110 @@ body {
     margin-top: 20px;
 }
 
+/* ==================== STATE GRAPH VISUALIZATION ==================== */
+
+.state-graph-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.state-graph-section h2 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.state-graph-container {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.state-graph-svg {
+    max-width: 100%;
+}
+
+/* State nodes */
+.state-node {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.state-node:hover {
+    transform: scale(1.05);
+}
+
+.state-node.active .node-circle {
+    filter: drop-shadow(0 0 12px rgba(76, 175, 80, 0.6));
+}
+
+.state-node.active {
+    animation: pulse-node 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-node {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+/* Transition arrows */
+.transition-arrow {
+    transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.transition-group.active .transition-arrow {
+    stroke: #4caf50 !important;
+    stroke-width: 3px !important;
+    animation: flow-arrow 0.5s ease;
+}
+
+@keyframes flow-arrow {
+    0% {
+        stroke-dasharray: 10;
+        stroke-dashoffset: 20;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Edge labels */
+.edge-label {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    fill: #666;
+}
+
+/* Lesson graph (in onboarding) */
+.lesson-graph-container {
+    margin: 25px auto;
+    max-width: 420px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .state-graph-container {
+        padding: 10px;
+        min-height: 180px;
+    }
+
+    .state-graph-section {
+        padding: 15px;
+    }
+}
+
 /* ==================== SIMULATOR ==================== */
 
 /* Header */

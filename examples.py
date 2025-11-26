@@ -97,19 +97,21 @@ LESSONS = [
         "title": "States (Modes)",
         "content": """
             <h2>States (Think of them as "modes")</h2>
-            <div class="lesson-image-inline">
-                <img src="/static/media/page6.jpeg" alt="States of Operation">
-                <span class="image-caption">Fig. 4 — The machine's modes of operation</span>
+            <p>The machine is always in <strong>ONE state</strong> at a time. States are like modes of operation:</p>
+
+            <div class="lesson-graph-container">
+                <div class="state-graph-container" id="lesson-graph">
+                    <!-- State graph renders here -->
+                </div>
             </div>
-            <p>The machine is always in <strong>ONE state</strong> at a time.</p>
-            <p>States are like moods or modes of operation.</p>
+
             <div class="highlight-box">
                 <p>For adding 1 to a binary number, we use:</p>
                 <div class="state-item"><span class="state-emoji">🔍</span> <strong>SCAN</strong> - "I'm looking for the end of the number"</div>
                 <div class="state-item"><span class="state-emoji">➕</span> <strong>ADD</strong> - "I'm adding 1 now"</div>
                 <div class="state-item"><span class="state-emoji">✅</span> <strong>DONE</strong> - "I'm finished!"</div>
             </div>
-            <p>The machine starts in <strong>SCAN</strong> mode.</p>
+            <p>The arrows show how the machine <strong>moves between states</strong>. The labels show what symbol triggers each move.</p>
         """
     },
     {
