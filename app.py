@@ -273,18 +273,22 @@ The student was given a challenge and wrote their algorithm in plain English.
 Evaluate if their logic would work for a Turing machine.
 
 If WRONG:
-- Give an encouraging hint that guides them WITHOUT revealing the answer
-- Focus on what they're missing or what edge case they forgot
+- Give a VERY SUBTLE hint - do NOT explain the solution
+- Ask a thought-provoking question like "What happens when...?" or "Have you considered...?"
+- NEVER mention specific states, transitions, or implementation details
+- NEVER say things like "you need a state that..." or "try tracking..."
+- Just nudge them to think about what they might be missing
+- Keep hints short (1 sentence max)
 
 If CORRECT:
-- Congratulate them
+- Congratulate them briefly
 - Convert their plan to working Turing machine rules
 
 Output ONLY valid JSON (no markdown):
 {
   "correct": true or false,
-  "feedback": "Encouraging message about their attempt",
-  "hint": "If wrong, a helpful hint. Empty string if correct.",
+  "feedback": "Brief encouraging message (1 sentence)",
+  "hint": "If wrong: a subtle question to make them think. Empty string if correct.",
   "rules": null if wrong, or if correct: {
     "name": "Algorithm name",
     "initial_state": "start",
