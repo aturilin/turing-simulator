@@ -6,6 +6,9 @@ LESSONS = [
         "id": "welcome",
         "title": "Welcome!",
         "content": """
+            <div class="lesson-image-hero">
+                <img src="/static/media/page1.jpeg" alt="The Analytical Turing Engine">
+            </div>
             <h2>Welcome to the Turing Machine Simulator!</h2>
             <p class="lead">Learn how the simplest computer works.</p>
             <p>Today we'll teach a machine to add 1 to a binary number.</p>
@@ -17,6 +20,10 @@ LESSONS = [
         "title": "What is a Turing Machine?",
         "content": """
             <h2>What is a Turing Machine?</h2>
+            <div class="lesson-image-float">
+                <img src="/static/media/page2.jpeg" alt="Turing Machine Assembly">
+                <span class="image-caption">Fig. 1 — The components of a Turing Machine</span>
+            </div>
             <p>A Turing machine is the <strong>simplest possible computer</strong>.</p>
             <p>It was invented by Alan Turing in 1936.</p>
             <div class="highlight-box">
@@ -35,6 +42,10 @@ LESSONS = [
         "title": "The Tape",
         "content": """
             <h2>The Tape</h2>
+            <div class="lesson-image-inline">
+                <img src="/static/media/page3.jpeg" alt="The Tape with Algorithm">
+                <span class="image-caption">Fig. 2 — Binary data on the tape</span>
+            </div>
             <p>The tape is divided into boxes called <strong>"cells"</strong>.</p>
             <p>Each cell holds <strong>ONE symbol</strong>.</p>
             <div class="tape-demo">
@@ -57,6 +68,10 @@ LESSONS = [
         "title": "The Head",
         "content": """
             <h2>The Head</h2>
+            <div class="lesson-image-float">
+                <img src="/static/media/page5.jpeg" alt="The Read/Write Head">
+                <span class="image-caption">Fig. 3 — The read/write head mechanism</span>
+            </div>
             <p>The head points to <strong>ONE cell</strong> at a time.</p>
             <div class="tape-demo">
                 <div class="tape-cell">_</div>
@@ -82,6 +97,10 @@ LESSONS = [
         "title": "States (Modes)",
         "content": """
             <h2>States (Think of them as "modes")</h2>
+            <div class="lesson-image-inline">
+                <img src="/static/media/page6.jpeg" alt="States of Operation">
+                <span class="image-caption">Fig. 4 — The machine's modes of operation</span>
+            </div>
             <p>The machine is always in <strong>ONE state</strong> at a time.</p>
             <p>States are like moods or modes of operation.</p>
             <div class="highlight-box">
@@ -98,6 +117,10 @@ LESSONS = [
         "title": "The Rules",
         "content": """
             <h2>The Rules</h2>
+            <div class="lesson-image-float">
+                <img src="/static/media/page4.jpeg" alt="Algorithm Process Flow">
+                <span class="image-caption">Fig. 5 — Following the algorithm</span>
+            </div>
             <p>Rules tell the machine what to do.</p>
             <p>Each rule says:</p>
             <div class="rule-template">

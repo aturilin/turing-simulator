@@ -243,6 +243,95 @@ body {
     font-family: 'Courier New', monospace;
 }
 
+/* ==================== TEXTBOOK IMAGES ==================== */
+
+/* Hero image - full width at top of lesson */
+.lesson-image-hero {
+    margin: -20px -20px 25px -20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.lesson-image-hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Inline image - centered with caption */
+.lesson-image-inline {
+    margin: 25px auto;
+    max-width: 100%;
+    text-align: center;
+    background: #faf8f5;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e8e4df;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.lesson-image-inline img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Float image - floats to side with text wrap */
+.lesson-image-float {
+    float: right;
+    width: 45%;
+    max-width: 280px;
+    margin: 0 0 20px 25px;
+    background: #faf8f5;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #e8e4df;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.lesson-image-float img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Image captions */
+.image-caption {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #6b5b4f;
+    font-style: italic;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* Clearfix for floated images */
+.lesson-content::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .lesson-image-float {
+        float: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 20px 0;
+    }
+
+    .lesson-image-hero {
+        margin: -15px -15px 20px -15px;
+    }
+}
+
 /* Lesson navigation */
 .lesson-nav {
     display: flex;
