@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }} - Turing Machine{% endblock %}
+
+{% block content %}
+<div class="lesson-page">
+    <div class="lesson-progress">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ (lesson_num / total_lessons) * 100 }}%"></div>
+        </div>
+        <span class="progress-text">Lesson {{ lesson_num }} of {{ total_lessons }}</span>
+    </div>
+
+    <div class="lesson-container">
+        <div class="lesson-content">
+            {{ lesson.content | safe }}
+        </div>
+
+
+        {% if has_practice %}
+        <!-- Practice Section - embedded in lesson -->
+        <div class="practice-section">
+            <h2 class="practice-header">Try It Yourself!</h2>
+
+            {% if lesson_num == 4 %}
+            <!-- Lesson 4: Control the Head -->
+            <div class="practice-exercise" id="practice-head">
+                <p>Move the head to find the second "1" on the tape.</p>
+
+                <div class="tape-wrapper practice-tape">
+                    <div class="tape" id="practice-tape">
+                        <div class="tape-cell blank">_</div>
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell head">1</div>
+                        <div class="tape-cell">1</div>
+                        <div class="tape-cell blank">_</div>
+                    </div>
+                    <div class="head-indicator">HEAD</div>
+                </div>
+
+                <div class="head-display">
+                    <span>Head sees: <strong id="head-sees">1</strong></span>
+                </div>
+
+                <div class="practice-controls">
+                    <button id="btn-left" class="btn-secondary">◀ Left</button>
+                    <button id="btn-right" class="btn-secondary">Right ▶</button>
+                </div>
+
+                <div class="practice-result hidden" id="practice-result">
+                    <p class="success">Great job! You found the second 1!</p>
+                </div>
+            </div>
+
+            {% elif lesson_num == 5 %}
+            <!-- Lesson 5: Think About States -->
+            <div class="practice-exercise" id="practice-states">
+                <p><strong>Task:</strong> Design states to check if there's at least one "1" on the tape.</p>
+
+                <div class="examples-box">
+                    <p>Examples:</p>
+                    <ul>
+                        <li><code>000</code> → NO (no ones)</li>
+                        <li><code>010</code> → YES (found a one)</li>
+                    </ul>
+                </div>
+
+                <div class="question-box">
+                    <p><strong>What does the machine need to "remember"?</strong></p>
+                    <textarea id="memory-answer" placeholder="Type your answer..."></textarea>
+                </div>
+
+                <button id="btn-check-states" class="btn-primary">Check My Thinking</button>
+
+                <div class="feedback-box hidden" id="feedback-box">
+                    <p id="feedback-message"></p>
+                </div>
+            </div>
+
+            {% elif lesson_num == 6 %}
+            <!-- Lesson 6: Apply the Rules -->
+            <div class="practice-exercise" id="practice-rules">
+                <p><strong>Here are all 6 rules:</strong></p>
+
+                <div class="rules-reference">
+                    <div class="rules-column">
+                        <h4>🔍 SCAN mode:</h4>
+                        <div class="rule-item">see 0 → keep 0, move RIGHT, stay SCAN</div>
+                        <div class="rule-item">see 1 → keep 1, move RIGHT, stay SCAN</div>
+                        <div class="rule-item">see _ → keep _, move LEFT, go to ADD</div>
+                    </div>
+                    <div class="rules-column">
+                        <h4>➕ ADD mode:</h4>
+                        <div class="rule-item">see 0 → write 1, STOP, go to DONE</div>
+                        <div class="rule-item">see 1 → write 0, move LEFT, stay ADD</div>
+                        <div class="rule-item">see _ → write 1, STOP, go to DONE</div>
+                    </div>
+                </div>
+
+                <hr class="practice-divider">
+
+                <p><strong>Situation:</strong> The machine is in <span class="state-badge">ADD</span> mode and sees:</p>
+
+                <div class="tape-wrapper practice-tape">
+                    <div class="tape" id="rule-tape">
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell head">1</div>
+                        <div class="tape-cell">1</div>
+                        <div class="tape-cell blank">_</div>
+                    </div>
+                    <div class="head-indicator">HEAD</div>
+                </div>
+
+                <p><strong>What will the machine do?</strong></p>
+
+                <div class="action-form">
+                    <div class="action-row">
+                        <label>1. Write:</label>
+                        <select id="action-write">
+                            <option value="">Select...</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="_">_ (blank)</option>
+                        </select>
+                    </div>
+                    <div class="action-row">
+                        <label>2. Move:</label>
+                        <select id="action-move">
+                            <option value="">Select...</option>
+                            <option value="left">LEFT</option>
+                            <option value="right">RIGHT</option>
+                            <option value="stay">STOP</option>
+                        </select>
+                    </div>
+                    <div class="action-row">
+                        <label>3. Go to state:</label>
+                        <select id="action-state">
+                            <option value="">Select...</option>
+                            <option value="SCAN">SCAN</option>
+                            <option value="ADD">ADD</option>
+                            <option value="DONE">DONE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="btn-check-rule" class="btn-primary">Check</button>
+
+                <div class="feedback-box hidden" id="rule-feedback">
+                    <p id="rule-feedback-message"></p>
+                </div>
+            </div>
+
+            {% elif lesson_num == 8 %}
+            <!-- Lesson 8: Binary Converter -->
+            <div class="practice-exercise" id="practice-binary">
+                <div class="converter-section">
+                    <h4>Binary → Decimal</h4>
+                    <p>What is <strong>1010</strong> in decimal?</p>
+                    <div class="binary-display">
+                        <div class="bit-box"><div class="bit">1</div><div class="weight">8</div></div>
+                        <div class="bit-box"><div class="bit">0</div><div class="weight">4</div></div>
+                        <div class="bit-box"><div class="bit">1</div><div class="weight">2</div></div>
+                        <div class="bit-box"><div class="bit">0</div><div class="weight">1</div></div>
+                    </div>
+                    <div class="sum-display">
+                        8 + 0 + 2 + 0 = <input type="number" id="decimal-answer" placeholder="?">
+                    </div>
+                    <button id="btn-check-binary" class="btn-primary btn-small">Check</button>
+                </div>
+
+                <div class="converter-section">
+                    <h4>Decimal → Binary</h4>
+                    <p>Convert <strong>6</strong> to binary:</p>
+                    <p class="hint-text">Hint: 6 = 4 + 2</p>
+                    <input type="text" id="binary-answer" placeholder="Enter binary">
+                    <button id="btn-check-decimal" class="btn-primary btn-small">Check</button>
+                </div>
+
+                <div class="feedback-box hidden" id="binary-feedback">
+                    <p id="binary-feedback-message"></p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="lesson-nav">
+            {% if lesson_num > 1 %}
+                <a href="/lesson/{{ lesson_num - 1 }}" class="btn-secondary">← Back</a>
+            {% endif %}
+
+            {% if lesson_num < total_lessons %}
+                <a href="/lesson/{{ lesson_num + 1 }}" class="btn-primary" id="btn-next">Next →</a>
+            {% else %}
+                <a href="/simulator" class="btn-success btn-large">Let's Try It! →</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const lessonNum = {{ lesson_num }};
+    const nextBtn = document.getElementById('btn-next');
+
+    {% if lesson.id == 'states' %}
+    // Initialize state graph for lesson 5 (states)
+    const states = {
+        scan: { label: 'SCAN', emoji: '🔍', description: 'Looking for the end' },
+        add: { label: 'ADD', emoji: '➕', description: 'Adding 1' },
+        done: { label: 'DONE', emoji: '✅', description: 'Finished' }
+    };
+    const transitions = {
+        'scan,0': ['scan', '0', 'R'],
+        'scan,1': ['scan', '1', 'R'],
+        'scan,_': ['add', '_', 'L'],
+        'add,0': ['done', '1', 'N'],
+        'add,1': ['add', '0', 'L'],
+        'add,_': ['done', '1', 'N']
+    };
+
+    if (typeof StateGraph !== 'undefined') {
+        new StateGraph('lesson-graph', states, transitions, { animated: false });
+    }
+    {% endif %}
+
+    {% if has_practice %}
+    // Practice exercises
+
+    {% if lesson_num == 4 %}
+    // Head control practice
+    const tapeCells = document.querySelectorAll('#practice-tape .tape-cell');
+    let headPos = 2;
+
+    function updateHead() {
+        tapeCells.forEach((cell, i) => cell.classList.remove('head'));
+        tapeCells[headPos].classList.add('head');
+        document.getElementById('head-sees').textContent = tapeCells[headPos].textContent || '_';
+
+        if (headPos === 3) {
+            document.getElementById('practice-result').classList.remove('hidden');
+        }
+    }
+
+    document.getElementById('btn-left').addEventListener('click', () => {
+        if (headPos > 0) { headPos--; updateHead(); }
+    });
+    document.getElementById('btn-right').addEventListener('click', () => {
+        if (headPos < tapeCells.length - 1) { headPos++; updateHead(); }
+    });
+
+    {% elif lesson_num == 5 %}
+    // States thinking exercise
+    document.getElementById('btn-check-states').addEventListener('click', function() {
+        const answer = document.getElementById('memory-answer').value.toLowerCase();
+        const feedback = document.getElementById('feedback-box');
+        const message = document.getElementById('feedback-message');
+
+        feedback.classList.remove('hidden');
+
+        if (answer.includes('found') || answer.includes('seen') || answer.includes('remember') ||
+            answer.includes('нашел') || answer.includes('видел') || answer.includes('помн')) {
+            message.innerHTML = '<span class="success">✓ Exactly! The machine needs to remember whether it has found a 1 yet.</span>';
+        } else if (answer.length < 10) {
+            message.innerHTML = '<span class="hint">Try to think: what changes after seeing a 1?</span>';
+        } else {
+            message.innerHTML = '<span class="hint">Good thinking! The key insight: the machine needs to remember "Have I seen a 1 yet?"</span>';
+        }
+    });
+
+    {% elif lesson_num == 6 %}
+    // Rule application practice
+    document.getElementById('btn-check-rule').addEventListener('click', function() {
+        const write = document.getElementById('action-write').value;
+        const move = document.getElementById('action-move').value;
+        const state = document.getElementById('action-state').value;
+        const feedback = document.getElementById('rule-feedback');
+        const message = document.getElementById('rule-feedback-message');
+
+        feedback.classList.remove('hidden');
+
+        if (!write || !move || !state) {
+            message.innerHTML = '<span class="error">Please fill in all fields!</span>';
+            return;
+        }
+
+        // Correct: ADD + see 1 → write 0, move LEFT, stay ADD
+        if (write === '0' && move === 'left' && state === 'ADD') {
+            message.innerHTML = '<span class="success">✓ Correct! ADD + see 1 → write 0, move LEFT, stay ADD. The carry propagates!</span>';
+        } else {
+            message.innerHTML = '<span class="error">Not quite. Look at the rule for ADD mode when seeing 1.</span>';
+        }
+    });
+
+    {% elif lesson_num == 8 %}
+    // Binary converter practice
+    document.getElementById('btn-check-binary').addEventListener('click', function() {
+        const answer = parseInt(document.getElementById('decimal-answer').value);
+        const feedback = document.getElementById('binary-feedback');
+        const message = document.getElementById('binary-feedback-message');
+
+        feedback.classList.remove('hidden');
+        if (answer === 10) {
+            message.innerHTML = '<span class="success">✓ Correct! 1010 = 8+0+2+0 = 10</span>';
+        } else {
+            message.innerHTML = '<span class="error">Try again. Add up: 8 + 0 + 2 + 0 = ?</span>';
+        }
+    });
+
+    document.getElementById('btn-check-decimal').addEventListener('click', function() {
+        const answer = document.getElementById('binary-answer').value.trim();
+        const feedback = document.getElementById('binary-feedback');
+        const message = document.getElementById('binary-feedback-message');
+
+        feedback.classList.remove('hidden');
+        if (answer === '110') {
+            message.innerHTML = '<span class="success">✓ Correct! 6 = 4+2 = 110</span>';
+        } else {
+            message.innerHTML = '<span class="error">Try again. 6 = 4 + 2 + 0</span>';
+        }
+    });
+    {% endif %}
+
+    {% endif %}
+});
+</script>
+{% endblock %}

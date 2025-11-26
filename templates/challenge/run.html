@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Test Algorithm - Challenge{% endblock %}
+
+{% block content %}
+<div class="challenge-page">
+    <div class="challenge-container">
+        <h1>Step 4: Test Your Algorithm!</h1>
+
+        <div class="test-section">
+            <div class="test-cases" id="test-cases">
+                <!-- Test cases load here -->
+            </div>
+
+            <div class="test-runner">
+                <div class="tape-wrapper test-tape">
+                    <div class="tape" id="test-tape">
+                        <!-- Tape cells render here -->
+                    </div>
+                    <div class="head-indicator">HEAD</div>
+                </div>
+
+                <div class="test-state">
+                    <span>State: <strong id="test-current-state">START</strong></span>
+                    <span id="test-step-count">Step: 0</span>
+                </div>
+
+                <div class="test-controls">
+                    <button id="btn-run-test" class="btn-primary">Run Test</button>
+                    <button id="btn-step-test" class="btn-secondary">Step</button>
+                    <button id="btn-reset-test" class="btn-secondary">Reset</button>
+                </div>
+            </div>
+
+            <div class="test-result hidden" id="test-result">
+                <h2 id="result-message"></h2>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="/challenge/review" class="btn-secondary">← Back to Review</a>
+            <a href="/challenge" class="btn-primary">New Challenge</a>
+            <a href="/simulator" class="btn-success">Back to Simulator</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
+    const states = JSON.parse(sessionStorage.getItem('challengeStates') || '[]');
+    const rules = JSON.parse(sessionStorage.getItem('challengeRules') || '{}');
+
+    const testCasesDiv = document.getElementById('test-cases');
+    const testTape = document.getElementById('test-tape');
+    const testState = document.getElementById('test-current-state');
+    const stepCount = document.getElementById('test-step-count');
+    const resultDiv = document.getElementById('test-result');
+    const resultMessage = document.getElementById('result-message');
+
+    let currentTest = null;
+    let tape = {};
+    let headPos = 0;
+    let currentStateName = 'START';
+    let steps = 0;
+    let halted = false;
+
+    // Display test cases
+    if (challenge.examples) {
+        let html = '<h3>Test Cases:</h3>';
+        challenge.examples.forEach((ex, i) => {
+            html += `<button class="test-case-btn" data-input="${ex.input}" data-index="${i}">
+                <code>${ex.input}</code> → ${ex.output}
+            </button>`;
+        });
+        testCasesDiv.innerHTML = html;
+
+        // Click handler for test cases
+        testCasesDiv.addEventListener('click', (e) => {
+            const btn = e.target.closest('.test-case-btn');
+            if (btn) {
+                document.querySelectorAll('.test-case-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                initTest(btn.dataset.input);
+            }
+        });
+
+        // Auto-select first test
+        const firstBtn = testCasesDiv.querySelector('.test-case-btn');
+        if (firstBtn) {
+            firstBtn.click();
+        }
+    }
+
+    function initTest(input) {
+        currentTest = input;
+        tape = { 0: '_' };
+        for (let i = 0; i < input.length; i++) {
+            tape[i + 1] = input[i];
+        }
+        tape[input.length + 1] = '_';
+        headPos = 1;
+        currentStateName = 'START';
+        steps = 0;
+        halted = false;
+        resultDiv.classList.add('hidden');
+        renderTape();
+        updateState();
+    }
+
+    function renderTape() {
+        testTape.innerHTML = '';
+        const positions = Object.keys(tape).map(Number).sort((a, b) => a - b);
+        positions.forEach(pos => {
+            const cell = document.createElement('div');
+            cell.className = 'tape-cell';
+            cell.textContent = tape[pos] === '_' ? '' : tape[pos];
+            if (pos === headPos) cell.classList.add('head');
+            if (tape[pos] === '_') cell.classList.add('blank');
+            testTape.appendChild(cell);
+        });
+    }
+
+    function updateState() {
+        testState.textContent = currentStateName;
+        stepCount.textContent = `Step: ${steps}`;
+    }
+
+    function step() {
+        if (halted) return false;
+
+        const symbol = tape[headPos] || '_';
+        const stateRules = rules[currentStateName];
+
+        if (!stateRules || !stateRules[symbol]) {
+            // No rule found - halt
+            halted = true;
+            return false;
+        }
+
+        const rule = stateRules[symbol];
+
+        // Write
+        tape[headPos] = rule.write;
+
+        // Move
+        if (rule.move === 'right') headPos++;
+        else if (rule.move === 'left') headPos--;
+
+        // Ensure tape cell exists
+        if (tape[headPos] === undefined) tape[headPos] = '_';
+
+        // Change state
+        currentStateName = rule.goto;
+
+        // Check if halted (DONE state or no more rules)
+        if (currentStateName === 'DONE' || !rules[currentStateName]) {
+            halted = true;
+        }
+
+        steps++;
+        renderTape();
+        updateState();
+
+        return !halted;
+    }
+
+    document.getElementById('btn-step-test').addEventListener('click', step);
+
+    document.getElementById('btn-run-test').addEventListener('click', function() {
+        const maxSteps = 1000;
+        while (!halted && steps < maxSteps) {
+            step();
+        }
+
+        // Show result
+        resultDiv.classList.remove('hidden');
+        if (currentStateName === 'DONE') {
+            resultMessage.innerHTML = '<span class="success">✓ Algorithm completed!</span>';
+            resultMessage.className = 'success';
+        } else if (steps >= maxSteps) {
+            resultMessage.innerHTML = '<span class="error">⚠ Too many steps - possible infinite loop</span>';
+            resultMessage.className = 'error';
+        } else {
+            resultMessage.innerHTML = '<span class="warning">⚠ Algorithm stopped unexpectedly</span>';
+            resultMessage.className = 'warning';
+        }
+    });
+
+    document.getElementById('btn-reset-test').addEventListener('click', function() {
+        if (currentTest) initTest(currentTest);
+    });
+});
+</script>
+{% endblock %}

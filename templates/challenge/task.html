@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Challenge - Turing Machine{% endblock %}
+
+{% block content %}
+<div class="challenge-page">
+    <div class="challenge-container">
+        <h1>Your Challenge</h1>
+
+        <div class="challenge-card" id="challenge-card">
+            <div class="challenge-task" id="challenge-task">
+                <p class="loading">Loading challenge...</p>
+            </div>
+            <div class="challenge-examples" id="challenge-examples">
+                <!-- Examples load here -->
+            </div>
+            <button id="btn-new-challenge" class="btn-secondary btn-small">Get Different Challenge</button>
+        </div>
+
+        <div class="challenge-actions">
+            <a href="/challenge/states" class="btn-primary btn-large" id="btn-start-challenge" style="display: none;">
+                Start Building!
+            </a>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-overlay hidden" id="loading-overlay">
+            <div class="spinner"></div>
+            <p>AI is generating a challenge...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const taskDiv = document.getElementById('challenge-task');
+    const examplesDiv = document.getElementById('challenge-examples');
+    const startBtn = document.getElementById('btn-start-challenge');
+    const newChallengeBtn = document.getElementById('btn-new-challenge');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    async function loadChallenge() {
+        loadingOverlay.classList.remove('hidden');
+        taskDiv.innerHTML = '<p class="loading">Loading challenge...</p>';
+        examplesDiv.innerHTML = '';
+        startBtn.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/challenge');
+            const challenge = await response.json();
+
+            if (challenge.error) {
+                taskDiv.innerHTML = `<p class="error">Error: ${challenge.error}</p>`;
+                return;
+            }
+
+            // Store challenge in session storage for next steps
+            sessionStorage.setItem('currentChallenge', JSON.stringify(challenge));
+
+            // Display task
+            taskDiv.innerHTML = `<h2>${challenge.task}</h2>`;
+
+            // Display examples
+            if (challenge.examples && challenge.examples.length > 0) {
+                let examplesHtml = '<h3>Examples:</h3><ul class="examples-list">';
+                challenge.examples.forEach(ex => {
+                    examplesHtml += `<li><code>${ex.input}</code> → ${ex.output}</li>`;
+                });
+                examplesHtml += '</ul>';
+                examplesDiv.innerHTML = examplesHtml;
+            }
+
+            startBtn.style.display = 'inline-block';
+
+        } catch (error) {
+            taskDiv.innerHTML = `<p class="error">Failed to load challenge. Please try again.</p>`;
+            console.error('Error:', error);
+        } finally {
+            loadingOverlay.classList.add('hidden');
+        }
+    }
+
+    newChallengeBtn.addEventListener('click', loadChallenge);
+
+    // Load initial challenge
+    loadChallenge();
+});
+</script>
+{% endblock %}

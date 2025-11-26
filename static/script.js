@@ -375,6 +375,19 @@ class StateGraph {
         }
     }
 
+    clearActiveTransition() {
+        // Reset all edges to normal state
+        Object.values(this.edgeElements).forEach(edge => {
+            edge.classList.remove('active');
+            const path = edge.querySelector('.transition-arrow');
+            if (path) {
+                path.setAttribute('stroke', '#888');
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('marker-end', 'url(#arrowhead)');
+            }
+        });
+    }
+
     update(states, transitions) {
         this.states = states || this.states;
         this.transitions = transitions || this.transitions;
@@ -404,9 +417,20 @@ class TuringSimulator {
         // State graph
         this.stateGraph = null;
 
+        // Skip onboarding flag (for direct simulator access)
+        this.skipOnboarding = false;
+    }
+
+    init() {
         this.initElements();
         this.bindEvents();
-        this.loadLessons();
+
+        if (this.skipOnboarding) {
+            // Skip lessons, go directly to simulator
+            this.loadBinaryIncrement();
+        } else {
+            this.loadLessons();
+        }
     }
 
     initElements() {
@@ -475,25 +499,25 @@ class TuringSimulator {
     }
 
     bindEvents() {
-        // Lesson navigation
-        this.btnLessonPrev.addEventListener('click', () => this.prevLesson());
-        this.btnLessonNext.addEventListener('click', () => this.nextLesson());
-        this.btnStartSimulator.addEventListener('click', () => this.startSimulator());
-        this.btnReviewLessons.addEventListener('click', () => this.reviewLessons());
+        // Lesson navigation (may not exist on simulator page)
+        if (this.btnLessonPrev) this.btnLessonPrev.addEventListener('click', () => this.prevLesson());
+        if (this.btnLessonNext) this.btnLessonNext.addEventListener('click', () => this.nextLesson());
+        if (this.btnStartSimulator) this.btnStartSimulator.addEventListener('click', () => this.startSimulator());
+        if (this.btnReviewLessons) this.btnReviewLessons.addEventListener('click', () => this.reviewLessons());
 
         // Simulator controls
-        this.btnStep.addEventListener('click', () => this.step());
-        this.btnRun.addEventListener('click', () => this.run());
-        this.btnPause.addEventListener('click', () => this.pause());
-        this.btnReset.addEventListener('click', () => this.reset());
-        this.btnSetTape.addEventListener('click', () => this.setTape());
+        if (this.btnStep) this.btnStep.addEventListener('click', () => this.step());
+        if (this.btnRun) this.btnRun.addEventListener('click', () => this.run());
+        if (this.btnPause) this.btnPause.addEventListener('click', () => this.pause());
+        if (this.btnReset) this.btnReset.addEventListener('click', () => this.reset());
+        if (this.btnSetTape) this.btnSetTape.addEventListener('click', () => this.setTape());
 
-        // Challenge mode
-        this.btnStartChallenge.addEventListener('click', () => this.startChallengeMode());
-        this.btnBackToSimulator.addEventListener('click', () => this.backToSimulator());
-        this.btnNewChallenge.addEventListener('click', () => this.getChallenge());
-        this.btnCheckPlan.addEventListener('click', () => this.checkPlan());
-        this.btnRunSolution.addEventListener('click', () => this.runGeneratedSolution());
+        // Challenge mode (may not exist on simulator page)
+        if (this.btnStartChallenge) this.btnStartChallenge.addEventListener('click', () => this.startChallengeMode());
+        if (this.btnBackToSimulator) this.btnBackToSimulator.addEventListener('click', () => this.backToSimulator());
+        if (this.btnNewChallenge) this.btnNewChallenge.addEventListener('click', () => this.getChallenge());
+        if (this.btnCheckPlan) this.btnCheckPlan.addEventListener('click', () => this.checkPlan());
+        if (this.btnRunSolution) this.btnRunSolution.addEventListener('click', () => this.runGeneratedSolution());
     }
 
     // ==================== ONBOARDING ====================
@@ -759,6 +783,12 @@ class TuringSimulator {
             this.updateNextAction();
             this.historyLog.innerHTML = '';
             this.clearActiveRules();
+
+            // Reset state graph to initial state
+            if (this.stateGraph && this.machineState) {
+                this.stateGraph.clearActiveTransition();
+                this.stateGraph.setActiveState(this.machineState.current_state);
+            }
         } catch (error) {
             console.error('Reset failed:', error);
         }
@@ -1199,7 +1229,12 @@ class TuringSimulator {
     }
 }
 
-// Initialize
+// Initialize (for old index.html page with onboarding)
 document.addEventListener('DOMContentLoaded', () => {
-    window.simulator = new TuringSimulator();
+    // Only auto-init if we have the onboarding element (old index.html)
+    // For new pages, initialization happens in their own script blocks
+    if (document.getElementById('onboarding')) {
+        window.simulator = new TuringSimulator();
+        window.simulator.init();
+    }
 });

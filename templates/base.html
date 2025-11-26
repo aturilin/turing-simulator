@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Turing Machine Simulator{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-brand">
+            <a href="/">Turing Machine</a>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link {% if active_page == 'lessons' %}active{% endif %}">Course</a>
+            <a href="/simulator" class="nav-link {% if active_page == 'simulator' %}active{% endif %}">Simulator</a>
+            <a href="/challenge" class="nav-link {% if active_page == 'challenge' %}active{% endif %}">Challenge</a>
+        </div>
+    </nav>
+
+    {% if breadcrumbs %}
+    <div class="breadcrumbs">
+        {% for crumb in breadcrumbs %}
+            {% if not loop.last %}
+                <a href="{{ crumb.url }}" class="breadcrumb {% if crumb.completed %}completed{% endif %}">
+                    {% if crumb.completed %}<span class="check">✓</span>{% endif %}
+                    {{ crumb.label }}
+                </a>
+                <span class="breadcrumb-separator">→</span>
+            {% else %}
+                <span class="breadcrumb current">{{ crumb.label }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="/static/script.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

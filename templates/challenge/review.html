@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Review Algorithm - Challenge{% endblock %}
+
+{% block content %}
+<div class="challenge-page">
+    <div class="challenge-container">
+        <h1>Step 3: Review Your Algorithm</h1>
+
+        <div class="review-section">
+            <div class="graph-section large">
+                <h3>Your Complete Algorithm</h3>
+                <div class="state-graph-container" id="review-graph">
+                    <!-- Full graph renders here -->
+                </div>
+            </div>
+
+            <div class="rules-summary-section">
+                <h3>All Rules</h3>
+                <div id="all-rules-summary">
+                    <!-- Rules summary renders here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="/challenge/states" class="btn-secondary">← Edit States</a>
+            <a href="/challenge/run" class="btn-success btn-large">Run Tests! →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const states = JSON.parse(sessionStorage.getItem('challengeStates') || '[]');
+    const rules = JSON.parse(sessionStorage.getItem('challengeRules') || '{}');
+
+    // Build graph
+    const graphStates = {};
+    states.forEach(s => {
+        graphStates[s.name.toLowerCase()] = {
+            label: s.name,
+            emoji: s.name === 'START' ? '🏁' : (s.name === 'DONE' ? '✅' : '❓'),
+            description: s.description
+        };
+    });
+
+    // Add DONE if referenced
+    let hasDone = false;
+    Object.values(rules).forEach(stateRules => {
+        Object.values(stateRules).forEach(rule => {
+            if (rule.goto === 'DONE') hasDone = true;
+        });
+    });
+    if (hasDone && !graphStates['done']) {
+        graphStates['done'] = { label: 'DONE', emoji: '✅', description: 'Finished' };
+    }
+
+    // Build transitions
+    const transitions = {};
+    Object.keys(rules).forEach(stateName => {
+        const stateRules = rules[stateName];
+        ['0', '1', '_'].forEach(symbol => {
+            if (stateRules[symbol]) {
+                const key = `${stateName.toLowerCase()},${symbol}`;
+                const moveCode = stateRules[symbol].move === 'right' ? 'R' :
+                               stateRules[symbol].move === 'left' ? 'L' : 'N';
+                transitions[key] = [
+                    stateRules[symbol].goto.toLowerCase(),
+                    stateRules[symbol].write,
+                    moveCode
+                ];
+            }
+        });
+    });
+
+    if (typeof StateGraph !== 'undefined') {
+        new StateGraph('review-graph', graphStates, transitions, { animated: false, width: 500, height: 350 });
+    }
+
+    // Build rules summary
+    const summaryDiv = document.getElementById('all-rules-summary');
+    let html = '';
+    Object.keys(rules).forEach(stateName => {
+        html += `<div class="state-rules-summary"><h4>${stateName}</h4><ul>`;
+        const stateRules = rules[stateName];
+        ['0', '1', '_'].forEach(symbol => {
+            if (stateRules[symbol]) {
+                const r = stateRules[symbol];
+                const displaySymbol = symbol === '_' ? 'blank' : symbol;
+                html += `<li>See ${displaySymbol} → write ${r.write === '_' ? 'blank' : r.write}, move ${r.move}, go to ${r.goto}</li>`;
+            }
+        });
+        html += '</ul></div>';
+    });
+    summaryDiv.innerHTML = html;
+});
+</script>
+{% endblock %}

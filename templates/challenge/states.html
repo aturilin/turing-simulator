@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Define States - Challenge{% endblock %}
+
+{% block content %}
+<div class="challenge-page">
+    <div class="challenge-container">
+        <h1>Step 1: What States Do You Need?</h1>
+
+        <div class="challenge-reminder" id="challenge-reminder">
+            <!-- Challenge task reminder loads here -->
+        </div>
+
+        <div class="states-builder">
+            <div class="states-graph-preview">
+                <h3>Your Algorithm</h3>
+                <div class="state-graph-container" id="states-graph">
+                    <!-- Graph preview renders here -->
+                </div>
+            </div>
+
+            <div class="states-input-section">
+                <div class="start-state">
+                    <h3>Starting State (always included)</h3>
+                    <div class="state-item locked">
+                        <span class="state-badge">🏁 START</span>
+                        <input type="text" class="state-description" id="start-description"
+                               placeholder="What does START do?" value="">
+                    </div>
+                </div>
+
+                <div class="custom-states">
+                    <h3>Add Your States</h3>
+                    <p class="hint">Think: what does the machine need to "remember"?</p>
+
+                    <div id="states-list">
+                        <!-- Dynamic state inputs -->
+                    </div>
+
+                    <button id="btn-add-state" class="btn-secondary btn-small">+ Add State</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="validation-section">
+            <button id="btn-validate-states" class="btn-primary btn-large">Check with AI</button>
+            <div class="feedback-box hidden" id="feedback-box">
+                <p class="feedback-message" id="feedback-message"></p>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-overlay hidden" id="loading-overlay">
+            <div class="spinner"></div>
+            <p>AI is checking your states...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statesList = document.getElementById('states-list');
+    const addStateBtn = document.getElementById('btn-add-state');
+    const validateBtn = document.getElementById('btn-validate-states');
+    const feedbackBox = document.getElementById('feedback-box');
+    const feedbackMessage = document.getElementById('feedback-message');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const reminderDiv = document.getElementById('challenge-reminder');
+
+    let stateCount = 0;
+
+    // Load challenge from session storage
+    const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
+    if (challenge.task) {
+        reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
+    }
+
+    function addState(name = '', description = '') {
+        stateCount++;
+        const div = document.createElement('div');
+        div.className = 'state-item';
+        div.innerHTML = `
+            <input type="text" class="state-name" placeholder="STATE_NAME" value="${name}">
+            <input type="text" class="state-description" placeholder="What does this state mean?" value="${description}">
+            <button class="btn-remove-state" onclick="this.parentElement.remove(); updateGraph();">×</button>
+        `;
+        statesList.appendChild(div);
+        updateGraph();
+    }
+
+    addStateBtn.addEventListener('click', () => addState());
+
+    // Add two default empty states
+    addState();
+    addState();
+
+    window.updateGraph = function() {
+        // Update the graph preview based on current states
+        const graphContainer = document.getElementById('states-graph');
+        const stateNames = ['START'];
+        const stateInputs = document.querySelectorAll('.state-name');
+        stateInputs.forEach(input => {
+            if (input.value.trim()) {
+                stateNames.push(input.value.trim().toUpperCase());
+            }
+        });
+
+        // Create simple state objects for graph
+        const states = {};
+        stateNames.forEach((name, i) => {
+            states[name.toLowerCase()] = {
+                label: name,
+                emoji: i === 0 ? '🏁' : (name === 'DONE' ? '✅' : '❓'),
+                description: ''
+            };
+        });
+
+        // Render graph (without transitions for now)
+        if (typeof StateGraph !== 'undefined') {
+            new StateGraph('states-graph', states, {}, { animated: false });
+        }
+    };
+
+    // Update graph when inputs change
+    statesList.addEventListener('input', updateGraph);
+
+    validateBtn.addEventListener('click', async function() {
+        loadingOverlay.classList.remove('hidden');
+        feedbackBox.classList.add('hidden');
+
+        // Gather states
+        const states = [{
+            name: 'START',
+            description: document.getElementById('start-description').value
+        }];
+
+        document.querySelectorAll('.state-item:not(.locked)').forEach(item => {
+            const name = item.querySelector('.state-name').value.trim();
+            const desc = item.querySelector('.state-description').value.trim();
+            if (name) {
+                states.push({ name: name.toUpperCase(), description: desc });
+            }
+        });
+
+        // Store states for next step
+        sessionStorage.setItem('challengeStates', JSON.stringify(states));
+
+        try {
+            const response = await fetch('/api/challenge/validate-states', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    challenge: challenge,
+                    states: states
+                })
+            });
+
+            const result = await response.json();
+
+            feedbackBox.classList.remove('hidden');
+
+            if (result.valid) {
+                feedbackMessage.innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
+                // Redirect to rules page for first state
+                setTimeout(() => {
+                    window.location.href = '/challenge/rules/START';
+                }, 1500);
+            } else {
+                feedbackMessage.innerHTML = `<span class="hint">${result.feedback}</span>`;
+            }
+
+        } catch (error) {
+            feedbackMessage.innerHTML = '<span class="error">Error checking states. Please try again.</span>';
+            feedbackBox.classList.remove('hidden');
+        } finally {
+            loadingOverlay.classList.add('hidden');
+        }
+    });
+
+    updateGraph();
+});
+</script>
+{% endblock %}

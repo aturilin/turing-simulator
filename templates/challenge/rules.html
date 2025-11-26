@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Rules for {{ state_name }} - Challenge{% endblock %}
+
+{% block content %}
+<div class="challenge-page">
+    <div class="challenge-container">
+        <h1>Step 2: Rules for {{ state_name }}</h1>
+
+        <div class="rules-builder">
+            <div class="graph-section">
+                <h3>Click on arrows to set rules</h3>
+                <div class="state-graph-container interactive" id="rules-graph">
+                    <!-- Interactive graph renders here -->
+                </div>
+            </div>
+
+            <div class="rules-form-section">
+                <h3>Rules for {{ state_name }}</h3>
+                <p class="hint">What should happen when {{ state_name }} sees each symbol?</p>
+
+                <div class="rule-inputs">
+                    <div class="rule-row">
+                        <span class="rule-label">When I see <strong>0</strong>:</span>
+                        <select id="rule-0-write"><option value="0">Keep 0</option><option value="1">Write 1</option><option value="_">Write blank</option></select>
+                        <select id="rule-0-move"><option value="right">Move Right</option><option value="left">Move Left</option><option value="stay">Stay</option></select>
+                        <select id="rule-0-goto" class="state-select"></select>
+                    </div>
+
+                    <div class="rule-row">
+                        <span class="rule-label">When I see <strong>1</strong>:</span>
+                        <select id="rule-1-write"><option value="1">Keep 1</option><option value="0">Write 0</option><option value="_">Write blank</option></select>
+                        <select id="rule-1-move"><option value="right">Move Right</option><option value="left">Move Left</option><option value="stay">Stay</option></select>
+                        <select id="rule-1-goto" class="state-select"></select>
+                    </div>
+
+                    <div class="rule-row">
+                        <span class="rule-label">When I see <strong>blank (_)</strong>:</span>
+                        <select id="rule-blank-write"><option value="_">Keep blank</option><option value="0">Write 0</option><option value="1">Write 1</option></select>
+                        <select id="rule-blank-move"><option value="stay">Stay (STOP)</option><option value="left">Move Left</option><option value="right">Move Right</option></select>
+                        <select id="rule-blank-goto" class="state-select"></select>
+                    </div>
+                </div>
+
+                <div class="rules-summary" id="rules-summary">
+                    <!-- Visual summary of rules -->
+                </div>
+            </div>
+        </div>
+
+        <div class="validation-section">
+            <button id="btn-validate-rules" class="btn-primary btn-large">Check Rules with AI</button>
+            <div class="feedback-box hidden" id="feedback-box">
+                <p class="feedback-message" id="feedback-message"></p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="/challenge/states" class="btn-secondary">← Back to States</a>
+            <button id="btn-next-state" class="btn-primary hidden">Next State →</button>
+            <a href="/challenge/review" id="btn-review" class="btn-success hidden">Review Algorithm →</a>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-overlay hidden" id="loading-overlay">
+            <div class="spinner"></div>
+            <p>AI is checking your rules...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currentState = '{{ state_name }}';
+    const states = JSON.parse(sessionStorage.getItem('challengeStates') || '[]');
+    const rules = JSON.parse(sessionStorage.getItem('challengeRules') || '{}');
+
+    // Populate state selects
+    const stateSelects = document.querySelectorAll('.state-select');
+    stateSelects.forEach(select => {
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state.name;
+            option.textContent = `Go to ${state.name}`;
+            if (state.name === currentState) option.selected = true;
+            select.appendChild(option);
+        });
+        // Add DONE option if not in states
+        if (!states.find(s => s.name === 'DONE')) {
+            const doneOption = document.createElement('option');
+            doneOption.value = 'DONE';
+            doneOption.textContent = 'STOP (DONE)';
+            select.appendChild(doneOption);
+        }
+    });
+
+    // Load existing rules for this state if any
+    if (rules[currentState]) {
+        const r = rules[currentState];
+        if (r['0']) {
+            document.getElementById('rule-0-write').value = r['0'].write;
+            document.getElementById('rule-0-move').value = r['0'].move;
+            document.getElementById('rule-0-goto').value = r['0'].goto;
+        }
+        if (r['1']) {
+            document.getElementById('rule-1-write').value = r['1'].write;
+            document.getElementById('rule-1-move').value = r['1'].move;
+            document.getElementById('rule-1-goto').value = r['1'].goto;
+        }
+        if (r['_']) {
+            document.getElementById('rule-blank-write').value = r['_'].write;
+            document.getElementById('rule-blank-move').value = r['_'].move;
+            document.getElementById('rule-blank-goto').value = r['_'].goto;
+        }
+    }
+
+    // Find current state index and next state
+    const stateIndex = states.findIndex(s => s.name === currentState);
+    const nextState = states[stateIndex + 1];
+
+    document.getElementById('btn-validate-rules').addEventListener('click', async function() {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+
+        // Gather rules
+        const stateRules = {
+            '0': {
+                write: document.getElementById('rule-0-write').value,
+                move: document.getElementById('rule-0-move').value,
+                goto: document.getElementById('rule-0-goto').value
+            },
+            '1': {
+                write: document.getElementById('rule-1-write').value,
+                move: document.getElementById('rule-1-move').value,
+                goto: document.getElementById('rule-1-goto').value
+            },
+            '_': {
+                write: document.getElementById('rule-blank-write').value,
+                move: document.getElementById('rule-blank-move').value,
+                goto: document.getElementById('rule-blank-goto').value
+            }
+        };
+
+        // Save rules
+        rules[currentState] = stateRules;
+        sessionStorage.setItem('challengeRules', JSON.stringify(rules));
+
+        // Show success and navigation
+        document.getElementById('loading-overlay').classList.add('hidden');
+        document.getElementById('feedback-box').classList.remove('hidden');
+        document.getElementById('feedback-message').innerHTML = '<span class="success">✓ Rules saved!</span>';
+
+        if (nextState) {
+            document.getElementById('btn-next-state').classList.remove('hidden');
+            document.getElementById('btn-next-state').onclick = () => {
+                window.location.href = `/challenge/rules/${nextState.name}`;
+            };
+        } else {
+            document.getElementById('btn-review').classList.remove('hidden');
+        }
+    });
+
+    // Initialize graph
+    function updateGraph() {
+        const graphStates = {};
+        states.forEach(s => {
+            graphStates[s.name.toLowerCase()] = {
+                label: s.name,
+                emoji: s.name === 'START' ? '🏁' : (s.name === 'DONE' ? '✅' : '❓'),
+                description: s.description
+            };
+        });
+
+        // Add transitions from saved rules
+        const transitions = {};
+        Object.keys(rules).forEach(stateName => {
+            const stateRules = rules[stateName];
+            ['0', '1', '_'].forEach(symbol => {
+                if (stateRules[symbol]) {
+                    const key = `${stateName.toLowerCase()},${symbol}`;
+                    const moveCode = stateRules[symbol].move === 'right' ? 'R' :
+                                   stateRules[symbol].move === 'left' ? 'L' : 'N';
+                    transitions[key] = [
+                        stateRules[symbol].goto.toLowerCase(),
+                        stateRules[symbol].write,
+                        moveCode
+                    ];
+                }
+            });
+        });
+
+        if (typeof StateGraph !== 'undefined') {
+            new StateGraph('rules-graph', graphStates, transitions, { animated: false });
+        }
+    }
+
+    updateGraph();
+
+    // Update graph when rules change
+    document.querySelectorAll('select').forEach(select => {
+        select.addEventListener('change', () => {
+            // Save current rules temporarily
+            rules[currentState] = {
+                '0': {
+                    write: document.getElementById('rule-0-write').value,
+                    move: document.getElementById('rule-0-move').value,
+                    goto: document.getElementById('rule-0-goto').value
+                },
+                '1': {
+                    write: document.getElementById('rule-1-write').value,
+                    move: document.getElementById('rule-1-move').value,
+                    goto: document.getElementById('rule-1-goto').value
+                },
+                '_': {
+                    write: document.getElementById('rule-blank-write').value,
+                    move: document.getElementById('rule-blank-move').value,
+                    goto: document.getElementById('rule-blank-goto').value
+                }
+            };
+            sessionStorage.setItem('challengeRules', JSON.stringify(rules));
+            updateGraph();
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 import os
 import json
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from openai import OpenAI
 from dotenv import load_dotenv
 from turing_machine import TuringMachine
@@ -13,6 +13,7 @@ from examples import get_example_list, get_example, get_lessons
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "turing-machine-secret-key-change-me")
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -20,11 +21,139 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 machine = TuringMachine()
 history = HistoryManager()
 
+# Which lessons have practice exercises
+# Lesson 4=head, 5=states, 6=rules, 8=binary (7=all-rules has no practice)
+LESSONS_WITH_PRACTICE = [4, 5, 6, 8]
+
+
+# ==================== PAGE ROUTES ====================
 
 @app.route("/")
 def index():
-    """Serve the main web UI."""
+    """Redirect to first lesson."""
+    from flask import redirect
+    return redirect("/lesson/1")
+
+
+@app.route("/lesson/<int:lesson_num>")
+def lesson(lesson_num):
+    """Display a specific lesson."""
+    lessons = get_lessons()
+
+    if lesson_num < 1 or lesson_num > len(lessons):
+        return render_template("lessons/welcome.html", active_page="lessons")
+
+    lesson_data = lessons[lesson_num - 1]
+    has_practice = lesson_num in LESSONS_WITH_PRACTICE
+
+    return render_template(
+        "lessons/lesson.html",
+        lesson=lesson_data,
+        lesson_num=lesson_num,
+        total_lessons=len(lessons),
+        has_practice=has_practice,
+        active_page="lessons"
+    )
+
+
+@app.route("/lesson/<int:lesson_num>/practice")
+def lesson_practice(lesson_num):
+    """Display practice exercise for a lesson."""
+    if lesson_num not in LESSONS_WITH_PRACTICE:
+        return render_template("lessons/welcome.html", active_page="lessons")
+
+    # TODO: Implement practice templates
+    return render_template(
+        "lessons/practice.html",
+        lesson_num=lesson_num,
+        active_page="lessons"
+    )
+
+
+@app.route("/simulator")
+def simulator():
+    """Simulator page."""
+    return render_template("simulator/index.html", active_page="simulator")
+
+
+@app.route("/challenge")
+def challenge_task():
+    """Challenge mode - task page."""
+    return render_template("challenge/task.html", active_page="challenge")
+
+
+@app.route("/challenge/states")
+def challenge_states():
+    """Challenge mode - define states."""
+    breadcrumbs = [
+        {"label": "Task", "url": "/challenge", "completed": True},
+        {"label": "States", "url": "/challenge/states", "completed": False}
+    ]
+    return render_template(
+        "challenge/states.html",
+        active_page="challenge",
+        breadcrumbs=breadcrumbs
+    )
+
+
+@app.route("/challenge/rules/<state_name>")
+def challenge_rules(state_name):
+    """Challenge mode - define rules for a state."""
+    breadcrumbs = [
+        {"label": "Task", "url": "/challenge", "completed": True},
+        {"label": "States", "url": "/challenge/states", "completed": True},
+        {"label": state_name, "url": f"/challenge/rules/{state_name}", "completed": False}
+    ]
+    return render_template(
+        "challenge/rules.html",
+        state_name=state_name,
+        active_page="challenge",
+        breadcrumbs=breadcrumbs
+    )
+
+
+@app.route("/challenge/review")
+def challenge_review():
+    """Challenge mode - review algorithm."""
+    breadcrumbs = [
+        {"label": "Task", "url": "/challenge", "completed": True},
+        {"label": "States", "url": "/challenge/states", "completed": True},
+        {"label": "Rules", "url": "#", "completed": True},
+        {"label": "Review", "url": "/challenge/review", "completed": False}
+    ]
+    return render_template(
+        "challenge/review.html",
+        active_page="challenge",
+        breadcrumbs=breadcrumbs
+    )
+
+
+@app.route("/challenge/run")
+def challenge_run():
+    """Challenge mode - run tests."""
+    breadcrumbs = [
+        {"label": "Task", "url": "/challenge", "completed": True},
+        {"label": "States", "url": "/challenge/states", "completed": True},
+        {"label": "Rules", "url": "#", "completed": True},
+        {"label": "Review", "url": "/challenge/review", "completed": True},
+        {"label": "Test", "url": "/challenge/run", "completed": False}
+    ]
+    return render_template(
+        "challenge/run.html",
+        active_page="challenge",
+        breadcrumbs=breadcrumbs
+    )
+
+
+# ==================== LEGACY ROUTE (for old single-page app) ====================
+
+@app.route("/old")
+def old_index():
+    """Serve the old single-page UI (for backwards compatibility)."""
     return render_template("index.html")
+
+
+# ==================== API ROUTES ====================
 
 
 @app.route("/api/load", methods=["POST"])
@@ -315,6 +444,63 @@ Student's algorithm plan:
 {student_plan}
 
 Evaluate their plan."""
+                }
+            ],
+            temperature=0.3
+        )
+
+        result = response.choices[0].message.content
+        evaluation = json.loads(result)
+        return jsonify(evaluation)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/challenge/validate-states", methods=["POST"])
+def validate_states():
+    """Validate student's chosen states for a challenge."""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    challenge = data.get("challenge")
+    states = data.get("states")
+
+    if not challenge or not states:
+        return jsonify({"error": "Missing challenge or states"}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are a Turing machine teacher helping a student design their algorithm.
+
+The student was given a challenge and has chosen some states for their Turing machine.
+Evaluate if their states are a good starting point.
+
+Remember: States in a Turing machine represent "memory" - what the machine needs to remember.
+
+Be encouraging! Even if not perfect, if they're on the right track, let them continue.
+Only reject if fundamentally wrong or missing critical states.
+
+Output ONLY valid JSON:
+{
+  "valid": true or false,
+  "feedback": "Brief encouraging message (1-2 sentences)"
+}"""
+                },
+                {
+                    "role": "user",
+                    "content": f"""Challenge: {json.dumps(challenge)}
+
+Student's chosen states:
+{json.dumps(states, indent=2)}
+
+Are these states appropriate for this challenge?"""
                 }
             ],
             temperature=0.3

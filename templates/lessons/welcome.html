@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Turing Machine{% endblock %}
+
+{% block content %}
+<div class="welcome-page">
+    <div class="lesson-image-hero">
+        <img src="/static/media/page1.jpeg" alt="The Analytical Turing Engine">
+    </div>
+
+    <div class="welcome-content">
+        <h1>Welcome to the Turing Machine Simulator!</h1>
+        <p class="lead">Learn how the simplest computer works.</p>
+        <p>Today we'll teach a machine to add 1 to a binary number.</p>
+        <p class="muted">(Don't worry, we'll explain everything step by step!)</p>
+
+        <div class="lesson-nav">
+            <a href="/lesson/1" class="btn-primary btn-large">Start Learning</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
