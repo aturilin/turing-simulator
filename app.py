@@ -202,13 +202,23 @@ def get_challenge():
                     "role": "system",
                     "content": """You are a Turing machine teacher. Generate a simple challenge for a beginner who just learned how to add 1 to a binary number.
 
+IMPORTANT: Do NOT generate any challenge about adding, incrementing, or subtracting numbers! The student already learned "add 1 to binary" - we need a DIFFERENT challenge.
+
 The challenge should be solvable with 2-4 states and use only 0, 1, and blank symbols.
 
-Good challenge examples:
-- Check if a binary number has an even/odd number of 1s
+Good challenge examples (pick one or create similar):
+- Check if a binary number has an even or odd number of 1s
 - Check if a binary string is a palindrome
-- Replace all 1s with 0s and vice versa
-- Count if there are more 1s than 0s
+- Flip all bits (replace all 1s with 0s and vice versa)
+- Check if a binary string starts and ends with the same symbol
+- Delete all leading zeros from a number
+- Check if a string has at least two 1s
+
+BAD challenges (DO NOT USE):
+- Add 1 to a binary number (already learned!)
+- Subtract 1 from a binary number
+- Increment or decrement anything
+- Any arithmetic operation
 
 Output ONLY valid JSON (no markdown):
 {
