@@ -120,8 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const stateIndex = states.findIndex(s => s.name === currentState);
     const nextState = states[stateIndex + 1];
 
+    // Load challenge
+    const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
+
     document.getElementById('btn-validate-rules').addEventListener('click', async function() {
         document.getElementById('loading-overlay').classList.remove('hidden');
+        document.getElementById('feedback-box').classList.add('hidden');
 
         // Gather rules
         const stateRules = {
@@ -146,18 +150,42 @@ document.addEventListener('DOMContentLoaded', function() {
         rules[currentState] = stateRules;
         sessionStorage.setItem('challengeRules', JSON.stringify(rules));
 
-        // Show success and navigation
-        document.getElementById('loading-overlay').classList.add('hidden');
-        document.getElementById('feedback-box').classList.remove('hidden');
-        document.getElementById('feedback-message').innerHTML = '<span class="success">✓ Rules saved!</span>';
+        try {
+            const response = await fetch('/api/challenge/validate-rules', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    challenge: challenge,
+                    state_name: currentState,
+                    rules: stateRules,
+                    all_states: states.map(s => s.name)
+                })
+            });
 
-        if (nextState) {
-            document.getElementById('btn-next-state').classList.remove('hidden');
-            document.getElementById('btn-next-state').onclick = () => {
-                window.location.href = `/challenge/rules/${nextState.name}`;
-            };
-        } else {
-            document.getElementById('btn-review').classList.remove('hidden');
+            const result = await response.json();
+            document.getElementById('feedback-box').classList.remove('hidden');
+
+            if (result.valid) {
+                document.getElementById('feedback-message').innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
+
+                if (nextState) {
+                    document.getElementById('btn-next-state').classList.remove('hidden');
+                    document.getElementById('btn-next-state').onclick = () => {
+                        window.location.href = `/challenge/rules/${nextState.name}`;
+                    };
+                } else {
+                    document.getElementById('btn-review').classList.remove('hidden');
+                }
+            } else {
+                document.getElementById('feedback-message').innerHTML = `<span class="hint">${result.feedback}</span>
+                    ${result.suggestion ? `<p class="suggestion">${result.suggestion}</p>` : ''}`;
+            }
+
+        } catch (error) {
+            document.getElementById('feedback-box').classList.remove('hidden');
+            document.getElementById('feedback-message').innerHTML = '<span class="error">Error checking rules. Please try again.</span>';
+        } finally {
+            document.getElementById('loading-overlay').classList.add('hidden');
         }
     });
 

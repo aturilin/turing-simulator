@@ -514,5 +514,133 @@ Are these states appropriate for this challenge?"""
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/challenge/validate-rules", methods=["POST"])
+def validate_rules():
+    """Validate rules for a specific state."""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    challenge = data.get("challenge")
+    state_name = data.get("state_name")
+    state_rules = data.get("rules")
+    all_states = data.get("all_states")
+
+    if not challenge or not state_rules:
+        return jsonify({"error": "Missing data"}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are a Turing machine teacher helping a student define rules for their algorithm.
+
+The student has defined rules for one state. Check if these rules make sense for the challenge.
+
+Be encouraging but point out problems:
+- Does the logic fit the task?
+- Are there obvious mistakes (e.g., infinite loops)?
+- Is the transition to next states reasonable?
+
+Output ONLY valid JSON:
+{
+  "valid": true or false,
+  "feedback": "Brief feedback (1-2 sentences). If valid, be encouraging. If not, explain what's wrong.",
+  "suggestion": "If invalid: hint how to fix. Empty string if valid."
+}"""
+                },
+                {
+                    "role": "user",
+                    "content": f"""Challenge: {json.dumps(challenge)}
+
+State being defined: {state_name}
+All states: {json.dumps(all_states)}
+
+Rules for {state_name}:
+- See 0: write {state_rules['0']['write']}, move {state_rules['0']['move']}, go to {state_rules['0']['goto']}
+- See 1: write {state_rules['1']['write']}, move {state_rules['1']['move']}, go to {state_rules['1']['goto']}
+- See blank: write {state_rules['_']['write']}, move {state_rules['_']['move']}, go to {state_rules['_']['goto']}
+
+Are these rules appropriate for this state?"""
+                }
+            ],
+            temperature=0.3
+        )
+
+        result = response.choices[0].message.content
+        evaluation = json.loads(result)
+        return jsonify(evaluation)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/challenge/check-algorithm", methods=["POST"])
+def check_algorithm():
+    """Check if student's complete algorithm is correct."""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    challenge = data.get("challenge")
+    states = data.get("states")
+    rules = data.get("rules")
+
+    if not challenge or not rules:
+        return jsonify({"error": "Missing challenge or rules"}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are a Turing machine teacher evaluating a student's complete algorithm.
+
+Analyze if the algorithm correctly solves the given challenge.
+
+Check for:
+1. Does it handle all input cases correctly?
+2. Will it always terminate (reach DONE state)?
+3. Are there missing rules for any state/symbol combinations?
+4. Does the logic make sense for the task?
+
+If CORRECT: Congratulate them!
+If INCORRECT: Give specific, helpful feedback about what's wrong and how to fix it.
+
+Output ONLY valid JSON:
+{
+  "correct": true or false,
+  "feedback": "Brief assessment (1-2 sentences)",
+  "suggestion": "If incorrect: specific suggestion what to fix. Empty string if correct."
+}"""
+                },
+                {
+                    "role": "user",
+                    "content": f"""Challenge: {json.dumps(challenge)}
+
+States: {json.dumps(states)}
+
+Rules:
+{json.dumps(rules, indent=2)}
+
+Evaluate this Turing machine algorithm."""
+                }
+            ],
+            temperature=0.3
+        )
+
+        result = response.choices[0].message.content
+        evaluation = json.loads(result)
+        return jsonify(evaluation)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

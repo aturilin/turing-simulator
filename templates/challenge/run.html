@@ -7,40 +7,75 @@
     <div class="challenge-container">
         <h1>Step 4: Test Your Algorithm!</h1>
 
-        <div class="test-section">
-            <div class="test-cases" id="test-cases">
-                <!-- Test cases load here -->
-            </div>
+        <div class="challenge-reminder" id="challenge-reminder">
+            <!-- Challenge task reminder loads here -->
+        </div>
 
-            <div class="test-runner">
-                <div class="tape-wrapper test-tape">
-                    <div class="tape" id="test-tape">
-                        <!-- Tape cells render here -->
+        <div class="test-layout">
+            <!-- Left side: Graph and Rules -->
+            <div class="test-sidebar">
+                <div class="graph-section compact">
+                    <h3>Your Algorithm</h3>
+                    <div class="state-graph-container" id="test-graph">
+                        <!-- Graph renders here -->
                     </div>
-                    <div class="head-indicator">HEAD</div>
                 </div>
 
-                <div class="test-state">
-                    <span>State: <strong id="test-current-state">START</strong></span>
-                    <span id="test-step-count">Step: 0</span>
-                </div>
-
-                <div class="test-controls">
-                    <button id="btn-run-test" class="btn-primary">Run Test</button>
-                    <button id="btn-step-test" class="btn-secondary">Step</button>
-                    <button id="btn-reset-test" class="btn-secondary">Reset</button>
+                <div class="rules-compact">
+                    <h3>Rules</h3>
+                    <div id="rules-summary">
+                        <!-- Rules summary renders here -->
+                    </div>
                 </div>
             </div>
 
-            <div class="test-result hidden" id="test-result">
-                <h2 id="result-message"></h2>
+            <!-- Right side: Test runner -->
+            <div class="test-main">
+                <div class="test-cases" id="test-cases">
+                    <!-- Test cases load here -->
+                </div>
+
+                <div class="test-runner">
+                    <div class="tape-wrapper test-tape">
+                        <div class="tape" id="test-tape">
+                            <!-- Tape cells render here -->
+                        </div>
+                        <div class="head-indicator">HEAD</div>
+                    </div>
+
+                    <div class="test-state">
+                        <span>State: <strong id="test-current-state">START</strong></span>
+                        <span id="test-step-count">Step: 0</span>
+                    </div>
+
+                    <div class="test-controls">
+                        <button id="btn-step-test" class="btn-secondary">Step</button>
+                        <button id="btn-run-test" class="btn-primary">Run All</button>
+                        <button id="btn-reset-test" class="btn-secondary">Reset</button>
+                    </div>
+                </div>
+
+                <div class="test-result hidden" id="test-result">
+                    <p id="result-message"></p>
+                </div>
+
+                <div class="ai-feedback hidden" id="ai-feedback">
+                    <h4>AI Analysis</h4>
+                    <p id="ai-feedback-message"></p>
+                </div>
             </div>
         </div>
 
         <div class="nav-buttons">
             <a href="/challenge/review" class="btn-secondary">← Back to Review</a>
+            <button id="btn-check-ai" class="btn-warning">Check with AI</button>
             <a href="/challenge" class="btn-primary">New Challenge</a>
-            <a href="/simulator" class="btn-success">Back to Simulator</a>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-overlay hidden" id="loading-overlay">
+            <div class="spinner"></div>
+            <p>AI is analyzing your algorithm...</p>
         </div>
     </div>
 </div>
@@ -53,12 +88,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const states = JSON.parse(sessionStorage.getItem('challengeStates') || '[]');
     const rules = JSON.parse(sessionStorage.getItem('challengeRules') || '{}');
 
+    const reminderDiv = document.getElementById('challenge-reminder');
     const testCasesDiv = document.getElementById('test-cases');
     const testTape = document.getElementById('test-tape');
     const testState = document.getElementById('test-current-state');
     const stepCount = document.getElementById('test-step-count');
     const resultDiv = document.getElementById('test-result');
     const resultMessage = document.getElementById('result-message');
+    const aiFeedback = document.getElementById('ai-feedback');
+    const aiFeedbackMessage = document.getElementById('ai-feedback-message');
+    const loadingOverlay = document.getElementById('loading-overlay');
 
     let currentTest = null;
     let tape = {};
@@ -67,14 +106,80 @@ document.addEventListener('DOMContentLoaded', function() {
     let steps = 0;
     let halted = false;
 
+    // Show task reminder
+    if (challenge.task) {
+        reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
+    }
+
+    // Build and render graph
+    const graphStates = {};
+    states.forEach(s => {
+        graphStates[s.name.toLowerCase()] = {
+            label: s.name,
+            emoji: s.name === 'START' ? '🏁' : (s.name === 'DONE' ? '✅' : '❓'),
+            description: ''
+        };
+    });
+
+    // Add DONE if referenced
+    Object.values(rules).forEach(stateRules => {
+        Object.values(stateRules).forEach(rule => {
+            if (rule.goto === 'DONE' && !graphStates['done']) {
+                graphStates['done'] = { label: 'DONE', emoji: '✅', description: '' };
+            }
+        });
+    });
+
+    // Build transitions for graph
+    const transitions = {};
+    Object.keys(rules).forEach(stateName => {
+        const stateRules = rules[stateName];
+        ['0', '1', '_'].forEach(symbol => {
+            if (stateRules[symbol]) {
+                const key = `${stateName.toLowerCase()},${symbol}`;
+                const moveCode = stateRules[symbol].move === 'right' ? 'R' :
+                               stateRules[symbol].move === 'left' ? 'L' : 'N';
+                transitions[key] = [
+                    stateRules[symbol].goto.toLowerCase(),
+                    stateRules[symbol].write,
+                    moveCode
+                ];
+            }
+        });
+    });
+
+    if (typeof StateGraph !== 'undefined') {
+        new StateGraph('test-graph', graphStates, transitions, { animated: false, width: 300, height: 220 });
+    }
+
+    // Build rules summary
+    const summaryDiv = document.getElementById('rules-summary');
+    let rulesHtml = '';
+    Object.keys(rules).forEach(stateName => {
+        rulesHtml += `<div class="rule-group"><strong>${stateName}:</strong>`;
+        const stateRules = rules[stateName];
+        ['0', '1', '_'].forEach(symbol => {
+            if (stateRules[symbol]) {
+                const r = stateRules[symbol];
+                const sym = symbol === '_' ? '␣' : symbol;
+                const wr = r.write === '_' ? '␣' : r.write;
+                const mv = r.move === 'right' ? '→' : r.move === 'left' ? '←' : '•';
+                rulesHtml += `<div class="rule-line">${sym} → ${wr}, ${mv}, ${r.goto}</div>`;
+            }
+        });
+        rulesHtml += '</div>';
+    });
+    summaryDiv.innerHTML = rulesHtml;
+
     // Display test cases
     if (challenge.examples) {
-        let html = '<h3>Test Cases:</h3>';
+        let html = '<h4>Test Cases:</h4><div class="test-cases-list">';
         challenge.examples.forEach((ex, i) => {
             html += `<button class="test-case-btn" data-input="${ex.input}" data-index="${i}">
-                <code>${ex.input}</code> → ${ex.output}
+                <code>${ex.input}</code>
             </button>`;
         });
+        html += '</div>';
         testCasesDiv.innerHTML = html;
 
         // Click handler for test cases
@@ -89,9 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Auto-select first test
         const firstBtn = testCasesDiv.querySelector('.test-case-btn');
-        if (firstBtn) {
-            firstBtn.click();
-        }
+        if (firstBtn) firstBtn.click();
     }
 
     function initTest(input) {
@@ -106,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         steps = 0;
         halted = false;
         resultDiv.classList.add('hidden');
+        aiFeedback.classList.add('hidden');
         renderTape();
         updateState();
     }
@@ -135,27 +239,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const stateRules = rules[currentStateName];
 
         if (!stateRules || !stateRules[symbol]) {
-            // No rule found - halt
             halted = true;
             return false;
         }
 
         const rule = stateRules[symbol];
-
-        // Write
         tape[headPos] = rule.write;
 
-        // Move
         if (rule.move === 'right') headPos++;
         else if (rule.move === 'left') headPos--;
 
-        // Ensure tape cell exists
         if (tape[headPos] === undefined) tape[headPos] = '_';
 
-        // Change state
         currentStateName = rule.goto;
 
-        // Check if halted (DONE state or no more rules)
         if (currentStateName === 'DONE' || !rules[currentStateName]) {
             halted = true;
         }
@@ -167,6 +264,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return !halted;
     }
 
+    function getTapeContent() {
+        const positions = Object.keys(tape).map(Number).sort((a, b) => a - b);
+        return positions.map(p => tape[p]).join('').replace(/^_+|_+$/g, '');
+    }
+
     document.getElementById('btn-step-test').addEventListener('click', step);
 
     document.getElementById('btn-run-test').addEventListener('click', function() {
@@ -175,22 +277,52 @@ document.addEventListener('DOMContentLoaded', function() {
             step();
         }
 
-        // Show result
         resultDiv.classList.remove('hidden');
         if (currentStateName === 'DONE') {
-            resultMessage.innerHTML = '<span class="success">✓ Algorithm completed!</span>';
-            resultMessage.className = 'success';
+            const result = getTapeContent();
+            resultMessage.innerHTML = `<span class="success">✓ Completed! Result: <code>${result}</code></span>`;
         } else if (steps >= maxSteps) {
             resultMessage.innerHTML = '<span class="error">⚠ Too many steps - possible infinite loop</span>';
-            resultMessage.className = 'error';
         } else {
-            resultMessage.innerHTML = '<span class="warning">⚠ Algorithm stopped unexpectedly</span>';
-            resultMessage.className = 'warning';
+            resultMessage.innerHTML = '<span class="warning">⚠ Stopped unexpectedly in state: ' + currentStateName + '</span>';
         }
     });
 
     document.getElementById('btn-reset-test').addEventListener('click', function() {
         if (currentTest) initTest(currentTest);
+    });
+
+    // AI Check button
+    document.getElementById('btn-check-ai').addEventListener('click', async function() {
+        loadingOverlay.classList.remove('hidden');
+
+        try {
+            const response = await fetch('/api/challenge/check-algorithm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    challenge: challenge,
+                    states: states,
+                    rules: rules
+                })
+            });
+
+            const result = await response.json();
+            aiFeedback.classList.remove('hidden');
+
+            if (result.correct) {
+                aiFeedbackMessage.innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
+            } else {
+                aiFeedbackMessage.innerHTML = `<span class="hint">${result.feedback}</span>
+                    ${result.suggestion ? `<p class="suggestion">${result.suggestion}</p>` : ''}`;
+            }
+
+        } catch (error) {
+            aiFeedbackMessage.innerHTML = '<span class="error">Error checking with AI. Please try again.</span>';
+            aiFeedback.classList.remove('hidden');
+        } finally {
+            loadingOverlay.classList.add('hidden');
+        }
     });
 });
 </script>

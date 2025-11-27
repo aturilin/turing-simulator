@@ -103,12 +103,6 @@ LESSONS = [
                 <p>The machine can only see ONE cell at a time. States let it remember what it's doing!</p>
             </div>
 
-            <p>Think about it: when adding 1 to a binary number, the machine needs to remember:</p>
-            <ul>
-                <li>"Am I still <strong>scanning</strong> to find the end?"</li>
-                <li>"Or am I now <strong>adding</strong> and handling carries?"</li>
-            </ul>
-
             <div class="lesson-graph-container">
                 <div class="state-graph-container" id="lesson-graph">
                     <!-- State graph renders here -->
@@ -117,9 +111,9 @@ LESSONS = [
 
             <div class="highlight-box">
                 <p>Our machine uses these states:</p>
-                <div class="state-item"><span class="state-emoji">🔍</span> <strong>SCAN</strong> - "I remember: I'm still looking for the end"</div>
-                <div class="state-item"><span class="state-emoji">➕</span> <strong>ADD</strong> - "I remember: I'm adding now, maybe carrying"</div>
-                <div class="state-item"><span class="state-emoji">✅</span> <strong>DONE</strong> - "I remember: I finished!"</div>
+                <div class="state-item"><span class="state-emoji">🔍</span> <strong>SCAN</strong> — looking for the end of the number</div>
+                <div class="state-item"><span class="state-emoji">➕</span> <strong>ADD</strong> — adding 1 and handling carries</div>
+                <div class="state-item"><span class="state-emoji">✅</span> <strong>DONE</strong> — finished!</div>
             </div>
 
             <p class="muted">When you design an algorithm, ask: "What does my machine need to <strong>remember</strong>?"</p>

@@ -12,38 +12,24 @@
         </div>
 
         <div class="states-builder">
-            <div class="states-graph-preview">
-                <h3>Your Algorithm</h3>
-                <div class="state-graph-container" id="states-graph">
-                    <!-- Graph preview renders here -->
-                </div>
-            </div>
+            <p class="section-hint">States = what the machine needs to "remember". Think about what information changes as the machine works.</p>
 
-            <div class="states-input-section">
-                <div class="start-state">
-                    <h3>Starting State (always included)</h3>
-                    <div class="state-item locked">
-                        <span class="state-badge">🏁 START</span>
-                        <input type="text" class="state-description" id="start-description"
-                               placeholder="What does START do?" value="">
-                    </div>
+            <div class="states-list-container">
+                <div class="state-row header-row">
+                    <span class="state-badge start">🏁 START</span>
+                    <span class="state-hint">(always begins here)</span>
                 </div>
 
-                <div class="custom-states">
-                    <h3>Add Your States</h3>
-                    <p class="hint">Think: what does the machine need to "remember"?</p>
-
-                    <div id="states-list">
-                        <!-- Dynamic state inputs -->
-                    </div>
-
-                    <button id="btn-add-state" class="btn-secondary btn-small">+ Add State</button>
+                <div id="states-list">
+                    <!-- Dynamic state inputs -->
                 </div>
+
+                <button id="btn-add-state" class="btn-secondary">+ Add State</button>
             </div>
         </div>
 
         <div class="validation-section">
-            <button id="btn-validate-states" class="btn-primary btn-large">Check with AI</button>
+            <button id="btn-validate-states" class="btn-primary btn-large">Continue →</button>
             <div class="feedback-box hidden" id="feedback-box">
                 <p class="feedback-message" id="feedback-message"></p>
             </div>
@@ -69,83 +55,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const reminderDiv = document.getElementById('challenge-reminder');
 
-    let stateCount = 0;
-
     // Load challenge from session storage
     const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
     if (challenge.task) {
         reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
     }
 
-    function addState(name = '', description = '') {
-        stateCount++;
+    function addState(name = '') {
         const div = document.createElement('div');
-        div.className = 'state-item';
+        div.className = 'state-row';
         div.innerHTML = `
-            <input type="text" class="state-name" placeholder="STATE_NAME" value="${name}">
-            <input type="text" class="state-description" placeholder="What does this state mean?" value="${description}">
-            <button class="btn-remove-state" onclick="this.parentElement.remove(); updateGraph();">×</button>
+            <input type="text" class="state-name-input" placeholder="STATE_NAME" value="${name}">
+            <button class="btn-remove" onclick="this.parentElement.remove();">×</button>
         `;
         statesList.appendChild(div);
-        updateGraph();
     }
 
     addStateBtn.addEventListener('click', () => addState());
 
-    // Add two default empty states
+    // Add one empty state by default
     addState();
-    addState();
-
-    window.updateGraph = function() {
-        // Update the graph preview based on current states
-        const graphContainer = document.getElementById('states-graph');
-        const stateNames = ['START'];
-        const stateInputs = document.querySelectorAll('.state-name');
-        stateInputs.forEach(input => {
-            if (input.value.trim()) {
-                stateNames.push(input.value.trim().toUpperCase());
-            }
-        });
-
-        // Create simple state objects for graph
-        const states = {};
-        stateNames.forEach((name, i) => {
-            states[name.toLowerCase()] = {
-                label: name,
-                emoji: i === 0 ? '🏁' : (name === 'DONE' ? '✅' : '❓'),
-                description: ''
-            };
-        });
-
-        // Render graph (without transitions for now)
-        if (typeof StateGraph !== 'undefined') {
-            new StateGraph('states-graph', states, {}, { animated: false });
-        }
-    };
-
-    // Update graph when inputs change
-    statesList.addEventListener('input', updateGraph);
 
     validateBtn.addEventListener('click', async function() {
-        loadingOverlay.classList.remove('hidden');
-        feedbackBox.classList.add('hidden');
-
         // Gather states
-        const states = [{
-            name: 'START',
-            description: document.getElementById('start-description').value
-        }];
+        const states = [{ name: 'START' }];
 
-        document.querySelectorAll('.state-item:not(.locked)').forEach(item => {
-            const name = item.querySelector('.state-name').value.trim();
-            const desc = item.querySelector('.state-description').value.trim();
-            if (name) {
-                states.push({ name: name.toUpperCase(), description: desc });
+        document.querySelectorAll('.state-name-input').forEach(input => {
+            const name = input.value.trim().toUpperCase();
+            if (name && name !== 'START') {
+                states.push({ name: name });
             }
         });
+
+        if (states.length < 2) {
+            feedbackBox.classList.remove('hidden');
+            feedbackMessage.innerHTML = '<span class="error">Add at least one more state besides START!</span>';
+            return;
+        }
 
         // Store states for next step
         sessionStorage.setItem('challengeStates', JSON.stringify(states));
+
+        loadingOverlay.classList.remove('hidden');
+        feedbackBox.classList.add('hidden');
 
         try {
             const response = await fetch('/api/challenge/validate-states', {
@@ -158,15 +110,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const result = await response.json();
-
             feedbackBox.classList.remove('hidden');
 
             if (result.valid) {
                 feedbackMessage.innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
-                // Redirect to rules page for first state
                 setTimeout(() => {
                     window.location.href = '/challenge/rules/START';
-                }, 1500);
+                }, 1000);
             } else {
                 feedbackMessage.innerHTML = `<span class="hint">${result.feedback}</span>`;
             }
@@ -178,8 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingOverlay.classList.add('hidden');
         }
     });
-
-    updateGraph();
 });
 </script>
 {% endblock %}
