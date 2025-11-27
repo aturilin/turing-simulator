@@ -595,63 +595,42 @@ def get_answer():
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",  # Use smarter model for correct solutions
+            model="gpt-5.1",  # GPT-5.1 with reasoning for accurate solutions
+            reasoning_effort="high",  # Enable deep thinking mode
             messages=[
                 {
                     "role": "system",
-                    "content": """You are an expert in Turing machines. You must provide CORRECT, WORKING rules.
+                    "content": """You are an expert in Turing machines. Provide CORRECT, WORKING rules.
 
-TURING MACHINE BASICS:
-- The machine has a tape with symbols (0, 1, or blank "_")
-- A head reads ONE cell at a time
-- The head starts at position 1 (first character of input)
-- Each rule says: "In state X, seeing symbol Y: write Z, move direction, go to state W"
-- The machine stops when it reaches "DONE" state
+TURING MACHINE:
+- Tape with symbols: 0, 1, or blank ("_")
+- Head reads ONE cell at a time, starts at first character of input
+- Rule: "In state X, seeing Y → write Z, move direction, goto state W"
+- Machine stops when it reaches "DONE" state
 
-HOW TO DESIGN RULES:
-1. Think about what the STATE NAME suggests (e.g., "SCAN" = scanning, "CHECK_IF_0" = checking for 0)
-2. Consider what should happen for EACH symbol (0, 1, blank)
-3. Usually: keep scanning right until you find what you need, then act
-4. Blank ("_") usually means end of input - time to make a decision or finish
-
-COMMON PATTERNS:
-- Scanning right: write same symbol, move right, stay in same state
-- Found end (blank): move left or transition to next phase
-- Checking/comparing: mark cells, move to check other positions
-
-OUTPUT FORMAT - Return ONLY valid JSON:
+OUTPUT - Return ONLY valid JSON:
 {
   "rules": {
-    "0": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE_NAME"},
-    "1": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE_NAME"},
-    "_": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE_NAME"}
+    "0": {"write": "0"/"1"/"_", "move": "right"/"left"/"stay", "goto": "STATE_NAME"},
+    "1": {"write": "0"/"1"/"_", "move": "right"/"left"/"stay", "goto": "STATE_NAME"},
+    "_": {"write": "0"/"1"/"_", "move": "right"/"left"/"stay", "goto": "STATE_NAME"}
   },
-  "explanation": "What this state does and why these rules work"
+  "explanation": "Brief explanation of what this state does"
 }
 
-IMPORTANT: The goto value MUST be one of the provided state names or "DONE"."""
+IMPORTANT: goto must be one of the provided state names or "DONE"."""
                 },
                 {
                     "role": "user",
                     "content": f"""CHALLENGE: {challenge.get('task', '')}
 
-EXAMPLES:
-{json.dumps(challenge.get('examples', []), indent=2)}
+EXAMPLES: {json.dumps(challenge.get('examples', []))}
 
-ALL STATES IN THIS MACHINE: {json.dumps(all_states)}
+ALL STATES: {json.dumps(all_states)}
 
-I need the rules for state: "{state_name}"
-
-Think step by step:
-1. What is the purpose of "{state_name}" based on its name?
-2. What should happen when this state sees a 0?
-3. What should happen when this state sees a 1?
-4. What should happen when this state sees a blank (end of input)?
-
-Provide the correct rules that will make this Turing machine work."""
+Provide the correct rules for state "{state_name}" to solve this Turing machine challenge."""
                 }
-            ],
-            temperature=0.1  # Low temperature for more consistent answers
+            ]
         )
 
         result = response.choices[0].message.content
