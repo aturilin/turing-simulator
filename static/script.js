@@ -9,10 +9,16 @@ class StateGraph {
 
         this.states = states || {};
         this.transitions = transitions || {};
+
+        // Calculate dynamic size based on number of states
+        const numStates = Object.keys(this.states).length;
+        const baseWidth = Math.max(400, numStates * 100);
+        const baseHeight = Math.max(300, numStates * 60);
+
         this.options = {
-            width: options.width || 400,
-            height: options.height || 280,
-            nodeRadius: options.nodeRadius || 35,
+            width: options.width || baseWidth,
+            height: options.height || baseHeight,
+            nodeRadius: options.nodeRadius || 40,
             animated: options.animated !== false
         };
 
@@ -124,22 +130,46 @@ class StateGraph {
         const positions = {};
         const cx = this.options.width / 2;
         const cy = this.options.height / 2;
+        const n = stateIds.length;
 
-        if (stateIds.length === 3) {
-            // Triangle layout for 3 states (scan-add-done)
-            positions[stateIds[0]] = { x: 80, y: 80 };   // SCAN top-left
-            positions[stateIds[1]] = { x: 320, y: 80 };  // ADD top-right
-            positions[stateIds[2]] = { x: 200, y: 220 }; // DONE bottom-center
-        } else {
-            // Circle layout for other cases
-            const angleStep = (2 * Math.PI) / stateIds.length;
-            const radius = Math.min(this.options.width, this.options.height) / 3;
+        if (n <= 3) {
+            // Triangle/line layout for 2-3 states
+            if (n === 1) {
+                positions[stateIds[0]] = { x: cx, y: cy };
+            } else if (n === 2) {
+                positions[stateIds[0]] = { x: cx - 100, y: cy };
+                positions[stateIds[1]] = { x: cx + 100, y: cy };
+            } else {
+                // Triangle
+                positions[stateIds[0]] = { x: 100, y: 80 };
+                positions[stateIds[1]] = { x: this.options.width - 100, y: 80 };
+                positions[stateIds[2]] = { x: cx, y: this.options.height - 80 };
+            }
+        } else if (n <= 6) {
+            // Circle layout with better spacing
+            const angleStep = (2 * Math.PI) / n;
+            const radius = Math.min(this.options.width, this.options.height) / 2.5;
 
             stateIds.forEach((stateId, i) => {
                 const angle = -Math.PI / 2 + i * angleStep;
                 positions[stateId] = {
                     x: cx + radius * Math.cos(angle),
                     y: cy + radius * Math.sin(angle)
+                };
+            });
+        } else {
+            // Grid layout for many states
+            const cols = Math.ceil(Math.sqrt(n));
+            const rows = Math.ceil(n / cols);
+            const cellWidth = this.options.width / (cols + 1);
+            const cellHeight = this.options.height / (rows + 1);
+
+            stateIds.forEach((stateId, i) => {
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                positions[stateId] = {
+                    x: cellWidth * (col + 1),
+                    y: cellHeight * (row + 1)
                 };
             });
         }
@@ -173,20 +203,26 @@ class StateGraph {
             emoji.setAttribute('y', pos.y - 5);
             emoji.setAttribute('text-anchor', 'middle');
             emoji.setAttribute('dominant-baseline', 'middle');
-            emoji.setAttribute('font-size', '20');
+            emoji.setAttribute('font-size', '18');
             emoji.textContent = state.emoji || '●';
             group.appendChild(emoji);
 
-            // Label
+            // Label - truncate if too long
+            let labelText = state.label || stateId.toUpperCase();
+            const maxLen = 8;
+            if (labelText.length > maxLen) {
+                labelText = labelText.substring(0, maxLen - 1) + '…';
+            }
+
             const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             label.setAttribute('x', pos.x);
-            label.setAttribute('y', pos.y + 18);
+            label.setAttribute('y', pos.y + 16);
             label.setAttribute('text-anchor', 'middle');
             label.setAttribute('dominant-baseline', 'middle');
-            label.setAttribute('font-size', '11');
+            label.setAttribute('font-size', '10');
             label.setAttribute('font-weight', 'bold');
             label.setAttribute('fill', 'white');
-            label.textContent = state.label || stateId.toUpperCase();
+            label.textContent = labelText;
             group.appendChild(label);
 
             this.svg.appendChild(group);

@@ -595,43 +595,74 @@ def get_answer():
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",  # Use smarter model for correct solutions
             messages=[
                 {
                     "role": "system",
-                    "content": """You are a Turing machine teacher providing the correct solution for a state.
+                    "content": """You are an expert in Turing machines. You must provide CORRECT, WORKING rules.
 
-Given a challenge and a state name, provide the correct rules for that state.
+TURING MACHINE BASICS:
+- The machine has a tape with symbols (0, 1, or blank "_")
+- A head reads ONE cell at a time
+- The head starts at position 1 (first character of input)
+- Each rule says: "In state X, seeing symbol Y: write Z, move direction, go to state W"
+- The machine stops when it reaches "DONE" state
 
-IMPORTANT: The rules must use exactly these values:
-- write: "0", "1", or "_"
-- move: "right", "left", or "stay"
-- goto: one of the state names provided, or "DONE"
+HOW TO DESIGN RULES:
+1. Think about what the STATE NAME suggests (e.g., "SCAN" = scanning, "CHECK_IF_0" = checking for 0)
+2. Consider what should happen for EACH symbol (0, 1, blank)
+3. Usually: keep scanning right until you find what you need, then act
+4. Blank ("_") usually means end of input - time to make a decision or finish
 
-Output ONLY valid JSON:
+COMMON PATTERNS:
+- Scanning right: write same symbol, move right, stay in same state
+- Found end (blank): move left or transition to next phase
+- Checking/comparing: mark cells, move to check other positions
+
+OUTPUT FORMAT - Return ONLY valid JSON:
 {
   "rules": {
-    "0": {"write": "...", "move": "...", "goto": "..."},
-    "1": {"write": "...", "move": "...", "goto": "..."},
-    "_": {"write": "...", "move": "...", "goto": "..."}
+    "0": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE_NAME"},
+    "1": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE_NAME"},
+    "_": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE_NAME"}
   },
-  "explanation": "Brief explanation of why these rules work (2-3 sentences)"
-}"""
+  "explanation": "What this state does and why these rules work"
+}
+
+IMPORTANT: The goto value MUST be one of the provided state names or "DONE"."""
                 },
                 {
                     "role": "user",
-                    "content": f"""Challenge: {json.dumps(challenge)}
+                    "content": f"""CHALLENGE: {challenge.get('task', '')}
 
-State to define: {state_name}
-All available states: {json.dumps(all_states)}
+EXAMPLES:
+{json.dumps(challenge.get('examples', []), indent=2)}
 
-Provide the correct rules for the state "{state_name}" to solve this challenge."""
+ALL STATES IN THIS MACHINE: {json.dumps(all_states)}
+
+I need the rules for state: "{state_name}"
+
+Think step by step:
+1. What is the purpose of "{state_name}" based on its name?
+2. What should happen when this state sees a 0?
+3. What should happen when this state sees a 1?
+4. What should happen when this state sees a blank (end of input)?
+
+Provide the correct rules that will make this Turing machine work."""
                 }
             ],
-            temperature=0.2
+            temperature=0.1  # Low temperature for more consistent answers
         )
 
         result = response.choices[0].message.content
+        # Clean up the response - remove markdown code blocks if present
+        result = result.strip()
+        if result.startswith("```"):
+            result = result.split("```")[1]
+            if result.startswith("json"):
+                result = result[4:]
+        result = result.strip()
+
         answer = json.loads(result)
         return jsonify(answer)
 
