@@ -322,53 +322,68 @@ def get_example_program(example_id):
 
 @app.route("/api/challenge", methods=["GET"])
 def get_challenge():
-    """Generate a new TM challenge using AI."""
+    """Generate a new TM challenge using AI with explicit test cases."""
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
-                    "content": """You are a Turing machine teacher. Generate a simple challenge for a beginner who just learned how to add 1 to a binary number.
+                    "content": """You are a Turing machine teacher. Generate a SPECIFIC challenge with EXACT test cases.
 
-IMPORTANT: Do NOT generate any challenge about adding, incrementing, or subtracting numbers! The student already learned "add 1 to binary" - we need a DIFFERENT challenge.
+RULES:
+- Challenge must be solvable with 2-4 working states (plus START and DONE which are provided)
+- Use only symbols: 0, 1, and blank (_)
+- The machine starts with head at position 0 (first character of input)
+- Output must be a SINGLE SYMBOL at the head's final position
 
-The challenge should be solvable with 2-4 states and use only 0, 1, and blank symbols.
+CHALLENGE TYPES (pick one):
+1. PARITY: Count 1s, output "1" if even count, "0" if odd count
+2. BIT FLIP: Change all 0s to 1s and all 1s to 0s, halt at end
+3. FIRST EQUALS LAST: Output "1" if first and last symbols match, "0" otherwise
+4. HAS TWO ONES: Output "1" if string has at least two 1s, "0" otherwise
+5. ALL ONES: Output "1" if all symbols are 1, "0" otherwise
 
-Good challenge examples (pick one or create similar):
-- Check if a binary number has an even or odd number of 1s
-- Check if a binary string is a palindrome
-- Flip all bits (replace all 1s with 0s and vice versa)
-- Check if a binary string starts and ends with the same symbol
-- Delete all leading zeros from a number
-- Check if a string has at least two 1s
+DO NOT USE: arithmetic (add, subtract, increment, decrement)
 
-BAD challenges (DO NOT USE):
-- Add 1 to a binary number (already learned!)
-- Subtract 1 from a binary number
-- Increment or decrement anything
-- Any arithmetic operation
-
-Output ONLY valid JSON (no markdown):
+OUTPUT FORMAT - Return ONLY valid JSON:
 {
-  "task": "Clear description of what to build",
-  "examples": [
-    {"input": "101", "output": "Description of expected result"}
+  "task": "One clear sentence describing what to do",
+  "task_detail": "Explain more clearly what the machine should output and when",
+  "output_spec": {
+    "description": "What the output means",
+    "position": "head",
+    "values": {"case1": "symbol1", "case2": "symbol2"}
+  },
+  "test_cases": [
+    {"input": "101", "expected": "0", "reason": "3 ones = odd"},
+    {"input": "1100", "expected": "1", "reason": "2 ones = even"},
+    {"input": "1", "expected": "0", "reason": "1 one = odd"},
+    {"input": "11", "expected": "1", "reason": "2 ones = even"}
   ],
-  "difficulty": "easy",
-  "hint_for_stuck": "A subtle hint without revealing the answer"
-}"""
+  "suggested_states": ["STATE1", "STATE2"],
+  "hint": "A subtle hint about approach"
+}
+
+IMPORTANT: test_cases.expected must be EXACTLY what symbol should be at head position when machine halts in DONE state."""
                 },
                 {
                     "role": "user",
-                    "content": "Generate a new beginner-friendly Turing machine challenge."
+                    "content": "Generate a beginner-friendly Turing machine challenge with exact test cases."
                 }
             ],
             temperature=0.8
         )
 
         result = response.choices[0].message.content
-        # Parse JSON from response
+        # Clean up response
+        result = result.strip()
+        if result.startswith("```"):
+            result = result.split("```")[1]
+            if result.startswith("json"):
+                result = result[4:]
+        result = result.strip()
+
         challenge = json.loads(result)
         return jsonify(challenge)
 
@@ -603,22 +618,24 @@ def get_answer():
                     "content": """You are an expert in Turing machines. Provide CORRECT, WORKING rules.
 
 TURING MACHINE:
-- Tape with symbols: 0, 1, or blank ("_")
-- Head reads ONE cell at a time, starts at first character of input
-- Rule: "In state X, seeing Y → write Z, move direction, goto state W"
-- Machine stops when it reaches "DONE" state
+- Tape: symbols 0, 1, or blank ("_")
+- Head reads ONE cell, starts at first input character
+- Rule: "seeing Y → write Z, move, goto state"
+- Stops at "DONE" state
 
 OUTPUT - Return ONLY valid JSON:
 {
   "rules": {
-    "0": {"write": "0"/"1"/"_", "move": "right"/"left"/"stay", "goto": "STATE_NAME"},
-    "1": {"write": "0"/"1"/"_", "move": "right"/"left"/"stay", "goto": "STATE_NAME"},
-    "_": {"write": "0"/"1"/"_", "move": "right"/"left"/"stay", "goto": "STATE_NAME"}
+    "0": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE"},
+    "1": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE"},
+    "_": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE"}
   },
-  "explanation": "Brief explanation of what this state does"
+  "explanation": "Simple 1-sentence explanation. NO encoding talk. Just say what the state does."
 }
 
-IMPORTANT: goto must be one of the provided state names or "DONE"."""
+IMPORTANT:
+- goto must be one of provided states or "DONE"
+- Explanation must be SIMPLE and CLEAR - no jargon, no "encoding", just plain English"""
                 },
                 {
                     "role": "user",

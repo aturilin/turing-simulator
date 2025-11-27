@@ -1,84 +1,323 @@
 {% extends "base.html" %}
 
-{% block title %}Test Algorithm - Challenge{% endblock %}
+{% block title %}Test Your Algorithm - Challenge{% endblock %}
 
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 4: Test Your Algorithm!</h1>
+        <h1>Step 3: Test Your Algorithm</h1>
 
+        <!-- Task reminder -->
         <div class="challenge-reminder" id="challenge-reminder">
             <!-- Challenge task reminder loads here -->
         </div>
 
-        <div class="test-layout">
-            <!-- Left side: Graph and Rules -->
-            <div class="test-sidebar">
-                <div class="graph-section compact">
-                    <h3>Your Algorithm</h3>
-                    <div class="state-graph-container" id="test-graph">
-                        <!-- Graph renders here -->
-                    </div>
-                </div>
-
-                <div class="rules-compact">
-                    <h3>Rules</h3>
-                    <div id="rules-summary">
-                        <!-- Rules summary renders here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right side: Test runner -->
-            <div class="test-main">
-                <div class="test-cases" id="test-cases">
-                    <!-- Test cases load here -->
-                </div>
-
-                <div class="test-runner">
-                    <div class="tape-wrapper test-tape">
-                        <div class="tape" id="test-tape">
-                            <!-- Tape cells render here -->
-                        </div>
-                        <div class="head-indicator">HEAD</div>
-                    </div>
-
-                    <div class="test-state">
-                        <span>State: <strong id="test-current-state">START</strong></span>
-                        <span id="test-step-count">Step: 0</span>
-                    </div>
-
-                    <div class="test-controls">
-                        <button id="btn-step-test" class="btn-secondary">Step</button>
-                        <button id="btn-run-test" class="btn-primary">Run All</button>
-                        <button id="btn-reset-test" class="btn-secondary">Reset</button>
-                    </div>
-                </div>
-
-                <div class="test-result hidden" id="test-result">
-                    <p id="result-message"></p>
-                </div>
-
-                <div class="ai-feedback hidden" id="ai-feedback">
-                    <h4>AI Analysis</h4>
-                    <p id="ai-feedback-message"></p>
-                </div>
+        <!-- Test results summary -->
+        <div class="test-results-summary hidden" id="test-results-summary">
+            <div class="results-header">
+                <span id="results-count">0/0 tests passed</span>
+                <span id="results-status" class="status"></span>
             </div>
         </div>
 
+        <!-- Test cases grid -->
+        <div class="test-cases-grid" id="test-cases-grid">
+            <!-- Test cases render here -->
+        </div>
+
+        <!-- Visualization area -->
+        <div class="visualization-section hidden" id="visualization-section">
+            <h3>Watch the Machine Run</h3>
+            <div class="tape-wrapper">
+                <div class="tape" id="visual-tape">
+                    <!-- Tape cells render here -->
+                </div>
+                <div class="head-indicator">HEAD</div>
+            </div>
+            <div class="machine-state">
+                <span>State: <strong id="visual-state">START</strong></span>
+                <span>Step: <span id="visual-step">0</span></span>
+            </div>
+            <div class="visual-controls">
+                <button id="btn-step" class="btn-secondary">Step</button>
+                <button id="btn-run-slow" class="btn-secondary">Run Slow</button>
+                <button id="btn-run-fast" class="btn-primary">Run Fast</button>
+                <button id="btn-reset-visual" class="btn-secondary">Reset</button>
+            </div>
+        </div>
+
+        <!-- Final result -->
+        <div class="final-result hidden" id="final-result">
+            <div class="result-box success hidden" id="result-success">
+                <h2>All Tests Passed!</h2>
+                <p>Your Turing machine correctly solves the challenge.</p>
+                <a href="/challenge" class="btn-primary btn-large">Try Another Challenge</a>
+            </div>
+            <div class="result-box failure hidden" id="result-failure">
+                <h2>Some Tests Failed</h2>
+                <p>Check the failed tests above and adjust your rules.</p>
+                <a href="/challenge/rules/START" class="btn-secondary">Edit Rules</a>
+            </div>
+        </div>
+
+        <!-- Navigation -->
         <div class="nav-buttons">
-            <a href="/challenge/review" class="btn-secondary">← Back to Review</a>
-            <button id="btn-check-ai" class="btn-warning">Check with AI</button>
-            <a href="/challenge" class="btn-primary">New Challenge</a>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div class="loading-overlay hidden" id="loading-overlay">
-            <div class="spinner"></div>
-            <p>AI is analyzing your algorithm...</p>
+            <a href="/challenge/states" class="btn-secondary">← Edit States</a>
+            <button id="btn-run-all-tests" class="btn-primary btn-large">Run All Tests</button>
         </div>
     </div>
 </div>
+
+<style>
+.challenge-reminder {
+    background: #f3f4f6;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.test-results-summary {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+#results-count {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.status.pass {
+    color: #059669;
+    font-weight: 600;
+}
+
+.status.fail {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.test-cases-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.test-case-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.test-case-card.pass {
+    border-color: #10b981;
+}
+
+.test-case-card.fail {
+    border-color: #ef4444;
+}
+
+.test-case-header {
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.test-case-header:hover {
+    background: #f3f4f6;
+}
+
+.test-case-card.pass .test-case-header {
+    background: #ecfdf5;
+}
+
+.test-case-card.fail .test-case-header {
+    background: #fef2f2;
+}
+
+.test-input {
+    font-family: monospace;
+    font-size: 1.1rem;
+}
+
+.test-input code {
+    background: #1f2937;
+    color: #10b981;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.test-status {
+    font-size: 1.2rem;
+}
+
+.test-case-body {
+    padding: 1rem;
+    display: none;
+}
+
+.test-case-card.expanded .test-case-body {
+    display: block;
+}
+
+.test-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.detail-box {
+    padding: 0.75rem;
+    border-radius: 4px;
+}
+
+.detail-box.expected {
+    background: #f0fdf4;
+}
+
+.detail-box.actual {
+    background: #fef2f2;
+}
+
+.detail-box.actual.correct {
+    background: #f0fdf4;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.test-reason {
+    margin-top: 0.5rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.visualization-section {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.tape-wrapper {
+    background: #1f2937;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+.tape {
+    display: flex;
+    justify-content: center;
+    min-width: fit-content;
+}
+
+.tape-cell {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #374151;
+    color: #10b981;
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 1px solid #4b5563;
+}
+
+.tape-cell.head {
+    background: #3b82f6;
+    color: white;
+    border-color: #60a5fa;
+}
+
+.tape-cell.blank {
+    color: #6b7280;
+}
+
+.head-indicator {
+    text-align: center;
+    color: #3b82f6;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.machine-state {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.visual-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.final-result {
+    margin-bottom: 1.5rem;
+}
+
+.result-box {
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.result-box.success {
+    background: #ecfdf5;
+    border: 2px solid #10b981;
+}
+
+.result-box.failure {
+    background: #fef2f2;
+    border: 2px solid #ef4444;
+}
+
+.result-box h2 {
+    margin-bottom: 0.5rem;
+}
+
+.result-box p {
+    margin-bottom: 1rem;
+    color: #6b7280;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -89,239 +328,252 @@ document.addEventListener('DOMContentLoaded', function() {
     const rules = JSON.parse(sessionStorage.getItem('challengeRules') || '{}');
 
     const reminderDiv = document.getElementById('challenge-reminder');
-    const testCasesDiv = document.getElementById('test-cases');
-    const testTape = document.getElementById('test-tape');
-    const testState = document.getElementById('test-current-state');
-    const stepCount = document.getElementById('test-step-count');
-    const resultDiv = document.getElementById('test-result');
-    const resultMessage = document.getElementById('result-message');
-    const aiFeedback = document.getElementById('ai-feedback');
-    const aiFeedbackMessage = document.getElementById('ai-feedback-message');
-    const loadingOverlay = document.getElementById('loading-overlay');
-
-    let currentTest = null;
-    let tape = {};
-    let headPos = 0;
-    let currentStateName = 'START';
-    let steps = 0;
-    let halted = false;
+    const testCasesGrid = document.getElementById('test-cases-grid');
+    const resultsSummary = document.getElementById('test-results-summary');
+    const resultsCount = document.getElementById('results-count');
+    const resultsStatus = document.getElementById('results-status');
+    const visualSection = document.getElementById('visualization-section');
+    const finalResult = document.getElementById('final-result');
 
     // Show task reminder
     if (challenge.task) {
         reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
     }
 
-    // Build and render graph
-    const graphStates = {};
-    states.forEach(s => {
-        graphStates[s.name.toLowerCase()] = {
-            label: s.name,
-            emoji: s.name === 'START' ? '🏁' : (s.name === 'DONE' ? '✅' : '❓'),
-            description: ''
-        };
-    });
+    // Turing Machine Simulator
+    class TuringSimulator {
+        constructor(userRules) {
+            this.rules = userRules;
+            this.reset('');
+        }
 
-    // Add DONE if referenced
-    Object.values(rules).forEach(stateRules => {
-        Object.values(stateRules).forEach(rule => {
-            if (rule.goto === 'DONE' && !graphStates['done']) {
-                graphStates['done'] = { label: 'DONE', emoji: '✅', description: '' };
+        reset(input) {
+            this.tape = {};
+            for (let i = 0; i < input.length; i++) {
+                this.tape[i] = input[i];
             }
-        });
-    });
+            this.headPos = 0;
+            this.state = 'START';
+            this.steps = 0;
+            this.halted = false;
+        }
 
-    // Build transitions for graph
-    const transitions = {};
-    Object.keys(rules).forEach(stateName => {
-        const stateRules = rules[stateName];
-        ['0', '1', '_'].forEach(symbol => {
-            if (stateRules[symbol]) {
-                const key = `${stateName.toLowerCase()},${symbol}`;
-                const moveCode = stateRules[symbol].move === 'right' ? 'R' :
-                               stateRules[symbol].move === 'left' ? 'L' : 'N';
-                transitions[key] = [
-                    stateRules[symbol].goto.toLowerCase(),
-                    stateRules[symbol].write,
-                    moveCode
-                ];
+        getSymbol() {
+            return this.tape[this.headPos] || '_';
+        }
+
+        step() {
+            if (this.halted) return false;
+
+            const symbol = this.getSymbol();
+            const stateRules = this.rules[this.state];
+
+            if (!stateRules || !stateRules[symbol]) {
+                this.halted = true;
+                return false;
             }
-        });
-    });
 
-    if (typeof StateGraph !== 'undefined') {
-        new StateGraph('test-graph', graphStates, transitions, { animated: false, width: 300, height: 220 });
-    }
+            const rule = stateRules[symbol];
+            this.tape[this.headPos] = rule.write;
 
-    // Build rules summary
-    const summaryDiv = document.getElementById('rules-summary');
-    let rulesHtml = '';
-    Object.keys(rules).forEach(stateName => {
-        rulesHtml += `<div class="rule-group"><strong>${stateName}:</strong>`;
-        const stateRules = rules[stateName];
-        ['0', '1', '_'].forEach(symbol => {
-            if (stateRules[symbol]) {
-                const r = stateRules[symbol];
-                const sym = symbol === '_' ? '␣' : symbol;
-                const wr = r.write === '_' ? '␣' : r.write;
-                const mv = r.move === 'right' ? '→' : r.move === 'left' ? '←' : '•';
-                rulesHtml += `<div class="rule-line">${sym} → ${wr}, ${mv}, ${r.goto}</div>`;
+            if (rule.move === 'right') this.headPos++;
+            else if (rule.move === 'left') this.headPos--;
+
+            this.state = rule.goto;
+
+            if (this.state === 'DONE') {
+                this.halted = true;
             }
-        });
-        rulesHtml += '</div>';
-    });
-    summaryDiv.innerHTML = rulesHtml;
 
-    // Display test cases
-    if (challenge.examples) {
-        let html = '<h4>Test Cases:</h4><div class="test-cases-list">';
-        challenge.examples.forEach((ex, i) => {
-            html += `<button class="test-case-btn" data-input="${ex.input}" data-index="${i}">
-                <code>${ex.input}</code>
-            </button>`;
-        });
-        html += '</div>';
-        testCasesDiv.innerHTML = html;
+            this.steps++;
+            return !this.halted;
+        }
 
-        // Click handler for test cases
-        testCasesDiv.addEventListener('click', (e) => {
-            const btn = e.target.closest('.test-case-btn');
-            if (btn) {
-                document.querySelectorAll('.test-case-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                initTest(btn.dataset.input);
+        run(maxSteps = 1000) {
+            while (!this.halted && this.steps < maxSteps) {
+                this.step();
             }
+            return {
+                halted: this.halted,
+                state: this.state,
+                output: this.getSymbol(),
+                steps: this.steps,
+                timeout: this.steps >= maxSteps
+            };
+        }
+
+        getTapeArray() {
+            const positions = Object.keys(this.tape).map(Number).sort((a, b) => a - b);
+            if (positions.length === 0) return [{ pos: 0, val: '_' }];
+
+            const minPos = Math.min(...positions, this.headPos) - 1;
+            const maxPos = Math.max(...positions, this.headPos) + 1;
+
+            const arr = [];
+            for (let i = minPos; i <= maxPos; i++) {
+                arr.push({ pos: i, val: this.tape[i] || '_' });
+            }
+            return arr;
+        }
+    }
+
+    // Build test case cards
+    const testCases = challenge.test_cases || [];
+    testCases.forEach((tc, idx) => {
+        const card = document.createElement('div');
+        card.className = 'test-case-card';
+        card.dataset.index = idx;
+        card.innerHTML = `
+            <div class="test-case-header">
+                <span class="test-input">Input: <code>${tc.input || '(empty)'}</code></span>
+                <span class="test-status" id="status-${idx}">-</span>
+            </div>
+            <div class="test-case-body">
+                <div class="test-details">
+                    <div class="detail-box expected">
+                        <div class="detail-label">Expected Output</div>
+                        <div class="detail-value">${tc.expected}</div>
+                    </div>
+                    <div class="detail-box actual" id="actual-${idx}">
+                        <div class="detail-label">Your Output</div>
+                        <div class="detail-value" id="actual-value-${idx}">-</div>
+                    </div>
+                </div>
+                <div class="test-reason">${tc.reason}</div>
+                <button class="btn-secondary btn-small" style="margin-top: 0.5rem;" onclick="visualize(${idx})">Visualize</button>
+            </div>
+        `;
+        testCasesGrid.appendChild(card);
+
+        // Toggle expand on click
+        card.querySelector('.test-case-header').addEventListener('click', () => {
+            card.classList.toggle('expanded');
         });
-
-        // Auto-select first test
-        const firstBtn = testCasesDiv.querySelector('.test-case-btn');
-        if (firstBtn) firstBtn.click();
-    }
-
-    function initTest(input) {
-        currentTest = input;
-        tape = { 0: '_' };
-        for (let i = 0; i < input.length; i++) {
-            tape[i + 1] = input[i];
-        }
-        tape[input.length + 1] = '_';
-        headPos = 1;
-        currentStateName = 'START';
-        steps = 0;
-        halted = false;
-        resultDiv.classList.add('hidden');
-        aiFeedback.classList.add('hidden');
-        renderTape();
-        updateState();
-    }
-
-    function renderTape() {
-        testTape.innerHTML = '';
-        const positions = Object.keys(tape).map(Number).sort((a, b) => a - b);
-        positions.forEach(pos => {
-            const cell = document.createElement('div');
-            cell.className = 'tape-cell';
-            cell.textContent = tape[pos] === '_' ? '' : tape[pos];
-            if (pos === headPos) cell.classList.add('head');
-            if (tape[pos] === '_') cell.classList.add('blank');
-            testTape.appendChild(cell);
-        });
-    }
-
-    function updateState() {
-        testState.textContent = currentStateName;
-        stepCount.textContent = `Step: ${steps}`;
-    }
-
-    function step() {
-        if (halted) return false;
-
-        const symbol = tape[headPos] || '_';
-        const stateRules = rules[currentStateName];
-
-        if (!stateRules || !stateRules[symbol]) {
-            halted = true;
-            return false;
-        }
-
-        const rule = stateRules[symbol];
-        tape[headPos] = rule.write;
-
-        if (rule.move === 'right') headPos++;
-        else if (rule.move === 'left') headPos--;
-
-        if (tape[headPos] === undefined) tape[headPos] = '_';
-
-        currentStateName = rule.goto;
-
-        if (currentStateName === 'DONE' || !rules[currentStateName]) {
-            halted = true;
-        }
-
-        steps++;
-        renderTape();
-        updateState();
-
-        return !halted;
-    }
-
-    function getTapeContent() {
-        const positions = Object.keys(tape).map(Number).sort((a, b) => a - b);
-        return positions.map(p => tape[p]).join('').replace(/^_+|_+$/g, '');
-    }
-
-    document.getElementById('btn-step-test').addEventListener('click', step);
-
-    document.getElementById('btn-run-test').addEventListener('click', function() {
-        const maxSteps = 1000;
-        while (!halted && steps < maxSteps) {
-            step();
-        }
-
-        resultDiv.classList.remove('hidden');
-        if (currentStateName === 'DONE') {
-            const result = getTapeContent();
-            resultMessage.innerHTML = `<span class="success">✓ Completed! Result: <code>${result}</code></span>`;
-        } else if (steps >= maxSteps) {
-            resultMessage.innerHTML = '<span class="error">⚠ Too many steps - possible infinite loop</span>';
-        } else {
-            resultMessage.innerHTML = '<span class="warning">⚠ Stopped unexpectedly in state: ' + currentStateName + '</span>';
-        }
     });
 
-    document.getElementById('btn-reset-test').addEventListener('click', function() {
-        if (currentTest) initTest(currentTest);
-    });
+    // Run all tests
+    document.getElementById('btn-run-all-tests').addEventListener('click', function() {
+        let passed = 0;
 
-    // AI Check button
-    document.getElementById('btn-check-ai').addEventListener('click', async function() {
-        loadingOverlay.classList.remove('hidden');
+        testCases.forEach((tc, idx) => {
+            const sim = new TuringSimulator(rules);
+            sim.reset(tc.input || '');
+            const result = sim.run(1000);
 
-        try {
-            const response = await fetch('/api/challenge/check-algorithm', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    challenge: challenge,
-                    states: states,
-                    rules: rules
-                })
-            });
+            const card = document.querySelector(`.test-case-card[data-index="${idx}"]`);
+            const statusEl = document.getElementById(`status-${idx}`);
+            const actualEl = document.getElementById(`actual-${idx}`);
+            const actualValueEl = document.getElementById(`actual-value-${idx}`);
 
-            const result = await response.json();
-            aiFeedback.classList.remove('hidden');
-
-            if (result.correct) {
-                aiFeedbackMessage.innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
+            if (result.timeout) {
+                statusEl.textContent = '⏱ Timeout';
+                actualValueEl.textContent = 'Infinite loop?';
+                card.classList.add('fail');
+                card.classList.remove('pass');
+            } else if (result.state !== 'DONE') {
+                statusEl.textContent = '⚠ Did not finish';
+                actualValueEl.textContent = `Stopped in ${result.state}`;
+                card.classList.add('fail');
+                card.classList.remove('pass');
+            } else if (result.output === tc.expected) {
+                statusEl.textContent = '✓ Pass';
+                actualValueEl.textContent = result.output;
+                actualEl.classList.add('correct');
+                card.classList.add('pass');
+                card.classList.remove('fail');
+                passed++;
             } else {
-                aiFeedbackMessage.innerHTML = `<span class="hint">${result.feedback}</span>
-                    ${result.suggestion ? `<p class="suggestion">${result.suggestion}</p>` : ''}`;
+                statusEl.textContent = '✗ Fail';
+                actualValueEl.textContent = result.output;
+                card.classList.add('fail');
+                card.classList.remove('pass');
             }
+        });
 
-        } catch (error) {
-            aiFeedbackMessage.innerHTML = '<span class="error">Error checking with AI. Please try again.</span>';
-            aiFeedback.classList.remove('hidden');
-        } finally {
-            loadingOverlay.classList.add('hidden');
+        // Show summary
+        resultsSummary.classList.remove('hidden');
+        resultsCount.textContent = `${passed}/${testCases.length} tests passed`;
+
+        if (passed === testCases.length) {
+            resultsStatus.textContent = 'SUCCESS!';
+            resultsStatus.className = 'status pass';
+            finalResult.classList.remove('hidden');
+            document.getElementById('result-success').classList.remove('hidden');
+            document.getElementById('result-failure').classList.add('hidden');
+        } else {
+            resultsStatus.textContent = 'NEEDS WORK';
+            resultsStatus.className = 'status fail';
+            finalResult.classList.remove('hidden');
+            document.getElementById('result-success').classList.add('hidden');
+            document.getElementById('result-failure').classList.remove('hidden');
+        }
+    });
+
+    // Visualization
+    let visualSim = null;
+    let visualInterval = null;
+
+    window.visualize = function(testIdx) {
+        const tc = testCases[testIdx];
+        visualSim = new TuringSimulator(rules);
+        visualSim.reset(tc.input || '');
+        visualSection.classList.remove('hidden');
+        renderVisualization();
+    };
+
+    function renderVisualization() {
+        if (!visualSim) return;
+
+        const tape = document.getElementById('visual-tape');
+        const tapeArr = visualSim.getTapeArray();
+
+        tape.innerHTML = tapeArr.map(cell => `
+            <div class="tape-cell ${cell.pos === visualSim.headPos ? 'head' : ''} ${cell.val === '_' ? 'blank' : ''}">
+                ${cell.val === '_' ? '' : cell.val}
+            </div>
+        `).join('');
+
+        document.getElementById('visual-state').textContent = visualSim.state;
+        document.getElementById('visual-step').textContent = visualSim.steps;
+    }
+
+    document.getElementById('btn-step').addEventListener('click', function() {
+        if (visualSim && !visualSim.halted) {
+            visualSim.step();
+            renderVisualization();
+        }
+    });
+
+    document.getElementById('btn-run-slow').addEventListener('click', function() {
+        if (visualInterval) clearInterval(visualInterval);
+        visualInterval = setInterval(() => {
+            if (visualSim && !visualSim.halted) {
+                visualSim.step();
+                renderVisualization();
+            } else {
+                clearInterval(visualInterval);
+            }
+        }, 500);
+    });
+
+    document.getElementById('btn-run-fast').addEventListener('click', function() {
+        if (visualInterval) clearInterval(visualInterval);
+        visualInterval = setInterval(() => {
+            if (visualSim && !visualSim.halted) {
+                visualSim.step();
+                renderVisualization();
+            } else {
+                clearInterval(visualInterval);
+            }
+        }, 100);
+    });
+
+    document.getElementById('btn-reset-visual').addEventListener('click', function() {
+        if (visualInterval) clearInterval(visualInterval);
+        if (visualSim) {
+            const currentInput = testCases[0]?.input || '';
+            visualSim.reset(currentInput);
+            renderVisualization();
         }
     });
 });

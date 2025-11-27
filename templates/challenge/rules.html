@@ -5,26 +5,45 @@
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 2: Rules for {{ state_name }}</h1>
+        <h1>Step 2: Rules for <span class="current-state">{{ state_name }}</span></h1>
 
+        <!-- Progress indicator -->
+        <div class="progress-bar" id="progress-bar">
+            <!-- Filled by JS -->
+        </div>
+
+        <!-- Task reminder -->
         <div class="challenge-reminder" id="challenge-reminder">
             <!-- Task reminder loads here -->
         </div>
 
-        <div class="rules-form-section">
-            <h3>What should {{ state_name }} do?</h3>
-            <p class="hint">Define what happens when this state sees each symbol on the tape.</p>
+        <!-- Clear explanation for this state -->
+        <div class="state-explanation">
+            <h3>What should happen in {{ state_name }}?</h3>
+            <p>Define what the machine does when it's in <strong>{{ state_name }}</strong> state and sees each symbol.</p>
 
+            <div class="rule-template">
+                <strong>Each rule says:</strong><br>
+                "When I see [symbol] → write [something], move [direction], go to [next state]"
+            </div>
+        </div>
+
+        <!-- Rules form -->
+        <div class="rules-form-section">
             <div class="rule-cards">
+                <!-- Rule for 0 -->
                 <div class="rule-card-input">
-                    <div class="rule-card-header">When I see <strong>0</strong></div>
+                    <div class="rule-card-header">
+                        <span class="symbol">0</span>
+                        When I see <strong>0</strong>
+                    </div>
                     <div class="rule-card-body">
                         <div class="rule-field">
                             <label>Write:</label>
                             <select id="rule-0-write">
-                                <option value="0">Keep 0</option>
-                                <option value="1">Write 1</option>
-                                <option value="_">Write blank</option>
+                                <option value="0">0 (keep it)</option>
+                                <option value="1">1</option>
+                                <option value="_">blank</option>
                             </select>
                         </div>
                         <div class="rule-field">
@@ -32,25 +51,29 @@
                             <select id="rule-0-move">
                                 <option value="right">Right →</option>
                                 <option value="left">← Left</option>
-                                <option value="stay">Stay</option>
+                                <option value="stay">Stay (don't move)</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Go to:</label>
+                            <label>Go to state:</label>
                             <select id="rule-0-goto" class="state-select"></select>
                         </div>
                     </div>
                 </div>
 
+                <!-- Rule for 1 -->
                 <div class="rule-card-input">
-                    <div class="rule-card-header">When I see <strong>1</strong></div>
+                    <div class="rule-card-header">
+                        <span class="symbol">1</span>
+                        When I see <strong>1</strong>
+                    </div>
                     <div class="rule-card-body">
                         <div class="rule-field">
                             <label>Write:</label>
                             <select id="rule-1-write">
-                                <option value="1">Keep 1</option>
-                                <option value="0">Write 0</option>
-                                <option value="_">Write blank</option>
+                                <option value="1">1 (keep it)</option>
+                                <option value="0">0</option>
+                                <option value="_">blank</option>
                             </select>
                         </div>
                         <div class="rule-field">
@@ -58,37 +81,41 @@
                             <select id="rule-1-move">
                                 <option value="right">Right →</option>
                                 <option value="left">← Left</option>
-                                <option value="stay">Stay</option>
+                                <option value="stay">Stay (don't move)</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Go to:</label>
+                            <label>Go to state:</label>
                             <select id="rule-1-goto" class="state-select"></select>
                         </div>
                     </div>
                 </div>
 
+                <!-- Rule for blank -->
                 <div class="rule-card-input">
-                    <div class="rule-card-header">When I see <strong>blank (_)</strong></div>
+                    <div class="rule-card-header">
+                        <span class="symbol blank">_</span>
+                        When I see <strong>blank</strong> (end of input)
+                    </div>
                     <div class="rule-card-body">
                         <div class="rule-field">
                             <label>Write:</label>
                             <select id="rule-blank-write">
-                                <option value="_">Keep blank</option>
-                                <option value="0">Write 0</option>
-                                <option value="1">Write 1</option>
+                                <option value="_">blank (keep it)</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
                             </select>
                         </div>
                         <div class="rule-field">
                             <label>Move:</label>
                             <select id="rule-blank-move">
-                                <option value="stay">Stay (STOP)</option>
+                                <option value="stay">Stay (don't move)</option>
                                 <option value="left">← Left</option>
                                 <option value="right">Right →</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Go to:</label>
+                            <label>Go to state:</label>
                             <select id="rule-blank-goto" class="state-select"></select>
                         </div>
                     </div>
@@ -96,36 +123,208 @@
             </div>
         </div>
 
-        <div class="graph-section">
-            <h3>State Diagram</h3>
-            <div class="state-graph-container" id="rules-graph">
-                <!-- Graph renders here -->
-            </div>
+        <!-- Summary of what was defined -->
+        <div class="rules-summary" id="rules-summary">
+            <h3>Your Rules Summary:</h3>
+            <div id="summary-content"></div>
         </div>
 
-        <div class="validation-section">
-            <div class="validation-buttons">
-                <button id="btn-validate-rules" class="btn-primary btn-large">Check Rules with AI</button>
-                <button id="btn-show-answer" class="btn-warning">I'm Stuck - Show Answer</button>
-            </div>
-            <div class="feedback-box hidden" id="feedback-box">
-                <p class="feedback-message" id="feedback-message"></p>
-            </div>
-        </div>
-
+        <!-- Navigation -->
         <div class="nav-buttons">
             <a href="/challenge/states" class="btn-secondary">← Back to States</a>
-            <button id="btn-next-state" class="btn-primary hidden">Next State →</button>
-            <a href="/challenge/review" id="btn-review" class="btn-success hidden">Review Algorithm →</a>
+            <button id="btn-next" class="btn-primary btn-large">Save & Continue →</button>
         </div>
 
-        <!-- Loading Indicator -->
-        <div class="loading-overlay hidden" id="loading-overlay">
-            <div class="spinner"></div>
-            <p id="loading-text">AI is checking your rules...</p>
+        <!-- Help section -->
+        <div class="help-section hidden" id="help-section">
+            <button class="help-toggle" id="help-toggle">Show Answer</button>
+            <div class="help-content hidden" id="help-content">
+                <p>Loading suggested answer...</p>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+.current-state {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-family: monospace;
+}
+
+.progress-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.progress-step {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    background: #f3f4f6;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.progress-step.active {
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.progress-step.done {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.challenge-reminder {
+    background: #f3f4f6;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.state-explanation {
+    background: #f0f9ff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #0ea5e9;
+}
+
+.rule-template {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.rules-form-section {
+    margin-bottom: 1.5rem;
+}
+
+.rule-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rule-card-input {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.rule-card-header {
+    background: #f9fafb;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.symbol {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1f2937;
+    color: #10b981;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.symbol.blank {
+    color: #6b7280;
+}
+
+.rule-card-body {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 600px) {
+    .rule-card-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+.rule-field label {
+    display: block;
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.rule-field select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.rule-field select:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+.rules-summary {
+    background: #fefce8;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.summary-rule {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #fef3c7;
+    font-family: monospace;
+}
+
+.summary-rule:last-child {
+    border-bottom: none;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.help-section {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.help-toggle {
+    background: #fef2f2;
+    color: #dc2626;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.help-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fef2f2;
+    border-radius: 4px;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -142,26 +341,38 @@ document.addEventListener('DOMContentLoaded', function() {
         reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
     }
 
+    // Build progress bar
+    const progressBar = document.getElementById('progress-bar');
+    states.forEach((state, idx) => {
+        const step = document.createElement('div');
+        step.className = 'progress-step';
+        if (state.name === currentState) {
+            step.classList.add('active');
+        } else if (rules[state.name]) {
+            step.classList.add('done');
+        }
+        step.textContent = state.name;
+        progressBar.appendChild(step);
+    });
+
     // Populate state selects
     const stateSelects = document.querySelectorAll('.state-select');
     stateSelects.forEach(select => {
+        // Add all user states
         states.forEach(state => {
             const option = document.createElement('option');
             option.value = state.name;
             option.textContent = state.name;
-            if (state.name === currentState) option.selected = true;
             select.appendChild(option);
         });
         // Add DONE option
-        if (!states.find(s => s.name === 'DONE')) {
-            const doneOption = document.createElement('option');
-            doneOption.value = 'DONE';
-            doneOption.textContent = 'DONE (stop)';
-            select.appendChild(doneOption);
-        }
+        const doneOption = document.createElement('option');
+        doneOption.value = 'DONE';
+        doneOption.textContent = 'DONE (stop machine)';
+        select.appendChild(doneOption);
     });
 
-    // Load existing rules for this state
+    // Load existing rules for this state if any
     if (rules[currentState]) {
         const r = rules[currentState];
         if (r['0']) {
@@ -180,10 +391,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('rule-blank-goto').value = r['_'].goto;
         }
     }
-
-    // Find next state
-    const stateIndex = states.findIndex(s => s.name === currentState);
-    const nextState = states[stateIndex + 1];
 
     function getCurrentRules() {
         return {
@@ -205,60 +412,57 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Check Rules button
-    document.getElementById('btn-validate-rules').addEventListener('click', async function() {
-        document.getElementById('loading-overlay').classList.remove('hidden');
-        document.getElementById('loading-text').textContent = 'AI is checking your rules...';
-        document.getElementById('feedback-box').classList.add('hidden');
+    function updateSummary() {
+        const r = getCurrentRules();
+        const moveSymbol = (m) => m === 'right' ? '→' : m === 'left' ? '←' : '•';
+        const summaryContent = document.getElementById('summary-content');
+        summaryContent.innerHTML = `
+            <div class="summary-rule">See 0 → write ${r['0'].write}, ${moveSymbol(r['0'].move)}, go to ${r['0'].goto}</div>
+            <div class="summary-rule">See 1 → write ${r['1'].write}, ${moveSymbol(r['1'].move)}, go to ${r['1'].goto}</div>
+            <div class="summary-rule">See blank → write ${r['_'].write === '_' ? 'blank' : r['_'].write}, ${moveSymbol(r['_'].move)}, go to ${r['_'].goto}</div>
+        `;
+    }
 
-        const stateRules = getCurrentRules();
-        rules[currentState] = stateRules;
+    // Update summary on change
+    document.querySelectorAll('select').forEach(sel => sel.addEventListener('change', updateSummary));
+    updateSummary();
+
+    // Find next state to configure
+    const stateIndex = states.findIndex(s => s.name === currentState);
+    const nextState = states[stateIndex + 1];
+
+    // Save and continue button
+    document.getElementById('btn-next').addEventListener('click', function() {
+        // Save current rules
+        rules[currentState] = getCurrentRules();
         sessionStorage.setItem('challengeRules', JSON.stringify(rules));
 
-        try {
-            const response = await fetch('/api/challenge/validate-rules', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    challenge: challenge,
-                    state_name: currentState,
-                    rules: stateRules,
-                    all_states: states.map(s => s.name)
-                })
-            });
-
-            const result = await response.json();
-            document.getElementById('feedback-box').classList.remove('hidden');
-
-            if (result.valid) {
-                document.getElementById('feedback-message').innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
-
-                if (nextState) {
-                    document.getElementById('btn-next-state').classList.remove('hidden');
-                    document.getElementById('btn-next-state').onclick = () => {
-                        window.location.href = `/challenge/rules/${nextState.name}`;
-                    };
-                } else {
-                    document.getElementById('btn-review').classList.remove('hidden');
-                }
-            } else {
-                document.getElementById('feedback-message').innerHTML = `<span class="hint">${result.feedback}</span>
-                    ${result.suggestion ? `<p class="suggestion">${result.suggestion}</p>` : ''}`;
-            }
-
-        } catch (error) {
-            document.getElementById('feedback-box').classList.remove('hidden');
-            document.getElementById('feedback-message').innerHTML = '<span class="error">Error checking rules. Please try again.</span>';
-        } finally {
-            document.getElementById('loading-overlay').classList.add('hidden');
+        if (nextState) {
+            // Go to next state
+            window.location.href = `/challenge/rules/${nextState.name}`;
+        } else {
+            // All states done, go to test
+            window.location.href = '/challenge/run';
         }
     });
 
-    // Show Answer button
-    document.getElementById('btn-show-answer').addEventListener('click', async function() {
-        document.getElementById('loading-overlay').classList.remove('hidden');
-        document.getElementById('loading-text').textContent = 'AI is generating the correct answer...';
-        document.getElementById('feedback-box').classList.add('hidden');
+    // Help toggle (show answer)
+    const helpSection = document.getElementById('help-section');
+    const helpToggle = document.getElementById('help-toggle');
+    const helpContent = document.getElementById('help-content');
+
+    helpSection.classList.remove('hidden');
+
+    helpToggle.addEventListener('click', async function() {
+        if (!helpContent.classList.contains('hidden')) {
+            helpContent.classList.add('hidden');
+            helpToggle.textContent = 'Show Answer';
+            return;
+        }
+
+        helpContent.innerHTML = '<p>Loading...</p>';
+        helpContent.classList.remove('hidden');
+        helpToggle.textContent = 'Hide Answer';
 
         try {
             const response = await fetch('/api/challenge/get-answer', {
@@ -274,101 +478,42 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (result.rules) {
-                // Apply the correct rules to the form
-                if (result.rules['0']) {
-                    document.getElementById('rule-0-write').value = result.rules['0'].write;
-                    document.getElementById('rule-0-move').value = result.rules['0'].move;
-                    document.getElementById('rule-0-goto').value = result.rules['0'].goto;
-                }
-                if (result.rules['1']) {
-                    document.getElementById('rule-1-write').value = result.rules['1'].write;
-                    document.getElementById('rule-1-move').value = result.rules['1'].move;
-                    document.getElementById('rule-1-goto').value = result.rules['1'].goto;
-                }
-                if (result.rules['_']) {
-                    document.getElementById('rule-blank-write').value = result.rules['_'].write;
-                    document.getElementById('rule-blank-move').value = result.rules['_'].move;
-                    document.getElementById('rule-blank-goto').value = result.rules['_'].goto;
-                }
-
-                // Save rules
-                rules[currentState] = result.rules;
-                sessionStorage.setItem('challengeRules', JSON.stringify(rules));
-                updateGraph();
-
-                // Show feedback
-                document.getElementById('feedback-box').classList.remove('hidden');
-                document.getElementById('feedback-message').innerHTML = `
-                    <span class="success">✓ Here's the correct answer!</span>
-                    <p class="explanation">${result.explanation || 'The rules have been filled in correctly.'}</p>
+                const r = result.rules;
+                helpContent.innerHTML = `
+                    <p><strong>Suggested rules for ${currentState}:</strong></p>
+                    <ul>
+                        <li>See 0 → write ${r['0']?.write || '?'}, move ${r['0']?.move || '?'}, go to ${r['0']?.goto || '?'}</li>
+                        <li>See 1 → write ${r['1']?.write || '?'}, move ${r['1']?.move || '?'}, go to ${r['1']?.goto || '?'}</li>
+                        <li>See blank → write ${r['_']?.write || '?'}, move ${r['_']?.move || '?'}, go to ${r['_']?.goto || '?'}</li>
+                    </ul>
+                    ${result.explanation ? `<p><em>${result.explanation}</em></p>` : ''}
+                    <button class="btn-secondary" onclick="applyAnswer()">Apply This Answer</button>
                 `;
 
-                // Show next button
-                if (nextState) {
-                    document.getElementById('btn-next-state').classList.remove('hidden');
-                    document.getElementById('btn-next-state').onclick = () => {
-                        window.location.href = `/challenge/rules/${nextState.name}`;
-                    };
-                } else {
-                    document.getElementById('btn-review').classList.remove('hidden');
-                }
+                window.applyAnswer = function() {
+                    if (r['0']) {
+                        document.getElementById('rule-0-write').value = r['0'].write;
+                        document.getElementById('rule-0-move').value = r['0'].move;
+                        document.getElementById('rule-0-goto').value = r['0'].goto;
+                    }
+                    if (r['1']) {
+                        document.getElementById('rule-1-write').value = r['1'].write;
+                        document.getElementById('rule-1-move').value = r['1'].move;
+                        document.getElementById('rule-1-goto').value = r['1'].goto;
+                    }
+                    if (r['_']) {
+                        document.getElementById('rule-blank-write').value = r['_'].write;
+                        document.getElementById('rule-blank-move').value = r['_'].move;
+                        document.getElementById('rule-blank-goto').value = r['_'].goto;
+                    }
+                    updateSummary();
+                };
+            } else {
+                helpContent.innerHTML = '<p>Could not load answer. Try again.</p>';
             }
-
         } catch (error) {
-            document.getElementById('feedback-box').classList.remove('hidden');
-            document.getElementById('feedback-message').innerHTML = '<span class="error">Error getting answer. Please try again.</span>';
-        } finally {
-            document.getElementById('loading-overlay').classList.add('hidden');
+            helpContent.innerHTML = '<p>Error loading answer.</p>';
         }
-    });
-
-    // Graph update function
-    function updateGraph() {
-        const graphStates = {};
-        states.forEach(s => {
-            graphStates[s.name.toLowerCase()] = {
-                label: s.name,
-                emoji: s.name === 'START' ? '🏁' : (s.name === 'DONE' ? '✅' : '❓'),
-                description: ''
-            };
-        });
-
-        // Add DONE if referenced
-        if (!graphStates['done']) {
-            graphStates['done'] = { label: 'DONE', emoji: '✅', description: '' };
-        }
-
-        const transitions = {};
-        Object.keys(rules).forEach(stateName => {
-            const stateRules = rules[stateName];
-            ['0', '1', '_'].forEach(symbol => {
-                if (stateRules[symbol]) {
-                    const key = `${stateName.toLowerCase()},${symbol}`;
-                    const moveCode = stateRules[symbol].move === 'right' ? 'R' :
-                                   stateRules[symbol].move === 'left' ? 'L' : 'N';
-                    transitions[key] = [
-                        stateRules[symbol].goto.toLowerCase(),
-                        stateRules[symbol].write,
-                        moveCode
-                    ];
-                }
-            });
-        });
-
-        if (typeof StateGraph !== 'undefined') {
-            new StateGraph('rules-graph', graphStates, transitions, { animated: false });
-        }
-    }
-
-    updateGraph();
-
-    // Update graph on change
-    document.querySelectorAll('select').forEach(select => {
-        select.addEventListener('change', () => {
-            rules[currentState] = getCurrentRules();
-            sessionStorage.setItem('challengeRules', JSON.stringify(rules));
-            updateGraph();
-        });
     });
 });
 </script>

@@ -5,43 +5,234 @@
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 1: What States Do You Need?</h1>
+        <h1>Step 1: Design Your States</h1>
 
+        <!-- Task reminder -->
         <div class="challenge-reminder" id="challenge-reminder">
             <!-- Challenge task reminder loads here -->
         </div>
 
+        <!-- Clear explanation -->
+        <div class="explanation-box">
+            <h3>What Are States?</h3>
+            <p><strong>States = what the machine "remembers"</strong></p>
+            <p>The machine can only see ONE cell at a time. States let it remember what it has seen or what it's doing.</p>
+
+            <div class="example-box">
+                <strong>Example:</strong> To count if there's an even or odd number of 1s:
+                <ul>
+                    <li><code>EVEN</code> = "So far, I've seen an EVEN number of 1s"</li>
+                    <li><code>ODD</code> = "So far, I've seen an ODD number of 1s"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- System states (always present) -->
+        <div class="system-states">
+            <h3>System States (Always Present):</h3>
+            <div class="state-row system">
+                <span class="state-badge start">START</span>
+                <span class="state-desc">Machine begins here. You'll define rules for this state.</span>
+            </div>
+            <div class="state-row system">
+                <span class="state-badge done">DONE</span>
+                <span class="state-desc">Machine stops here. Any state can "go to DONE" to finish.</span>
+            </div>
+        </div>
+
+        <!-- User states builder -->
         <div class="states-builder">
-            <p class="section-hint">States = what the machine needs to "remember". Think about what information changes as the machine works.</p>
+            <h3>Your Working States:</h3>
+            <p class="hint">What does your machine need to remember? Name your states clearly.</p>
 
-            <div class="states-list-container">
-                <div class="state-row header-row">
-                    <span class="state-badge start">🏁 START</span>
-                    <span class="state-hint">(always begins here)</span>
-                </div>
-
-                <div id="states-list">
-                    <!-- Dynamic state inputs -->
-                </div>
-
-                <button id="btn-add-state" class="btn-secondary">+ Add State</button>
+            <!-- Suggested states from challenge -->
+            <div class="suggested-states hidden" id="suggested-states">
+                <p><strong>Suggested states for this challenge:</strong></p>
+                <div id="suggested-states-list"></div>
             </div>
+
+            <div id="states-list" class="user-states-list">
+                <!-- Dynamic state inputs -->
+            </div>
+
+            <button id="btn-add-state" class="btn-secondary">+ Add Another State</button>
         </div>
 
+        <!-- Navigation -->
         <div class="validation-section">
-            <button id="btn-validate-states" class="btn-primary btn-large">Continue →</button>
-            <div class="feedback-box hidden" id="feedback-box">
-                <p class="feedback-message" id="feedback-message"></p>
-            </div>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div class="loading-overlay hidden" id="loading-overlay">
-            <div class="spinner"></div>
-            <p>AI is checking your states...</p>
+            <button id="btn-continue" class="btn-primary btn-large">Continue to Rules</button>
+            <p class="note">You'll define what each state does next.</p>
         </div>
     </div>
 </div>
+
+<style>
+.explanation-box {
+    background: #f0f9ff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #0ea5e9;
+}
+
+.example-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 4px;
+}
+
+.example-box code {
+    background: #1f2937;
+    color: #10b981;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+
+.system-states {
+    background: #fefce8;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.state-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+}
+
+.state-row.system {
+    border-bottom: 1px solid #fef3c7;
+}
+
+.state-row.system:last-child {
+    border-bottom: none;
+}
+
+.state-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-family: monospace;
+    min-width: 80px;
+    text-align: center;
+}
+
+.state-badge.start {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.state-badge.done {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.state-desc {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.states-builder {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.user-states-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.user-state-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-state-row input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+.user-state-row input:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+.user-state-row input::placeholder {
+    color: #9ca3af;
+    text-transform: none;
+}
+
+.btn-remove {
+    background: #fef2f2;
+    color: #dc2626;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.btn-remove:hover {
+    background: #fee2e2;
+}
+
+.suggested-states {
+    background: #ecfdf5;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.suggested-state-btn {
+    background: white;
+    border: 2px solid #10b981;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin: 0.25rem;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+.suggested-state-btn:hover {
+    background: #d1fae5;
+}
+
+.suggested-state-btn.used {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.validation-section {
+    text-align: center;
+}
+
+.note {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.challenge-reminder {
+    background: #f3f4f6;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -49,84 +240,96 @@
 document.addEventListener('DOMContentLoaded', function() {
     const statesList = document.getElementById('states-list');
     const addStateBtn = document.getElementById('btn-add-state');
-    const validateBtn = document.getElementById('btn-validate-states');
-    const feedbackBox = document.getElementById('feedback-box');
-    const feedbackMessage = document.getElementById('feedback-message');
-    const loadingOverlay = document.getElementById('loading-overlay');
+    const continueBtn = document.getElementById('btn-continue');
     const reminderDiv = document.getElementById('challenge-reminder');
+    const suggestedDiv = document.getElementById('suggested-states');
+    const suggestedList = document.getElementById('suggested-states-list');
 
     // Load challenge from session storage
     const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
+
     if (challenge.task) {
-        reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
+        reminderDiv.innerHTML = `
+            <p><strong>Your Task:</strong> ${challenge.task}</p>
+            ${challenge.task_detail ? `<p>${challenge.task_detail}</p>` : ''}
+        `;
+    }
+
+    // Show suggested states if available
+    if (challenge.suggested_states && challenge.suggested_states.length > 0) {
+        suggestedList.innerHTML = challenge.suggested_states.map(state =>
+            `<button class="suggested-state-btn" data-state="${state}">${state}</button>`
+        ).join('');
+        suggestedDiv.classList.remove('hidden');
+
+        // Click to add suggested state
+        suggestedList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('suggested-state-btn') && !e.target.classList.contains('used')) {
+                const stateName = e.target.dataset.state;
+                addState(stateName);
+                e.target.classList.add('used');
+            }
+        });
     }
 
     function addState(name = '') {
         const div = document.createElement('div');
-        div.className = 'state-row';
+        div.className = 'user-state-row';
         div.innerHTML = `
-            <input type="text" class="state-name-input" placeholder="STATE_NAME" value="${name}">
-            <button class="btn-remove" onclick="this.parentElement.remove();">×</button>
+            <input type="text" class="state-name-input" placeholder="STATE_NAME (e.g., SCANNING, COUNTING)" value="${name}">
+            <button class="btn-remove" onclick="this.parentElement.remove(); updateSuggestedButtons();">×</button>
         `;
         statesList.appendChild(div);
+
+        // Focus the new input if empty
+        if (!name) {
+            div.querySelector('input').focus();
+        }
     }
+
+    // Update suggested buttons when state is removed
+    window.updateSuggestedButtons = function() {
+        const usedStates = Array.from(document.querySelectorAll('.state-name-input'))
+            .map(input => input.value.trim().toUpperCase());
+
+        document.querySelectorAll('.suggested-state-btn').forEach(btn => {
+            if (usedStates.includes(btn.dataset.state)) {
+                btn.classList.add('used');
+            } else {
+                btn.classList.remove('used');
+            }
+        });
+    };
 
     addStateBtn.addEventListener('click', () => addState());
 
-    // Add one empty state by default
+    // Add initial empty state
     addState();
 
-    validateBtn.addEventListener('click', async function() {
-        // Gather states
-        const states = [{ name: 'START' }];
+    continueBtn.addEventListener('click', function() {
+        // Gather states - always include START
+        const states = [{ name: 'START', isSystem: true }];
 
         document.querySelectorAll('.state-name-input').forEach(input => {
             const name = input.value.trim().toUpperCase();
-            if (name && name !== 'START') {
-                states.push({ name: name });
+            if (name && name !== 'START' && name !== 'DONE') {
+                states.push({ name: name, isSystem: false });
             }
         });
 
         if (states.length < 2) {
-            feedbackBox.classList.remove('hidden');
-            feedbackMessage.innerHTML = '<span class="error">Add at least one more state besides START!</span>';
+            alert('Please add at least one working state (besides START).\n\nThink: what does your machine need to remember?');
             return;
         }
 
         // Store states for next step
         sessionStorage.setItem('challengeStates', JSON.stringify(states));
 
-        loadingOverlay.classList.remove('hidden');
-        feedbackBox.classList.add('hidden');
+        // Clear any previous rules
+        sessionStorage.removeItem('challengeRules');
 
-        try {
-            const response = await fetch('/api/challenge/validate-states', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    challenge: challenge,
-                    states: states
-                })
-            });
-
-            const result = await response.json();
-            feedbackBox.classList.remove('hidden');
-
-            if (result.valid) {
-                feedbackMessage.innerHTML = `<span class="success">✓ ${result.feedback}</span>`;
-                setTimeout(() => {
-                    window.location.href = '/challenge/rules/START';
-                }, 1000);
-            } else {
-                feedbackMessage.innerHTML = `<span class="hint">${result.feedback}</span>`;
-            }
-
-        } catch (error) {
-            feedbackMessage.innerHTML = '<span class="error">Error checking states. Please try again.</span>';
-            feedbackBox.classList.remove('hidden');
-        } finally {
-            loadingOverlay.classList.add('hidden');
-        }
+        // Go to first state's rules (START)
+        window.location.href = '/challenge/rules/START';
     });
 });
 </script>

@@ -8,18 +8,64 @@
         <h1>Your Challenge</h1>
 
         <div class="challenge-card" id="challenge-card">
+            <!-- Task description -->
             <div class="challenge-task" id="challenge-task">
                 <p class="loading">Loading challenge...</p>
             </div>
-            <div class="challenge-examples" id="challenge-examples">
-                <!-- Examples load here -->
+
+            <!-- Clear output specification -->
+            <div class="output-spec hidden" id="output-spec">
+                <h3>What Your Machine Must Do:</h3>
+                <div class="spec-box" id="spec-content"></div>
             </div>
+
+            <!-- Test cases with expected outputs -->
+            <div class="test-cases-preview hidden" id="test-cases-preview">
+                <h3>Test Cases (Your Machine Must Pass All):</h3>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th>Input</th>
+                            <th>Expected Output</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody id="test-cases-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- System info -->
+            <div class="system-info hidden" id="system-info">
+                <h3>How It Works:</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="badge start">START</span>
+                        <span>Machine always begins in START state</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="badge done">DONE</span>
+                        <span>Machine stops when it reaches DONE state</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="badge user">YOUR STATES</span>
+                        <span>You create states to remember things</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hint (collapsed) -->
+            <div class="hint-section hidden" id="hint-section">
+                <button class="hint-toggle" id="hint-toggle">Need a hint?</button>
+                <div class="hint-content hidden" id="hint-content"></div>
+            </div>
+
             <button id="btn-new-challenge" class="btn-secondary btn-small">Get Different Challenge</button>
         </div>
 
         <div class="challenge-actions">
             <a href="/challenge/states" class="btn-primary btn-large" id="btn-start-challenge" style="display: none;">
-                Start Building!
+                I Understand - Start Building!
             </a>
         </div>
 
@@ -30,13 +76,131 @@
         </div>
     </div>
 </div>
+
+<style>
+.output-spec {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f0f7ff;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.spec-box {
+    font-size: 1.1rem;
+}
+
+.test-cases-preview {
+    margin: 1.5rem 0;
+}
+
+.test-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+}
+
+.test-table th, .test-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.test-table th {
+    background: #f9fafb;
+    font-weight: 600;
+}
+
+.test-table code {
+    background: #1f2937;
+    color: #10b981;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.system-info {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #fefce8;
+    border-radius: 8px;
+}
+
+.info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge.start {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge.done {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.badge.user {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.hint-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.hint-toggle {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.hint-toggle:hover {
+    color: #3b82f6;
+}
+
+.hint-content {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+    font-style: italic;
+    color: #4b5563;
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const taskDiv = document.getElementById('challenge-task');
-    const examplesDiv = document.getElementById('challenge-examples');
+    const outputSpec = document.getElementById('output-spec');
+    const specContent = document.getElementById('spec-content');
+    const testCasesPreview = document.getElementById('test-cases-preview');
+    const testCasesBody = document.getElementById('test-cases-body');
+    const systemInfo = document.getElementById('system-info');
+    const hintSection = document.getElementById('hint-section');
+    const hintToggle = document.getElementById('hint-toggle');
+    const hintContent = document.getElementById('hint-content');
     const startBtn = document.getElementById('btn-start-challenge');
     const newChallengeBtn = document.getElementById('btn-new-challenge');
     const loadingOverlay = document.getElementById('loading-overlay');
@@ -44,7 +208,10 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadChallenge() {
         loadingOverlay.classList.remove('hidden');
         taskDiv.innerHTML = '<p class="loading">Loading challenge...</p>';
-        examplesDiv.innerHTML = '';
+        outputSpec.classList.add('hidden');
+        testCasesPreview.classList.add('hidden');
+        systemInfo.classList.add('hidden');
+        hintSection.classList.add('hidden');
         startBtn.style.display = 'none';
 
         try {
@@ -56,20 +223,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Store challenge in session storage for next steps
+            // Store challenge in session storage
             sessionStorage.setItem('currentChallenge', JSON.stringify(challenge));
 
-            // Display task
-            taskDiv.innerHTML = `<h2>${challenge.task}</h2>`;
+            // Display main task
+            taskDiv.innerHTML = `
+                <h2>${challenge.task}</h2>
+                ${challenge.task_detail ? `<p class="task-detail">${challenge.task_detail}</p>` : ''}
+            `;
 
-            // Display examples
-            if (challenge.examples && challenge.examples.length > 0) {
-                let examplesHtml = '<h3>Examples:</h3><ul class="examples-list">';
-                challenge.examples.forEach(ex => {
-                    examplesHtml += `<li><code>${ex.input}</code> → ${ex.output}</li>`;
-                });
-                examplesHtml += '</ul>';
-                examplesDiv.innerHTML = examplesHtml;
+            // Display output specification
+            if (challenge.output_spec) {
+                specContent.innerHTML = `
+                    <p><strong>${challenge.output_spec.description}</strong></p>
+                    <ul>
+                        ${Object.entries(challenge.output_spec.values || {}).map(([k, v]) =>
+                            `<li>${k}: write <code>${v}</code></li>`
+                        ).join('')}
+                    </ul>
+                    <p><em>Output is checked at the head position when machine stops.</em></p>
+                `;
+                outputSpec.classList.remove('hidden');
+            }
+
+            // Display test cases
+            if (challenge.test_cases && challenge.test_cases.length > 0) {
+                testCasesBody.innerHTML = challenge.test_cases.map(tc => `
+                    <tr>
+                        <td><code>${tc.input || '(empty)'}</code></td>
+                        <td><code>${tc.expected}</code></td>
+                        <td>${tc.reason}</td>
+                    </tr>
+                `).join('');
+                testCasesPreview.classList.remove('hidden');
+            }
+
+            // Show system info
+            systemInfo.classList.remove('hidden');
+
+            // Show hint toggle
+            if (challenge.hint) {
+                hintContent.textContent = challenge.hint;
+                hintSection.classList.remove('hidden');
             }
 
             startBtn.style.display = 'inline-block';
@@ -81,6 +276,12 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingOverlay.classList.add('hidden');
         }
     }
+
+    // Hint toggle
+    hintToggle.addEventListener('click', () => {
+        hintContent.classList.toggle('hidden');
+        hintToggle.textContent = hintContent.classList.contains('hidden') ? 'Need a hint?' : 'Hide hint';
+    });
 
     newChallengeBtn.addEventListener('click', loadChallenge);
 
