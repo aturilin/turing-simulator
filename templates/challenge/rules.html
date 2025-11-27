@@ -7,49 +7,107 @@
     <div class="challenge-container">
         <h1>Step 2: Rules for {{ state_name }}</h1>
 
-        <div class="rules-builder">
-            <div class="graph-section">
-                <h3>Click on arrows to set rules</h3>
-                <div class="state-graph-container interactive" id="rules-graph">
-                    <!-- Interactive graph renders here -->
+        <div class="challenge-reminder" id="challenge-reminder">
+            <!-- Task reminder loads here -->
+        </div>
+
+        <div class="rules-form-section">
+            <h3>What should {{ state_name }} do?</h3>
+            <p class="hint">Define what happens when this state sees each symbol on the tape.</p>
+
+            <div class="rule-cards">
+                <div class="rule-card-input">
+                    <div class="rule-card-header">When I see <strong>0</strong></div>
+                    <div class="rule-card-body">
+                        <div class="rule-field">
+                            <label>Write:</label>
+                            <select id="rule-0-write">
+                                <option value="0">Keep 0</option>
+                                <option value="1">Write 1</option>
+                                <option value="_">Write blank</option>
+                            </select>
+                        </div>
+                        <div class="rule-field">
+                            <label>Move:</label>
+                            <select id="rule-0-move">
+                                <option value="right">Right →</option>
+                                <option value="left">← Left</option>
+                                <option value="stay">Stay</option>
+                            </select>
+                        </div>
+                        <div class="rule-field">
+                            <label>Go to:</label>
+                            <select id="rule-0-goto" class="state-select"></select>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="rules-form-section">
-                <h3>Rules for {{ state_name }}</h3>
-                <p class="hint">What should happen when {{ state_name }} sees each symbol?</p>
-
-                <div class="rule-inputs">
-                    <div class="rule-row">
-                        <span class="rule-label">When I see <strong>0</strong>:</span>
-                        <select id="rule-0-write"><option value="0">Keep 0</option><option value="1">Write 1</option><option value="_">Write blank</option></select>
-                        <select id="rule-0-move"><option value="right">Move Right</option><option value="left">Move Left</option><option value="stay">Stay</option></select>
-                        <select id="rule-0-goto" class="state-select"></select>
-                    </div>
-
-                    <div class="rule-row">
-                        <span class="rule-label">When I see <strong>1</strong>:</span>
-                        <select id="rule-1-write"><option value="1">Keep 1</option><option value="0">Write 0</option><option value="_">Write blank</option></select>
-                        <select id="rule-1-move"><option value="right">Move Right</option><option value="left">Move Left</option><option value="stay">Stay</option></select>
-                        <select id="rule-1-goto" class="state-select"></select>
-                    </div>
-
-                    <div class="rule-row">
-                        <span class="rule-label">When I see <strong>blank (_)</strong>:</span>
-                        <select id="rule-blank-write"><option value="_">Keep blank</option><option value="0">Write 0</option><option value="1">Write 1</option></select>
-                        <select id="rule-blank-move"><option value="stay">Stay (STOP)</option><option value="left">Move Left</option><option value="right">Move Right</option></select>
-                        <select id="rule-blank-goto" class="state-select"></select>
+                <div class="rule-card-input">
+                    <div class="rule-card-header">When I see <strong>1</strong></div>
+                    <div class="rule-card-body">
+                        <div class="rule-field">
+                            <label>Write:</label>
+                            <select id="rule-1-write">
+                                <option value="1">Keep 1</option>
+                                <option value="0">Write 0</option>
+                                <option value="_">Write blank</option>
+                            </select>
+                        </div>
+                        <div class="rule-field">
+                            <label>Move:</label>
+                            <select id="rule-1-move">
+                                <option value="right">Right →</option>
+                                <option value="left">← Left</option>
+                                <option value="stay">Stay</option>
+                            </select>
+                        </div>
+                        <div class="rule-field">
+                            <label>Go to:</label>
+                            <select id="rule-1-goto" class="state-select"></select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="rules-summary" id="rules-summary">
-                    <!-- Visual summary of rules -->
+                <div class="rule-card-input">
+                    <div class="rule-card-header">When I see <strong>blank (_)</strong></div>
+                    <div class="rule-card-body">
+                        <div class="rule-field">
+                            <label>Write:</label>
+                            <select id="rule-blank-write">
+                                <option value="_">Keep blank</option>
+                                <option value="0">Write 0</option>
+                                <option value="1">Write 1</option>
+                            </select>
+                        </div>
+                        <div class="rule-field">
+                            <label>Move:</label>
+                            <select id="rule-blank-move">
+                                <option value="stay">Stay (STOP)</option>
+                                <option value="left">← Left</option>
+                                <option value="right">Right →</option>
+                            </select>
+                        </div>
+                        <div class="rule-field">
+                            <label>Go to:</label>
+                            <select id="rule-blank-goto" class="state-select"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <div class="graph-section">
+            <h3>State Diagram</h3>
+            <div class="state-graph-container" id="rules-graph">
+                <!-- Graph renders here -->
+            </div>
+        </div>
+
         <div class="validation-section">
-            <button id="btn-validate-rules" class="btn-primary btn-large">Check Rules with AI</button>
+            <div class="validation-buttons">
+                <button id="btn-validate-rules" class="btn-primary btn-large">Check Rules with AI</button>
+                <button id="btn-show-answer" class="btn-warning">I'm Stuck - Show Answer</button>
+            </div>
             <div class="feedback-box hidden" id="feedback-box">
                 <p class="feedback-message" id="feedback-message"></p>
             </div>
@@ -64,7 +122,7 @@
         <!-- Loading Indicator -->
         <div class="loading-overlay hidden" id="loading-overlay">
             <div class="spinner"></div>
-            <p>AI is checking your rules...</p>
+            <p id="loading-text">AI is checking your rules...</p>
         </div>
     </div>
 </div>
@@ -76,6 +134,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentState = '{{ state_name }}';
     const states = JSON.parse(sessionStorage.getItem('challengeStates') || '[]');
     const rules = JSON.parse(sessionStorage.getItem('challengeRules') || '{}');
+    const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
+
+    // Show task reminder
+    const reminderDiv = document.getElementById('challenge-reminder');
+    if (challenge.task) {
+        reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
+    }
 
     // Populate state selects
     const stateSelects = document.querySelectorAll('.state-select');
@@ -83,20 +148,20 @@ document.addEventListener('DOMContentLoaded', function() {
         states.forEach(state => {
             const option = document.createElement('option');
             option.value = state.name;
-            option.textContent = `Go to ${state.name}`;
+            option.textContent = state.name;
             if (state.name === currentState) option.selected = true;
             select.appendChild(option);
         });
-        // Add DONE option if not in states
+        // Add DONE option
         if (!states.find(s => s.name === 'DONE')) {
             const doneOption = document.createElement('option');
             doneOption.value = 'DONE';
-            doneOption.textContent = 'STOP (DONE)';
+            doneOption.textContent = 'DONE (stop)';
             select.appendChild(doneOption);
         }
     });
 
-    // Load existing rules for this state if any
+    // Load existing rules for this state
     if (rules[currentState]) {
         const r = rules[currentState];
         if (r['0']) {
@@ -116,19 +181,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Find current state index and next state
+    // Find next state
     const stateIndex = states.findIndex(s => s.name === currentState);
     const nextState = states[stateIndex + 1];
 
-    // Load challenge
-    const challenge = JSON.parse(sessionStorage.getItem('currentChallenge') || '{}');
-
-    document.getElementById('btn-validate-rules').addEventListener('click', async function() {
-        document.getElementById('loading-overlay').classList.remove('hidden');
-        document.getElementById('feedback-box').classList.add('hidden');
-
-        // Gather rules
-        const stateRules = {
+    function getCurrentRules() {
+        return {
             '0': {
                 write: document.getElementById('rule-0-write').value,
                 move: document.getElementById('rule-0-move').value,
@@ -145,8 +203,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 goto: document.getElementById('rule-blank-goto').value
             }
         };
+    }
 
-        // Save rules
+    // Check Rules button
+    document.getElementById('btn-validate-rules').addEventListener('click', async function() {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+        document.getElementById('loading-text').textContent = 'AI is checking your rules...';
+        document.getElementById('feedback-box').classList.add('hidden');
+
+        const stateRules = getCurrentRules();
         rules[currentState] = stateRules;
         sessionStorage.setItem('challengeRules', JSON.stringify(rules));
 
@@ -189,18 +254,90 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initialize graph
+    // Show Answer button
+    document.getElementById('btn-show-answer').addEventListener('click', async function() {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+        document.getElementById('loading-text').textContent = 'AI is generating the correct answer...';
+        document.getElementById('feedback-box').classList.add('hidden');
+
+        try {
+            const response = await fetch('/api/challenge/get-answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    challenge: challenge,
+                    state_name: currentState,
+                    all_states: states.map(s => s.name)
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.rules) {
+                // Apply the correct rules to the form
+                if (result.rules['0']) {
+                    document.getElementById('rule-0-write').value = result.rules['0'].write;
+                    document.getElementById('rule-0-move').value = result.rules['0'].move;
+                    document.getElementById('rule-0-goto').value = result.rules['0'].goto;
+                }
+                if (result.rules['1']) {
+                    document.getElementById('rule-1-write').value = result.rules['1'].write;
+                    document.getElementById('rule-1-move').value = result.rules['1'].move;
+                    document.getElementById('rule-1-goto').value = result.rules['1'].goto;
+                }
+                if (result.rules['_']) {
+                    document.getElementById('rule-blank-write').value = result.rules['_'].write;
+                    document.getElementById('rule-blank-move').value = result.rules['_'].move;
+                    document.getElementById('rule-blank-goto').value = result.rules['_'].goto;
+                }
+
+                // Save rules
+                rules[currentState] = result.rules;
+                sessionStorage.setItem('challengeRules', JSON.stringify(rules));
+                updateGraph();
+
+                // Show feedback
+                document.getElementById('feedback-box').classList.remove('hidden');
+                document.getElementById('feedback-message').innerHTML = `
+                    <span class="success">✓ Here's the correct answer!</span>
+                    <p class="explanation">${result.explanation || 'The rules have been filled in correctly.'}</p>
+                `;
+
+                // Show next button
+                if (nextState) {
+                    document.getElementById('btn-next-state').classList.remove('hidden');
+                    document.getElementById('btn-next-state').onclick = () => {
+                        window.location.href = `/challenge/rules/${nextState.name}`;
+                    };
+                } else {
+                    document.getElementById('btn-review').classList.remove('hidden');
+                }
+            }
+
+        } catch (error) {
+            document.getElementById('feedback-box').classList.remove('hidden');
+            document.getElementById('feedback-message').innerHTML = '<span class="error">Error getting answer. Please try again.</span>';
+        } finally {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+    });
+
+    // Graph update function
     function updateGraph() {
         const graphStates = {};
         states.forEach(s => {
             graphStates[s.name.toLowerCase()] = {
                 label: s.name,
                 emoji: s.name === 'START' ? '🏁' : (s.name === 'DONE' ? '✅' : '❓'),
-                description: s.description
+                description: ''
             };
         });
 
-        // Add transitions from saved rules
+        // Add DONE if referenced
+        if (!graphStates['done']) {
+            graphStates['done'] = { label: 'DONE', emoji: '✅', description: '' };
+        }
+
         const transitions = {};
         Object.keys(rules).forEach(stateName => {
             const stateRules = rules[stateName];
@@ -225,27 +362,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateGraph();
 
-    // Update graph when rules change
+    // Update graph on change
     document.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', () => {
-            // Save current rules temporarily
-            rules[currentState] = {
-                '0': {
-                    write: document.getElementById('rule-0-write').value,
-                    move: document.getElementById('rule-0-move').value,
-                    goto: document.getElementById('rule-0-goto').value
-                },
-                '1': {
-                    write: document.getElementById('rule-1-write').value,
-                    move: document.getElementById('rule-1-move').value,
-                    goto: document.getElementById('rule-1-goto').value
-                },
-                '_': {
-                    write: document.getElementById('rule-blank-write').value,
-                    move: document.getElementById('rule-blank-move').value,
-                    goto: document.getElementById('rule-blank-goto').value
-                }
-            };
+            rules[currentState] = getCurrentRules();
             sessionStorage.setItem('challengeRules', JSON.stringify(rules));
             updateGraph();
         });

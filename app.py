@@ -578,6 +578,67 @@ Are these rules appropriate for this state?"""
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/challenge/get-answer", methods=["POST"])
+def get_answer():
+    """Get the correct answer for a specific state."""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    challenge = data.get("challenge")
+    state_name = data.get("state_name")
+    all_states = data.get("all_states")
+
+    if not challenge or not state_name:
+        return jsonify({"error": "Missing data"}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """You are a Turing machine teacher providing the correct solution for a state.
+
+Given a challenge and a state name, provide the correct rules for that state.
+
+IMPORTANT: The rules must use exactly these values:
+- write: "0", "1", or "_"
+- move: "right", "left", or "stay"
+- goto: one of the state names provided, or "DONE"
+
+Output ONLY valid JSON:
+{
+  "rules": {
+    "0": {"write": "...", "move": "...", "goto": "..."},
+    "1": {"write": "...", "move": "...", "goto": "..."},
+    "_": {"write": "...", "move": "...", "goto": "..."}
+  },
+  "explanation": "Brief explanation of why these rules work (2-3 sentences)"
+}"""
+                },
+                {
+                    "role": "user",
+                    "content": f"""Challenge: {json.dumps(challenge)}
+
+State to define: {state_name}
+All available states: {json.dumps(all_states)}
+
+Provide the correct rules for the state "{state_name}" to solve this challenge."""
+                }
+            ],
+            temperature=0.2
+        )
+
+        result = response.choices[0].message.content
+        answer = json.loads(result)
+        return jsonify(answer)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/api/challenge/check-algorithm", methods=["POST"])
 def check_algorithm():
     """Check if student's complete algorithm is correct."""
