@@ -979,21 +979,42 @@ class TuringSimulator {
             card.dataset.state = rule.state;
             card.dataset.see = rule.see;
 
+            // Build action descriptions
+            const moveIcon = {
+                'right': '→',
+                'left': '←',
+                'stay': '■'
+            }[rule.move] || '?';
+
             const moveText = {
-                'right': 'move RIGHT',
-                'left': 'move LEFT',
+                'right': 'Move RIGHT',
+                'left': 'Move LEFT',
                 'stay': 'STOP'
             }[rule.move] || rule.move;
 
-            const seeDisplay = rule.see === '_' ? 'blank' : `"${rule.see}"`;
-            const writeDisplay = rule.write === '_' ? 'blank' : `"${rule.write}"`;
+            const seeDisplay = rule.see === '_' ? '_' : rule.see;
+            const writeDisplay = rule.write === '_' ? '_' : rule.write;
+            const isBlank = rule.see === '_';
 
             card.innerHTML = `
-                <div class="action">
-                    See <span class="see">${seeDisplay}</span> →
-                    write ${writeDisplay}, ${moveText}
+                <div class="rule-condition">
+                    <div class="rule-symbol ${isBlank ? 'blank' : ''}">${seeDisplay}</div>
+                    <span class="see-label">see</span>
                 </div>
-                <div class="result">→ ${rule.goto.toUpperCase()}</div>
+                <div class="rule-actions">
+                    <div class="action-item">
+                        <span class="action-icon">✏️</span>
+                        Write <strong>${writeDisplay}</strong>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-icon">${moveIcon}</span>
+                        <strong>${moveText}</strong>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-icon">⟳</span>
+                        Go to <strong>${rule.goto.toUpperCase()}</strong>
+                    </div>
+                </div>
             `;
 
             if (rule.state === 'scan') {
