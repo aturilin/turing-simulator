@@ -11,14 +11,15 @@ class StateGraph {
         this.transitions = transitions || {};
 
         // Calculate dynamic size based on number of states
+        // Cap maximum dimensions to fit within container
         const numStates = Object.keys(this.states).length;
-        const baseWidth = Math.max(400, numStates * 100);
-        const baseHeight = Math.max(300, numStates * 60);
+        const baseWidth = Math.min(600, Math.max(400, numStates * 100));
+        const baseHeight = Math.min(350, Math.max(250, numStates * 50));
 
         this.options = {
             width: options.width || baseWidth,
             height: options.height || baseHeight,
-            nodeRadius: options.nodeRadius || 40,
+            nodeRadius: options.nodeRadius || 35,
             animated: options.animated !== false
         };
 
@@ -37,11 +38,13 @@ class StateGraph {
         // Clear container
         this.container.innerHTML = '';
 
-        // Create SVG
+        // Create SVG with proper responsive scaling
         this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         this.svg.setAttribute('width', '100%');
-        this.svg.setAttribute('height', this.options.height);
+        this.svg.setAttribute('height', 'auto');
         this.svg.setAttribute('viewBox', `0 0 ${this.options.width} ${this.options.height}`);
+        this.svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        this.svg.style.maxHeight = '320px';
         this.svg.classList.add('state-graph-svg');
 
         // Add defs for arrow markers and gradients

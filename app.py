@@ -2,6 +2,8 @@
 
 import os
 import json
+import uuid
+import random
 from flask import Flask, render_template, request, jsonify, session
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -24,6 +26,108 @@ history = HistoryManager()
 # Which lessons have practice exercises
 # Lesson 4=head, 5=states, 6=rules, 8=binary (7=all-rules has no practice)
 LESSONS_WITH_PRACTICE = [4, 5, 6, 8]
+
+
+# ==================== TURING MACHINE VERIFIER ====================
+
+def run_tm_solution(rules, input_str, max_steps=1000):
+    """
+    Run a Turing machine solution and return the result.
+
+    rules: dict of state -> {symbol -> {write, move, goto}}
+    input_str: the input string to put on tape
+
+    Returns: {halted, state, output, steps, timeout}
+    """
+    tape = {}
+    for i, char in enumerate(input_str):
+        tape[i] = char
+
+    head_pos = 0
+    state = "START"
+    steps = 0
+
+    while steps < max_steps:
+        symbol = tape.get(head_pos, "_")
+
+        if state == "DONE":
+            return {
+                "halted": True,
+                "state": state,
+                "output": tape.get(head_pos, "_"),
+                "steps": steps,
+                "timeout": False
+            }
+
+        if state not in rules or symbol not in rules[state]:
+            return {
+                "halted": True,
+                "state": state,
+                "output": tape.get(head_pos, "_"),
+                "steps": steps,
+                "timeout": False,
+                "error": f"No rule for state={state}, symbol={symbol}"
+            }
+
+        rule = rules[state][symbol]
+        tape[head_pos] = rule["write"]
+
+        if rule["move"] == "right":
+            head_pos += 1
+        elif rule["move"] == "left":
+            head_pos -= 1
+        # "stay" = don't move
+
+        state = rule["goto"]
+        steps += 1
+
+    return {
+        "halted": False,
+        "state": state,
+        "output": tape.get(head_pos, "_"),
+        "steps": steps,
+        "timeout": True
+    }
+
+
+def verify_solution(rules, test_cases):
+    """
+    Verify a solution against test cases.
+    Returns: {passed: bool, results: [...], failed_count: int}
+    """
+    results = []
+    failed_count = 0
+
+    for tc in test_cases:
+        input_str = tc.get("input", "")
+        expected = tc.get("expected", "")
+
+        result = run_tm_solution(rules, input_str)
+
+        passed = (
+            result["state"] == "DONE" and
+            result["output"] == expected and
+            not result["timeout"]
+        )
+
+        if not passed:
+            failed_count += 1
+
+        results.append({
+            "input": input_str,
+            "expected": expected,
+            "actual": result["output"],
+            "state": result["state"],
+            "passed": passed,
+            "steps": result["steps"],
+            "timeout": result.get("timeout", False)
+        })
+
+    return {
+        "passed": failed_count == 0,
+        "results": results,
+        "failed_count": failed_count
+    }
 
 
 # ==================== PAGE ROUTES ====================
@@ -322,73 +426,142 @@ def get_example_program(example_id):
 
 @app.route("/api/challenge", methods=["GET"])
 def get_challenge():
-    """Generate a new TM challenge using AI with explicit test cases."""
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """You are a Turing machine teacher. Generate a SPECIFIC challenge with EXACT test cases.
+    """Generate a new TM challenge with VERIFIED solution."""
+    from flask import make_response
 
-RULES:
-- Challenge must be solvable with 2-4 working states (plus START and DONE which are provided)
-- Use only symbols: 0, 1, and blank (_)
-- The machine starts with head at position 0 (first character of input)
-- Output must be a SINGLE SYMBOL at the head's final position
+    max_attempts = 3
 
-CHALLENGE TYPES (pick one):
-1. PARITY: Count 1s, output "1" if even count, "0" if odd count
-2. BIT FLIP: Change all 0s to 1s and all 1s to 0s, halt at end
-3. FIRST EQUALS LAST: Output "1" if first and last symbols match, "0" otherwise
-4. HAS TWO ONES: Output "1" if string has at least two 1s, "0" otherwise
-5. ALL ONES: Output "1" if all symbols are 1, "0" otherwise
+    for attempt in range(max_attempts):
+        try:
+            # Generate challenge + solution in ONE call
+            response = client.chat.completions.create(
+                model="gpt-4o",  # Use better model for accurate solutions
+                messages=[
+                    {
+                        "role": "system",
+                        "content": """You are a Turing machine expert. Generate a challenge WITH a working solution.
 
-DO NOT USE: arithmetic (add, subtract, increment, decrement)
+TURING MACHINE RULES:
+- States: START (entry), DONE (halt), plus your working states
+- Symbols: 0, 1, _ (blank)
+- Head starts at position 0 (first character)
+- Output: symbol at head position when machine reaches DONE
+
+CHALLENGE TYPES - YOU MUST RANDOMLY PICK ONE (use the random number below):
+1. PARITY: Count 1s → output "1" if EVEN count, "0" if ODD count
+2. HAS_CONSECUTIVE: Output "1" if input has two consecutive same symbols (00 or 11), "0" otherwise
+3. ENDS_SAME_AS_START: Output "1" if first and last non-blank chars are equal, "0" otherwise
+4. MORE_ONES_THAN_ZEROS: Output "1" if count of 1s > count of 0s, "0" otherwise
+5. LENGTH_PARITY: Output "1" if input length is even, "0" if odd
+6. CONTAINS_PATTERN_01: Output "1" if input contains "01" somewhere, "0" otherwise
+7. ALL_SAME: Output "1" if all symbols are identical (all 0s or all 1s), "0" otherwise
+8. FIRST_EQUALS_LAST: Output "1" if first char equals last char, "0" otherwise
+
+DO NOT USE trivial challenges that don't need working states!
+
+CRITICAL: You MUST provide a WORKING solution that passes ALL test cases!
 
 OUTPUT FORMAT - Return ONLY valid JSON:
 {
-  "task": "One clear sentence describing what to do",
-  "task_detail": "Explain more clearly what the machine should output and when",
+  "id": "unique-id",
+  "task": "Clear one-sentence task description",
+  "task_detail": "Detailed explanation: when to output 1, when to output 0",
   "output_spec": {
-    "description": "What the output means",
-    "position": "head",
-    "values": {"case1": "symbol1", "case2": "symbol2"}
+    "description": "What the output symbol means",
+    "values": {"1": "meaning of 1", "0": "meaning of 0"}
   },
   "test_cases": [
-    {"input": "101", "expected": "0", "reason": "3 ones = odd"},
-    {"input": "1100", "expected": "1", "reason": "2 ones = even"},
-    {"input": "1", "expected": "0", "reason": "1 one = odd"},
-    {"input": "11", "expected": "1", "reason": "2 ones = even"}
+    {"input": "101", "expected": "0", "reason": "explanation"},
+    {"input": "11", "expected": "1", "reason": "explanation"},
+    {"input": "0", "expected": "0", "reason": "explanation"},
+    {"input": "", "expected": "1", "reason": "empty input case"}
   ],
   "suggested_states": ["STATE1", "STATE2"],
-  "hint": "A subtle hint about approach"
+  "hint": "A helpful hint",
+  "solution": {
+    "START": {
+      "0": {"write": "0", "move": "right", "goto": "STATE1"},
+      "1": {"write": "1", "move": "right", "goto": "STATE2"},
+      "_": {"write": "1", "move": "stay", "goto": "DONE"}
+    },
+    "STATE1": {
+      "0": {"write": "0", "move": "right", "goto": "STATE1"},
+      "1": {"write": "1", "move": "right", "goto": "STATE2"},
+      "_": {"write": "0", "move": "stay", "goto": "DONE"}
+    }
+  }
 }
 
-IMPORTANT: test_cases.expected must be EXACTLY what symbol should be at head position when machine halts in DONE state."""
-                },
-                {
-                    "role": "user",
-                    "content": "Generate a beginner-friendly Turing machine challenge with exact test cases."
-                }
-            ],
-            temperature=0.8
-        )
+IMPORTANT:
+- Test the solution mentally against ALL test cases before outputting
+- test_cases.expected MUST match what the solution actually outputs
+- Make sure solution handles empty input (head at blank)
+- Every state must have rules for 0, 1, AND _ (blank)"""
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Generate challenge type #{random.randint(1, 8)} from the list. Make sure the solution actually works!"
+                    }
+                ],
+                temperature=0.7
+            )
 
-        result = response.choices[0].message.content
-        # Clean up response
-        result = result.strip()
-        if result.startswith("```"):
-            result = result.split("```")[1]
-            if result.startswith("json"):
-                result = result[4:]
-        result = result.strip()
+            result = response.choices[0].message.content
 
-        challenge = json.loads(result)
-        return jsonify(challenge)
+            # Clean up response
+            result = result.strip()
+            if result.startswith("```"):
+                lines = result.split("\n")
+                result = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+                if result.startswith("json"):
+                    result = result[4:]
+            result = result.strip()
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+            challenge = json.loads(result)
+
+            # VERIFY the solution actually works
+            if "solution" in challenge and "test_cases" in challenge:
+                verification = verify_solution(challenge["solution"], challenge["test_cases"])
+
+                if verification["passed"]:
+                    # SUCCESS! Store in session and return
+                    challenge["id"] = str(uuid.uuid4())
+                    challenge["verified"] = True
+                    session["current_challenge"] = challenge
+
+                    # Return challenge WITHOUT solution (user shouldn't see it yet)
+                    response_data = {k: v for k, v in challenge.items() if k != "solution"}
+                    resp = make_response(jsonify(response_data))
+                    # Prevent caching so new challenges are always generated
+                    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                    resp.headers['Pragma'] = 'no-cache'
+                    resp.headers['Expires'] = '0'
+                    return resp
+                else:
+                    # Solution failed verification - log and retry
+                    print(f"Attempt {attempt + 1}: Solution failed verification")
+                    print(f"Failed tests: {verification['failed_count']}")
+                    for r in verification["results"]:
+                        if not r["passed"]:
+                            print(f"  Input '{r['input']}': expected '{r['expected']}', got '{r['actual']}'")
+                    continue
+            else:
+                print(f"Attempt {attempt + 1}: Missing solution or test_cases")
+                continue
+
+        except json.JSONDecodeError as e:
+            print(f"Attempt {attempt + 1}: JSON parse error - {e}")
+            continue
+        except Exception as e:
+            print(f"Attempt {attempt + 1}: Error - {e}")
+            continue
+
+    # All attempts failed - return error
+    resp = make_response(jsonify({"error": "Failed to generate valid challenge after multiple attempts. Please try again."}), 500)
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 
 @app.route("/api/check-plan", methods=["POST"])
@@ -595,75 +768,62 @@ Are these rules appropriate for this state?"""
 
 @app.route("/api/challenge/get-answer", methods=["POST"])
 def get_answer():
-    """Get the correct answer for a specific state."""
+    """Get the VERIFIED correct answer for a specific state from session."""
     data = request.get_json()
 
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
-    challenge = data.get("challenge")
     state_name = data.get("state_name")
-    all_states = data.get("all_states")
 
-    if not challenge or not state_name:
-        return jsonify({"error": "Missing data"}), 400
+    if not state_name:
+        return jsonify({"error": "Missing state_name"}), 400
 
-    try:
-        response = client.chat.completions.create(
-            model="gpt-5.1",  # GPT-5.1 with reasoning for accurate solutions
-            reasoning_effort="high",  # Enable deep thinking mode
-            messages=[
-                {
-                    "role": "system",
-                    "content": """You are an expert in Turing machines. Provide CORRECT, WORKING rules.
+    # Get verified solution from session
+    challenge = session.get("current_challenge")
 
-TURING MACHINE:
-- Tape: symbols 0, 1, or blank ("_")
-- Head reads ONE cell, starts at first input character
-- Rule: "seeing Y → write Z, move, goto state"
-- Stops at "DONE" state
+    if not challenge:
+        return jsonify({"error": "No active challenge. Please start a new challenge."}), 400
 
-OUTPUT - Return ONLY valid JSON:
-{
-  "rules": {
-    "0": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE"},
-    "1": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE"},
-    "_": {"write": "0" or "1" or "_", "move": "right" or "left" or "stay", "goto": "STATE"}
-  },
-  "explanation": "Simple 1-sentence explanation. NO encoding talk. Just say what the state does."
-}
+    if "solution" not in challenge:
+        return jsonify({"error": "Challenge has no verified solution."}), 400
 
-IMPORTANT:
-- goto must be one of provided states or "DONE"
-- Explanation must be SIMPLE and CLEAR - no jargon, no "encoding", just plain English"""
-                },
-                {
-                    "role": "user",
-                    "content": f"""CHALLENGE: {challenge.get('task', '')}
+    solution = challenge["solution"]
 
-EXAMPLES: {json.dumps(challenge.get('examples', []))}
+    if state_name not in solution:
+        # State doesn't exist in solution - return helpful message
+        available_states = list(solution.keys())
+        return jsonify({
+            "error": f"State '{state_name}' not in solution. Available states: {available_states}",
+            "hint": f"The verified solution uses these states: {available_states}. You may need to rename your states."
+        }), 400
 
-ALL STATES: {json.dumps(all_states)}
+    # Return the verified rules for this state
+    return jsonify({
+        "rules": solution[state_name],
+        "explanation": f"Verified rules for {state_name} that pass all test cases.",
+        "verified": True,
+        "solution_states": list(solution.keys())
+    })
 
-Provide the correct rules for state "{state_name}" to solve this Turing machine challenge."""
-                }
-            ]
-        )
 
-        result = response.choices[0].message.content
-        # Clean up the response - remove markdown code blocks if present
-        result = result.strip()
-        if result.startswith("```"):
-            result = result.split("```")[1]
-            if result.startswith("json"):
-                result = result[4:]
-        result = result.strip()
+@app.route("/api/challenge/get-full-solution", methods=["GET"])
+def get_full_solution():
+    """Get the complete verified solution for the current challenge."""
+    challenge = session.get("current_challenge")
 
-        answer = json.loads(result)
-        return jsonify(answer)
+    if not challenge:
+        return jsonify({"error": "No active challenge. Please start a new challenge."}), 400
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    if "solution" not in challenge:
+        return jsonify({"error": "Challenge has no verified solution."}), 400
+
+    return jsonify({
+        "solution": challenge["solution"],
+        "states": list(challenge["solution"].keys()),
+        "test_cases": challenge.get("test_cases", []),
+        "verified": True
+    })
 
 
 @app.route("/api/challenge/check-algorithm", methods=["POST"])
