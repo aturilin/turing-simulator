@@ -1319,6 +1319,121 @@ button:disabled {
 }
 
 /* ============================================
+   LOCK PUZZLE - Problem Setup
+   ============================================ */
+.problem-setup {
+  margin-bottom: 20px;
+}
+
+.problem-setup .lead {
+  color: var(--text);
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.problem-setup p {
+  color: var(--text-dim);
+}
+
+.problem-setup strong {
+  color: var(--orange);
+}
+
+.problem-example {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.problem-case {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+}
+
+.case-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: var(--font-main);
+}
+
+.case-input {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.case-arrow {
+  color: var(--text-muted);
+}
+
+.case-output {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.problem-challenge {
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(255, 107, 53, 0.1);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 8px 8px 0;
+}
+
+.problem-challenge p {
+  color: var(--text);
+  margin: 0 0 8px 0;
+}
+
+.problem-challenge p:last-child {
+  margin-bottom: 0;
+}
+
+.problem-challenge p.dim {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.problem-challenge strong {
+  color: var(--orange);
+}
+
+.problem-challenge em {
+  color: var(--cyan);
+  font-style: normal;
+}
+
+.problem-insight {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.problem-insight p {
+  color: var(--text);
+  margin: 0 0 6px 0;
+}
+
+.problem-insight p:last-child {
+  margin-bottom: 0;
+}
+
+.problem-insight p.dim {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.problem-insight strong {
+  color: var(--cyan);
+}
+
+/* ============================================
    STATES LESSON - Lock Timeline
    ============================================ */
 .lock-timeline {

@@ -146,6 +146,31 @@ LESSONS = [
         "title": "The Lock Puzzle",
         "practice_type": "lock-puzzle",
         "content": """
+            <div class="problem-setup">
+                <p class="lead">Simple rules worked for flipping bits.</p>
+                <p>But what about <strong>adding 1</strong> to a binary number?</p>
+            </div>
+
+            <div class="problem-example">
+                <div class="problem-case">
+                    <span class="case-label">Example:</span>
+                    <span class="case-input">1011</span>
+                    <span class="case-arrow">&rarr;</span>
+                    <span class="case-output">1100</span>
+                </div>
+            </div>
+
+            <div class="problem-challenge">
+                <p>The problem: when the machine sees <strong>1</strong>...</p>
+                <p class="dim">...should it keep scanning? Or start adding?</p>
+                <p>It depends on <em>what the machine is currently doing</em>.</p>
+            </div>
+
+            <div class="problem-insight">
+                <p>The machine needs to <strong>remember</strong> its current task.</p>
+                <p class="dim">Simple rules can't do that. We need something more.</p>
+            </div>
+
             <div class="puzzle-intro">
                 <p class="lead">Let me show you something that will help.</p>
                 <p>Try entering the code <strong>1-2-3-4</strong> on this lock.</p>
