@@ -1318,53 +1318,270 @@ button:disabled {
   color: var(--cyan);
 }
 
-/* Lock connection visual */
-.lock-connection {
-  margin: 20px 0;
-  padding: 16px;
+/* ============================================
+   STATES LESSON - Lock Timeline
+   ============================================ */
+.lock-timeline {
+  margin: 24px 0;
+  padding: 20px;
   background: var(--bg-elevated);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
-.lock-states {
+.lock-timeline-title {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lock-timeline-flow {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0;
   flex-wrap: wrap;
 }
 
-.lock-state {
+.lock-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   padding: 12px 16px;
+  min-width: 70px;
+}
+
+.lock-step-label {
+  padding: 8px 12px;
   background: var(--bg-dark);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-}
-
-.lock-state.active {
-  border-color: var(--green);
-  background: rgba(0, 255, 149, 0.1);
-}
-
-.state-num {
+  border: 2px solid var(--cyan);
+  border-radius: 6px;
   font-weight: 700;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
   color: var(--cyan);
-  font-size: 0.9rem;
+  letter-spacing: 0.03em;
 }
 
-.lock-state.active .state-num {
+.lock-step.open .lock-step-label {
+  border-color: var(--green);
+  background: rgba(0, 255, 149, 0.15);
   color: var(--green);
 }
 
-.state-meaning {
-  font-size: 0.75rem;
+.lock-step-meaning {
+  font-size: 0.65rem;
   color: var(--text-muted);
+  text-align: center;
+  line-height: 1.3;
+  margin-top: 4px;
 }
 
+.lock-step.open .lock-step-meaning {
+  color: var(--green);
+}
+
+.lock-step-arrow {
+  width: 24px;
+  height: 2px;
+  background: var(--border);
+  position: relative;
+}
+
+.lock-step-arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 4px solid transparent;
+  border-left-color: var(--border);
+}
+
+/* Key Insight Box */
+.key-insight {
+  margin: 24px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.key-insight-header {
+  background: var(--cyan);
+  color: var(--bg-dark);
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.key-insight-content {
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.key-insight-content p {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.key-insight-content p.dim {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+.key-insight-content strong {
+  color: var(--cyan);
+}
+
+/* Transition Box */
+.transition-box {
+  margin: 24px 0;
+  padding: 16px 20px;
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 8px 8px 0;
+  text-align: center;
+}
+
+.transition-box p {
+  margin: 0;
+  color: var(--text);
+}
+
+.transition-box p.dim {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* TM States Showcase */
+.tm-states-showcase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.tm-state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 24px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  min-width: 110px;
+  transition: all 0.2s ease;
+}
+
+.tm-state-card.cyan {
+  border-color: var(--cyan);
+}
+
+.tm-state-card.orange {
+  border-color: var(--orange);
+}
+
+.tm-state-card.green {
+  border-color: var(--green);
+}
+
+.tm-state-icon {
+  font-size: 1.8rem;
+}
+
+.tm-state-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.tm-state-card.cyan .tm-state-name {
+  color: var(--cyan);
+}
+
+.tm-state-card.orange .tm-state-name {
+  color: var(--orange);
+}
+
+.tm-state-card.green .tm-state-name {
+  color: var(--green);
+}
+
+.tm-state-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.tm-states-arrow {
+  width: 32px;
+  height: 2px;
+  background: var(--border);
+  position: relative;
+  margin: 0 4px;
+}
+
+.tm-states-arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left-color: var(--border);
+}
+
+/* Conclusion Box */
+.conclusion-box {
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.conclusion-box p {
+  margin: 0 0 8px 0;
+  color: var(--text);
+}
+
+.conclusion-box p:last-child {
+  margin-bottom: 0;
+}
+
+.conclusion-box p.highlight {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  background: var(--bg-dark);
+  border-radius: 6px;
+  margin: 8px 0;
+  display: inline-block;
+}
+
+.conclusion-box p.highlight strong {
+  color: var(--cyan);
+}
+
+.conclusion-box p.dim {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+/* Legacy lock styles kept for compatibility */
 .lock-arrow {
   color: var(--text-muted);
   font-size: 1.2rem;

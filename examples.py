@@ -163,86 +163,77 @@ LESSONS = [
         "content": """
             <div class="solution-intro">
                 <p class="lead">Remember the lock?</p>
-                <p>It knew which digit it was waiting for: <strong>1st, 2nd, 3rd, or 4th</strong>.</p>
-                <p>That memory is called a <strong>STATE</strong>.</p>
+                <p>It remembered which digit to expect next. That memory is called a <strong>STATE</strong>.</p>
             </div>
 
-            <div class="lock-connection">
-                <div class="lock-states">
-                    <div class="lock-state">
-                        <span class="state-num">State 1</span>
-                        <span class="state-meaning">"Waiting for 1st digit"</span>
+            <div class="lock-timeline">
+                <div class="lock-timeline-title">The lock moves through states:</div>
+                <div class="lock-timeline-flow">
+                    <div class="lock-step">
+                        <div class="lock-step-label">WAIT_1</div>
+                        <div class="lock-step-meaning">expecting<br>1st digit</div>
                     </div>
-                    <div class="lock-arrow">→</div>
-                    <div class="lock-state">
-                        <span class="state-num">State 2</span>
-                        <span class="state-meaning">"Waiting for 2nd digit"</span>
+                    <div class="lock-step-arrow"></div>
+                    <div class="lock-step">
+                        <div class="lock-step-label">WAIT_2</div>
+                        <div class="lock-step-meaning">expecting<br>2nd digit</div>
                     </div>
-                    <div class="lock-arrow">→</div>
-                    <div class="lock-state">
-                        <span class="state-num">State 3</span>
-                        <span class="state-meaning">"Waiting for 3rd digit"</span>
+                    <div class="lock-step-arrow"></div>
+                    <div class="lock-step">
+                        <div class="lock-step-label">WAIT_3</div>
+                        <div class="lock-step-meaning">expecting<br>3rd digit</div>
                     </div>
-                    <div class="lock-arrow">→</div>
-                    <div class="lock-state active">
-                        <span class="state-num">OPEN!</span>
-                        <span class="state-meaning">"All correct!"</span>
+                    <div class="lock-step-arrow"></div>
+                    <div class="lock-step">
+                        <div class="lock-step-label">WAIT_4</div>
+                        <div class="lock-step-meaning">expecting<br>4th digit</div>
+                    </div>
+                    <div class="lock-step-arrow"></div>
+                    <div class="lock-step open">
+                        <div class="lock-step-label">OPEN</div>
+                        <div class="lock-step-meaning">unlocked!</div>
                     </div>
                 </div>
             </div>
 
-            <div class="insight-box">
-                <p><strong>Key insight:</strong> The lock's behavior depends on TWO things:</p>
-                <ol>
-                    <li>What button you press (the <strong>input</strong>)</li>
-                    <li>Which digit it's waiting for (the <strong>state</strong>)</li>
-                </ol>
+            <div class="key-insight">
+                <div class="key-insight-header">KEY INSIGHT</div>
+                <div class="key-insight-content">
+                    <p>Same button press &rarr; <strong>different result</strong></p>
+                    <p class="dim">depending on which state the lock is in</p>
+                </div>
             </div>
 
-            <div class="transition-text">
+            <div class="transition-box">
                 <p>Our Turing machine needs the same thing!</p>
+                <p class="dim">Different states = different behavior for the same symbol</p>
             </div>
 
-            <div class="states-visual">
-                <div class="state-card scan">
-                    <span class="state-emoji">🔍</span>
-                    <strong>SCAN</strong>
-                    <span class="state-desc">"Looking for the end"</span>
+            <div class="tm-states-showcase">
+                <div class="tm-state-card cyan">
+                    <div class="tm-state-icon">🔍</div>
+                    <div class="tm-state-name">SCAN</div>
+                    <div class="tm-state-desc">Looking for the end</div>
                 </div>
-                <div class="state-card add">
-                    <span class="state-emoji">➕</span>
-                    <strong>ADD</strong>
-                    <span class="state-desc">"Now I'm adding"</span>
+                <div class="tm-states-arrow"></div>
+                <div class="tm-state-card orange">
+                    <div class="tm-state-icon">➕</div>
+                    <div class="tm-state-name">ADD</div>
+                    <div class="tm-state-desc">Adding 1 to digits</div>
                 </div>
-                <div class="state-card done">
-                    <span class="state-emoji">✅</span>
-                    <strong>DONE</strong>
-                    <span class="state-desc">"Finished!"</span>
-                </div>
-            </div>
-
-            <div class="rules-with-states">
-                <h3>Now the rules work!</h3>
-                <p>Each rule says: <strong>"In STATE X, when I see Y, do Z"</strong></p>
-
-                <div class="rules-group">
-                    <h4>🔍 SCAN mode:</h4>
-                    <div class="rule">See 0 → keep it, move RIGHT, stay SCAN</div>
-                    <div class="rule">See 1 → keep it, move RIGHT, stay SCAN</div>
-                    <div class="rule">See _ → move LEFT, switch to <strong>ADD</strong></div>
-                </div>
-
-                <div class="rules-group">
-                    <h4>➕ ADD mode:</h4>
-                    <div class="rule">See 0 → write 1, DONE!</div>
-                    <div class="rule">See 1 → write 0, move LEFT, stay ADD</div>
-                    <div class="rule">See _ → write 1, DONE!</div>
+                <div class="tm-states-arrow"></div>
+                <div class="tm-state-card green">
+                    <div class="tm-state-icon">✅</div>
+                    <div class="tm-state-name">DONE</div>
+                    <div class="tm-state-desc">Finished!</div>
                 </div>
             </div>
 
-            <div class="wow-connection">
-                <p>Same symbol (like <strong>1</strong>), different state = different action.</p>
-                <p>Just like the lock: same button, different position = different result!</p>
+            <div class="conclusion-box">
+                <p>Now the machine knows what to do:</p>
+                <p class="highlight">In <strong>SCAN</strong> + see <strong>1</strong> &rarr; keep going right</p>
+                <p class="highlight">In <strong>ADD</strong> + see <strong>1</strong> &rarr; write 0, carry left</p>
+                <p class="dim">Same symbol, different state = different action!</p>
             </div>
         """
     },
