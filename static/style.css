@@ -3251,3 +3251,164 @@ button:disabled {
     flex-wrap: wrap;
   }
 }
+
+/* ============================================
+   MOBILE RESPONSIVE - Lessons
+   ============================================ */
+@media (max-width: 600px) {
+  /* Lesson page base */
+  .lesson-page {
+    padding: 16px 12px;
+  }
+
+  .lesson-title {
+    font-size: 1.3rem;
+  }
+
+  .lesson-content {
+    font-size: 0.9rem;
+  }
+
+  /* Lock Timeline - stack vertically on mobile */
+  .lock-timeline {
+    padding: 16px 12px;
+  }
+
+  .lock-timeline-flow {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .lock-step {
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .lock-step-arrow {
+    width: 20px;
+    height: 2px;
+    transform: rotate(90deg);
+  }
+
+  .lock-step-arrow::after {
+    right: -4px;
+    top: -3px;
+    border-width: 4px 0 4px 6px;
+  }
+
+  /* TM States showcase - stack vertically */
+  .tm-states-showcase {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tm-state-card {
+    padding: 12px 16px;
+    min-width: auto;
+    width: 100%;
+  }
+
+  .tm-states-arrow {
+    width: 20px;
+    height: 2px;
+    transform: rotate(90deg);
+  }
+
+  .tm-states-arrow::after {
+    right: -4px;
+    top: -3px;
+    border-width: 4px 0 4px 6px;
+  }
+
+  /* Key insight box */
+  .key-insight {
+    padding: 16px;
+  }
+
+  .key-insight-header {
+    font-size: 0.7rem;
+  }
+
+  /* Puzzle styles */
+  .puzzle-intro .lead {
+    font-size: 1rem;
+  }
+
+  .puzzle-reveal {
+    padding: 16px;
+  }
+
+  .puzzle-reveal strong {
+    font-size: 1.1rem;
+  }
+
+  /* Lock simulator */
+  .lock-simulator {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+
+  /* Conclusion box */
+  .conclusion-box {
+    padding: 16px;
+  }
+
+  .conclusion-box .highlight {
+    font-size: 0.85rem;
+  }
+
+  /* Lesson navigation */
+  .lesson-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lesson-nav button {
+    width: 100%;
+  }
+
+  /* Tape visual demo */
+  .tape-visual-demo.horizontal {
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tape-visual-demo .tape-cell {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  /* Actions box */
+  .actions-box .action-list {
+    gap: 8px;
+  }
+
+  .action-item {
+    padding: 10px;
+  }
+
+  /* Rules display */
+  .rules-display .rule {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Recap box in finale */
+  .recap-box .recap-item {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Wow box */
+  .wow-box {
+    padding: 16px;
+  }
+
+  /* Final revelation */
+  .final-revelation .revelation-answer {
+    font-size: 2rem;
+  }
+}
