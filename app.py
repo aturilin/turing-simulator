@@ -23,10 +23,174 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 machine = TuringMachine()
 history = HistoryManager()
 
-# Which lessons have practice exercises
-# Lesson 4=head, 5=states, 6=rules, 8=binary (7=all-rules has no practice)
-LESSONS_WITH_PRACTICE = [4, 5, 6, 8]
+# ==================== FALLBACK CHALLENGES ====================
+# Pre-verified challenges to use when API fails
 
+FALLBACK_CHALLENGES = [
+    {
+        "id": "fallback-parity",
+        "task": "Count the 1s - Even or Odd?",
+        "task_detail": "Output '1' if there's an EVEN number of 1s in the input (including zero 1s), output '0' if there's an ODD number of 1s.",
+        "output_spec": {
+            "description": "The parity of 1s count",
+            "values": {"1": "even number of 1s", "0": "odd number of 1s"}
+        },
+        "test_cases": [
+            {"input": "101", "expected": "1", "reason": "Two 1s = even"},
+            {"input": "111", "expected": "0", "reason": "Three 1s = odd"},
+            {"input": "0", "expected": "1", "reason": "Zero 1s = even"},
+            {"input": "", "expected": "1", "reason": "Empty = zero 1s = even"}
+        ],
+        "suggested_states": ["EVEN", "ODD"],
+        "hint": "What changes each time you see a 1?",
+        "solution": {
+            "START": {
+                "0": {"write": "0", "move": "right", "goto": "EVEN"},
+                "1": {"write": "1", "move": "right", "goto": "ODD"},
+                "_": {"write": "1", "move": "stay", "goto": "DONE"}
+            },
+            "EVEN": {
+                "0": {"write": "0", "move": "right", "goto": "EVEN"},
+                "1": {"write": "1", "move": "right", "goto": "ODD"},
+                "_": {"write": "1", "move": "stay", "goto": "DONE"}
+            },
+            "ODD": {
+                "0": {"write": "0", "move": "right", "goto": "ODD"},
+                "1": {"write": "1", "move": "right", "goto": "EVEN"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            }
+        }
+    },
+    {
+        "id": "fallback-consecutive",
+        "task": "Find Consecutive Same Digits",
+        "task_detail": "Output '1' if the input contains two consecutive same symbols (00 or 11), otherwise output '0'.",
+        "output_spec": {
+            "description": "Whether consecutive same symbols exist",
+            "values": {"1": "has 00 or 11", "0": "no consecutive same symbols"}
+        },
+        "test_cases": [
+            {"input": "1100", "expected": "1", "reason": "Has '11' and '00'"},
+            {"input": "1010", "expected": "0", "reason": "Alternating, no pairs"},
+            {"input": "001", "expected": "1", "reason": "Has '00'"},
+            {"input": "", "expected": "0", "reason": "Empty = no pairs"}
+        ],
+        "suggested_states": ["SAW0", "SAW1"],
+        "hint": "What do you need to remember about the previous symbol?",
+        "solution": {
+            "START": {
+                "0": {"write": "0", "move": "right", "goto": "SAW0"},
+                "1": {"write": "1", "move": "right", "goto": "SAW1"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            },
+            "SAW0": {
+                "0": {"write": "1", "move": "stay", "goto": "DONE"},
+                "1": {"write": "1", "move": "right", "goto": "SAW1"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            },
+            "SAW1": {
+                "0": {"write": "0", "move": "right", "goto": "SAW0"},
+                "1": {"write": "1", "move": "stay", "goto": "DONE"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            }
+        }
+    },
+    {
+        "id": "fallback-all-same",
+        "task": "Are All Symbols the Same?",
+        "task_detail": "Output '1' if ALL symbols in the input are identical (all 0s or all 1s), otherwise output '0'.",
+        "output_spec": {
+            "description": "Whether all symbols match",
+            "values": {"1": "all same", "0": "mixed symbols"}
+        },
+        "test_cases": [
+            {"input": "111", "expected": "1", "reason": "All 1s"},
+            {"input": "000", "expected": "1", "reason": "All 0s"},
+            {"input": "101", "expected": "0", "reason": "Mixed"},
+            {"input": "", "expected": "1", "reason": "Empty = vacuously true"}
+        ],
+        "suggested_states": ["ALL0", "ALL1"],
+        "hint": "Once you see the first symbol, what are you checking for?",
+        "solution": {
+            "START": {
+                "0": {"write": "0", "move": "right", "goto": "ALL0"},
+                "1": {"write": "1", "move": "right", "goto": "ALL1"},
+                "_": {"write": "1", "move": "stay", "goto": "DONE"}
+            },
+            "ALL0": {
+                "0": {"write": "0", "move": "right", "goto": "ALL0"},
+                "1": {"write": "0", "move": "stay", "goto": "DONE"},
+                "_": {"write": "1", "move": "stay", "goto": "DONE"}
+            },
+            "ALL1": {
+                "0": {"write": "0", "move": "stay", "goto": "DONE"},
+                "1": {"write": "1", "move": "right", "goto": "ALL1"},
+                "_": {"write": "1", "move": "stay", "goto": "DONE"}
+            }
+        }
+    },
+    {
+        "id": "fallback-starts-with-1",
+        "task": "Does It Start With 1?",
+        "task_detail": "Output '1' if the input starts with the symbol '1', otherwise output '0'.",
+        "output_spec": {
+            "description": "Whether input starts with 1",
+            "values": {"1": "starts with 1", "0": "starts with 0 or empty"}
+        },
+        "test_cases": [
+            {"input": "100", "expected": "1", "reason": "Starts with 1"},
+            {"input": "011", "expected": "0", "reason": "Starts with 0"},
+            {"input": "1", "expected": "1", "reason": "Just '1'"},
+            {"input": "", "expected": "0", "reason": "Empty = no first symbol"}
+        ],
+        "suggested_states": [],
+        "hint": "This is simpler than you think - what's the very first symbol?",
+        "solution": {
+            "START": {
+                "0": {"write": "0", "move": "stay", "goto": "DONE"},
+                "1": {"write": "1", "move": "stay", "goto": "DONE"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            }
+        }
+    },
+    {
+        "id": "fallback-contains-01",
+        "task": "Find the Pattern 01",
+        "task_detail": "Output '1' if the input contains the pattern '01' anywhere, otherwise output '0'.",
+        "output_spec": {
+            "description": "Whether '01' pattern exists",
+            "values": {"1": "contains 01", "0": "no 01 pattern"}
+        },
+        "test_cases": [
+            {"input": "1101", "expected": "1", "reason": "Has '01' at end"},
+            {"input": "1110", "expected": "0", "reason": "Has '10' but no '01'"},
+            {"input": "01", "expected": "1", "reason": "Exactly '01'"},
+            {"input": "", "expected": "0", "reason": "Empty = no pattern"}
+        ],
+        "suggested_states": ["SAW0"],
+        "hint": "What do you need to remember after seeing a 0?",
+        "solution": {
+            "START": {
+                "0": {"write": "0", "move": "right", "goto": "SAW0"},
+                "1": {"write": "1", "move": "right", "goto": "START"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            },
+            "SAW0": {
+                "0": {"write": "0", "move": "right", "goto": "SAW0"},
+                "1": {"write": "1", "move": "stay", "goto": "DONE"},
+                "_": {"write": "0", "move": "stay", "goto": "DONE"}
+            }
+        }
+    }
+]
+
+def get_fallback_challenge():
+    """Return a random fallback challenge."""
+    challenge = random.choice(FALLBACK_CHALLENGES).copy()
+    challenge["id"] = str(uuid.uuid4())
+    challenge["verified"] = True
+    challenge["is_fallback"] = True
+    return challenge
 
 # ==================== TURING MACHINE VERIFIER ====================
 
@@ -148,14 +312,14 @@ def lesson(lesson_num):
         return render_template("lessons/welcome.html", active_page="lessons")
 
     lesson_data = lessons[lesson_num - 1]
-    has_practice = lesson_num in LESSONS_WITH_PRACTICE
+    practice_type = lesson_data.get("practice_type")
 
     return render_template(
         "lessons/lesson.html",
         lesson=lesson_data,
         lesson_num=lesson_num,
         total_lessons=len(lessons),
-        has_practice=has_practice,
+        practice_type=practice_type,
         active_page="lessons"
     )
 
@@ -163,13 +327,22 @@ def lesson(lesson_num):
 @app.route("/lesson/<int:lesson_num>/practice")
 def lesson_practice(lesson_num):
     """Display practice exercise for a lesson."""
-    if lesson_num not in LESSONS_WITH_PRACTICE:
+    lessons = get_lessons()
+
+    if lesson_num < 1 or lesson_num > len(lessons):
         return render_template("lessons/welcome.html", active_page="lessons")
 
-    # TODO: Implement practice templates
+    lesson_data = lessons[lesson_num - 1]
+    practice_type = lesson_data.get("practice_type")
+
+    if not practice_type:
+        return render_template("lessons/welcome.html", active_page="lessons")
+
     return render_template(
         "lessons/practice.html",
+        lesson=lesson_data,
         lesson_num=lesson_num,
+        practice_type=practice_type,
         active_page="lessons"
     )
 
@@ -556,8 +729,14 @@ IMPORTANT:
             print(f"Attempt {attempt + 1}: Error - {e}")
             continue
 
-    # All attempts failed - return error
-    resp = make_response(jsonify({"error": "Failed to generate valid challenge after multiple attempts. Please try again."}), 500)
+    # All attempts failed - return fallback challenge
+    print("API failed, using fallback challenge")
+    challenge = get_fallback_challenge()
+    session["current_challenge"] = challenge
+
+    # Return challenge WITHOUT solution
+    response_data = {k: v for k, v in challenge.items() if k != "solution"}
+    resp = make_response(jsonify(response_data))
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     resp.headers['Pragma'] = 'no-cache'
     resp.headers['Expires'] = '0'

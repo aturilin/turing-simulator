@@ -1,2599 +1,2936 @@
-/* ============================================================
-   TURING MACHINE SIMULATOR - Design System
-   Clean & Modern | Blue Professional Theme
-   ============================================================ */
+/* =============================================
+   TURING SIMULATOR CSS
+   ============================================= */
 
-/* ============================================================
-   1. CSS VARIABLES (Design Tokens)
-   ============================================================ */
-
+/* === VARIABLES === */
 :root {
-  /* Primary Blue Palette */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-
-  /* Neutral Gray Palette */
-  --color-gray-50: #f8fafc;
-  --color-gray-100: #f1f5f9;
-  --color-gray-200: #e2e8f0;
-  --color-gray-300: #cbd5e1;
-  --color-gray-400: #94a3b8;
-  --color-gray-500: #64748b;
-  --color-gray-600: #475569;
-  --color-gray-700: #334155;
-  --color-gray-800: #1e293b;
-  --color-gray-900: #0f172a;
-
-  /* Semantic Colors */
-  --color-success-50: #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
-
-  --color-warning-50: #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-
-  --color-error-50: #fef2f2;
-  --color-error-100: #fee2e2;
-  --color-error-500: #ef4444;
-  --color-error-600: #dc2626;
-  --color-error-700: #b91c1c;
-
-  /* Background Colors */
-  --bg-page: var(--color-gray-50);
-  --bg-card: #ffffff;
-  --bg-elevated: #ffffff;
-  --bg-muted: var(--color-gray-100);
-
-  /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-
-  --font-normal: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
-  --font-bold: 700;
-
-  --leading-tight: 1.25;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
-
-  /* Spacing */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-base: 0.2s ease;
-  --transition-slow: 0.3s ease;
-
-  /* Layout */
-  --nav-height: 64px;
-  --container-max: 960px;
-  --container-wide: 1200px;
+  --bg-dark: #0a0e14;
+  --bg-card: #0d1117;
+  --bg-elevated: #161b22;
+  --border: #21262d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-muted: #484f58;
+  --cyan: #00ffff;
+  --green: #00ff95;
+  --purple: #bd93f9;
+  --orange: #ffb86c;
+  --red: #ff5555;
+  --font: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* ============================================================
-   2. RESET & BASE STYLES
-   ============================================================ */
-
+/* === RESET === */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* === BASE === */
+html, body {
+  height: 100%;
 }
 
 body {
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-  color: var(--color-gray-900);
-  background: var(--bg-page);
-  min-height: 100vh;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: var(--font-semibold);
-  line-height: var(--leading-tight);
-  color: var(--color-gray-900);
-}
-
-h1 { font-size: var(--text-3xl); }
-h2 { font-size: var(--text-2xl); }
-h3 { font-size: var(--text-xl); }
-h4 { font-size: var(--text-lg); }
-
-p {
-  color: var(--color-gray-600);
-  line-height: var(--leading-relaxed);
+  font-family: var(--font);
+  background: var(--bg-dark);
+  color: var(--text);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
-  color: var(--color-primary-600);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-a:hover {
-  color: var(--color-primary-700);
-}
-
-code {
-  font-family: var(--font-mono);
-  font-size: 0.9em;
-  background: var(--color-gray-800);
-  color: var(--color-success-500);
-  padding: 0.2em 0.4em;
-  border-radius: var(--radius-sm);
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* ============================================================
-   3. NAVIGATION
-   ============================================================ */
-
-.main-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--color-gray-200);
-  height: var(--nav-height);
-}
-
-.nav-container {
-  max-width: var(--container-wide);
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  color: inherit;
   text-decoration: none;
 }
 
-.nav-logo {
-  flex-shrink: 0;
+.hidden {
+  display: none !important;
 }
 
-.nav-brand-text {
-  font-size: var(--text-lg);
-  font-weight: var(--font-bold);
-  color: var(--color-gray-900);
-}
+/* ===========================================
+   SIMULATOR PAGE STYLES
+   =========================================== */
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.nav-link {
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-gray-600);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.nav-link:hover {
-  color: var(--color-gray-900);
-  background: var(--color-gray-100);
-}
-
-.nav-link.active {
-  color: var(--color-primary-700);
-  background: var(--color-primary-50);
-}
-
-/* ============================================================
-   4. BREADCRUMBS
-   ============================================================ */
-
-.breadcrumbs-wrapper {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--color-gray-100);
-}
-
-.breadcrumbs {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: var(--space-3) var(--space-6);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-sm);
-}
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  color: var(--color-gray-500);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.breadcrumb:hover {
-  color: var(--color-primary-600);
-}
-
-.breadcrumb.completed {
-  color: var(--color-success-600);
-}
-
-.breadcrumb.completed .check {
-  font-size: var(--text-xs);
-}
-
-.breadcrumb.current {
-  color: var(--color-gray-900);
-  font-weight: var(--font-medium);
-}
-
-.breadcrumb-separator {
-  color: var(--color-gray-300);
-  display: flex;
-  align-items: center;
-}
-
-/* ============================================================
-   5. MAIN CONTENT LAYOUT
-   ============================================================ */
-
-.main-content {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: var(--space-8) var(--space-6);
-}
-
-/* Page Containers */
-.page-container {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-8);
-}
-
-/* Challenge Page Specific */
-.challenge-page {
-  min-height: calc(100vh - var(--nav-height) - var(--space-16));
-}
-
-.challenge-container {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-8);
-}
-
-/* Lesson Page Specific */
-.lesson-page {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-12) var(--space-10);
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* ============================================================
-   LESSON IMAGES & FIGURE CAPTIONS
-   ============================================================ */
-
-/* Floating image (wraps text around it) */
-.lesson-image-float {
-  float: right;
-  max-width: 320px;
-  margin: 0 0 var(--space-6) var(--space-8);
-  text-align: center;
-}
-
-.lesson-image-float img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
-
-/* Inline/centered image (full width, centered) */
-.lesson-image-inline {
-  display: block;
-  max-width: 500px;
-  margin: var(--space-8) auto;
-  text-align: center;
-  clear: both;
-}
-
-.lesson-image-inline img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
-
-/* Figure caption - styled as illustration subscript */
-.image-caption {
-  display: block;
-  margin-top: var(--space-3);
-  font-size: var(--text-sm);
-  color: var(--color-gray-500);
-  font-style: italic;
-  line-height: var(--leading-relaxed);
-}
-
-/* Clear floats after floating images */
-.lesson-content::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Responsive: stack images on mobile */
-@media (max-width: 768px) {
-  .lesson-image-float {
-    float: none;
-    max-width: 100%;
-    margin: var(--space-6) auto;
-  }
-
-  .lesson-image-inline {
-    max-width: 100%;
-  }
-}
-
-/* Simulator Page Specific */
 .simulator-page {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-8);
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-/* Welcome Page Specific */
-.welcome-page {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-12);
+/* Input Row */
+.simulator-page .input-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.simulator-page .tape-input {
+  width: 120px;
+  padding: 10px 16px;
+  font-family: var(--font);
+  font-size: 1.1rem;
   text-align: center;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  transition: border-color 0.2s;
 }
 
-/* ============================================================
-   6. BUTTONS
-   ============================================================ */
-
-.btn,
-button,
-[type="button"],
-[type="submit"],
-.btn-primary,
-.btn-secondary,
-.btn-success,
-.btn-danger,
-.btn-warning {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  cursor: pointer;
-  border: 2px solid var(--color-gray-300);
-  background: var(--color-gray-100);
-  color: var(--color-gray-700);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.btn:hover,
-button:hover,
-[type="button"]:hover,
-[type="submit"]:hover {
-  background: var(--color-gray-200);
-  border-color: var(--color-gray-400);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  border: 2px solid #2563eb;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  border-color: #1d4ed8;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-  transform: translateY(-2px);
-}
-
-.btn-secondary {
-  background: white;
-  color: var(--color-gray-700);
-  border: 2px solid var(--color-gray-300);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.btn-secondary:hover {
-  background: var(--color-gray-50);
-  border-color: var(--color-gray-400);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
-}
-
-.btn-success:hover {
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.4);
-  transform: translateY(-1px);
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-}
-
-.btn-danger:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  transform: translateY(-1px);
-}
-
-.btn-warning {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
-}
-
-.btn-warning:hover {
-  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-  transform: translateY(-1px);
-}
-
-/* Button Sizes */
-.btn-small {
-  padding: 10px 18px;
-  font-size: 13px;
-}
-
-.btn-large {
-  padding: 18px 36px;
-  font-size: 16px;
-}
-
-/* Button States */
-button:disabled, .btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-/* ============================================================
-   7. FORM ELEMENTS
-   ============================================================ */
-
-input, select, textarea {
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-md);
-  background: white;
-  color: var(--color-gray-900);
-  transition: all var(--transition-fast);
-  width: 100%;
-}
-
-input:focus, select:focus, textarea:focus {
+.simulator-page .tape-input:focus {
   outline: none;
-  border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px var(--color-primary-100);
+  border-color: var(--cyan);
 }
 
-input::placeholder, textarea::placeholder {
-  color: var(--color-gray-400);
-}
-
-label {
-  display: block;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-gray-700);
-  margin-bottom: var(--space-2);
-}
-
-/* ============================================================
-   8. CARDS & BOXES
-   ============================================================ */
-
-.card {
+/* Card Base */
+.simulator-page .card {
   background: var(--bg-card);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-}
-
-.card-header {
-  padding-bottom: var(--space-4);
-  margin-bottom: var(--space-4);
-  border-bottom: 1px solid var(--color-gray-100);
-}
-
-/* Info Boxes */
-.info-box {
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
-}
-
-.info-box-blue {
-  background: var(--color-primary-50);
-  border-left: 4px solid var(--color-primary-500);
-}
-
-.info-box-green {
-  background: var(--color-success-50);
-  border-left: 4px solid var(--color-success-500);
-}
-
-.info-box-yellow {
-  background: var(--color-warning-50);
-  border-left: 4px solid var(--color-warning-500);
-}
-
-.info-box-gray {
-  background: var(--color-gray-100);
-  border-left: 4px solid var(--color-gray-400);
-}
-
-/* Explanation Box */
-.explanation-box {
-  background: var(--color-primary-50);
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-  border-left: 4px solid var(--color-primary-500);
-}
-
-.explanation-box h3 {
-  color: var(--color-primary-800);
-  margin-bottom: var(--space-2);
-}
-
-.explanation-box p {
-  color: var(--color-gray-700);
-}
-
-/* Example Box */
-.example-box {
-  background: white;
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  margin-top: var(--space-4);
-}
-
-.example-box ul {
-  margin-left: var(--space-5);
-  color: var(--color-gray-700);
-}
-
-.example-box li {
-  margin-bottom: var(--space-2);
-}
-
-/* Challenge Reminder */
-.challenge-reminder {
-  background: var(--color-gray-100);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-6);
-}
-
-.challenge-reminder p {
-  margin: 0;
-  color: var(--color-gray-700);
-}
-
-.challenge-reminder strong {
-  color: var(--color-gray-900);
-}
-
-/* System States Box */
-.system-states {
-  background: var(--color-warning-50);
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-}
-
-.system-states h3 {
-  color: var(--color-gray-800);
-  margin-bottom: var(--space-4);
-}
-
-/* ============================================================
-   9. STATE BADGES
-   ============================================================ */
-
-.state-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-}
-
-.state-badge.start {
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
-}
-
-.state-badge.done {
-  background: var(--color-success-100);
-  color: var(--color-success-700);
-}
-
-.state-badge.user {
-  background: var(--color-gray-100);
-  color: var(--color-gray-700);
-}
-
-/* ============================================================
-   10. TAPE VISUALIZATION
-   ============================================================ */
-
-.tape-wrapper {
-  background: var(--color-gray-50);
-  padding: var(--space-6);
-  border-radius: var(--radius-xl);
-  overflow-x: auto;
-  margin: var(--space-6) 0;
-  border: 1px solid var(--color-gray-200);
-}
-
-.tape,
-.tape-demo {
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  min-width: fit-content;
-  background: var(--color-gray-50);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  margin: var(--space-4) 0;
-}
-
-.tape-cell {
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  color: var(--color-gray-800);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xl);
-  font-weight: var(--font-bold);
-  border-radius: var(--radius-md);
-  border: 2px solid var(--color-gray-200);
-  transition: all var(--transition-fast);
-}
-
-.tape-cell.head {
-  background: var(--color-primary-600);
-  color: white;
-  border-color: var(--color-primary-600);
-  transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
-.tape-cell.blank {
-  color: var(--color-gray-300);
-  border-style: dashed;
-}
-
-.head-indicator {
-  text-align: center;
-  color: var(--color-primary-600);
-  font-size: var(--text-xs);
-  font-weight: var(--font-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  margin-top: var(--space-3);
-}
-
-.machine-state {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-8);
-  padding: var(--space-4);
-  background: var(--color-gray-100);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
-}
-
-.machine-state span {
-  color: var(--color-gray-600);
-}
-
-.machine-state strong {
-  color: var(--color-primary-600);
-  font-family: var(--font-mono);
-}
-
-/* ============================================================
-   11. RULE CARDS (Challenge Rules Page)
-   ============================================================ */
-
-.rule-cards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.rule-card-input {
-  background: var(--color-gray-50);
-  border: 2px solid var(--color-primary-200);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
-  transition: all var(--transition-fast);
 }
 
-.rule-card-input:hover {
-  border-color: var(--color-primary-400);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
+.simulator-page .card-header {
+  padding: 12px 20px;
+  background: var(--bg-elevated);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  border-bottom: 1px solid var(--border);
 }
 
-.rule-card-header {
-  background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
-  padding: var(--space-4) var(--space-5);
+/* Tape Section */
+.simulator-page .tape-container {
+  padding: 30px 20px;
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-weight: var(--font-semibold);
-  color: white;
-  border-bottom: none;
+  justify-content: center;
 }
 
-.rule-card-header .symbol {
+.simulator-page .tape {
+  display: flex;
+  gap: 4px;
+}
+
+.simulator-page .tape-cell {
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  color: var(--color-primary-700);
-  font-family: var(--font-mono);
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  transition: all 0.2s ease;
 }
 
-.rule-card-header .symbol.blank {
-  color: var(--color-gray-400);
+.simulator-page .tape-cell.blank {
+  color: var(--text-muted);
 }
 
-.rule-card-body {
-  padding: var(--space-5);
-  background: white;
+.simulator-page .tape-cell.head {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+  box-shadow: 0 0 20px rgba(0, 255, 149, 0.4);
+  animation: pulse-head 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-head {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Animation when value is written/changed */
+.simulator-page .tape-cell.just-written {
+  animation: flash-write 0.5s ease-out;
+}
+
+@keyframes flash-write {
+  0% {
+    transform: scale(1.2);
+    box-shadow: 0 0 30px rgba(0, 255, 149, 0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.simulator-page .head-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* State Section */
+.simulator-page .state-section {
+  padding: 16px 24px;
+}
+
+.simulator-page .state-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.simulator-page .state-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.simulator-page .state-indicator.add {
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.simulator-page .state-indicator.done {
+  background: #ffff00;
+  box-shadow: 0 0 10px #ffff00;
+  animation: none;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.simulator-page .state-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.simulator-page .state-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--green);
+}
+
+.simulator-page .state-emoji {
+  font-size: 1rem;
+}
+
+.simulator-page .state-description {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.simulator-page .status-badge {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  background: rgba(0, 255, 149, 0.1);
+  color: var(--green);
+}
+
+.simulator-page .status-badge.running {
+  background: rgba(0, 255, 255, 0.1);
+  color: var(--cyan);
+}
+
+.simulator-page .status-badge.done {
+  background: rgba(255, 255, 0, 0.1);
+  color: #ffff00;
+}
+
+/* Controls Section */
+.simulator-page .controls-section {
+  padding: 20px 24px;
+}
+
+.simulator-page .controls-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.simulator-page .controls-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.simulator-page .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border: 2px solid;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.simulator-page .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.simulator-page .btn-icon {
+  font-size: 0.9rem;
+}
+
+.simulator-page .btn-primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+}
+
+.simulator-page .btn-primary:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(0, 255, 149, 0.4);
+  transform: translateY(-1px);
+}
+
+.simulator-page .btn-secondary {
+  background: transparent;
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.simulator-page .btn-secondary:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.simulator-page .btn-outline {
+  background: transparent;
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.simulator-page .btn-outline:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(255, 184, 108, 0.3);
+}
+
+.simulator-page .btn-danger {
+  background: transparent;
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.simulator-page .btn-danger:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(255, 85, 85, 0.3);
+  transform: translateY(-1px);
+}
+
+.simulator-page .btn-set {
+  background: transparent;
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.simulator-page .btn-set:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(0, 255, 149, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Speed Control */
+.simulator-page .speed-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.simulator-page .speed-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.simulator-page .speed-slider {
+  width: 100px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, var(--cyan) 50%, var(--border) 50%);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.simulator-page .speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--cyan);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.simulator-page .speed-value {
+  font-size: 0.75rem;
+  font-family: var(--font);
+  color: var(--text-muted);
+  min-width: 30px;
+}
+
+/* Rules Section - 2 columns side by side like original */
+.simulator-page .rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .simulator-page .rules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.simulator-page .state-card {
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.simulator-page .state-card-header {
+  padding: 12px 16px;
+  background: var(--bg-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--green);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Rules Table - like original React design */
+.simulator-page .rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font);
+  font-size: 0.85rem;
+}
+
+.simulator-page .rules-table thead th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-dark);
+}
+
+.simulator-page .rules-table tbody tr {
+  transition: all 0.2s;
+}
+
+.simulator-page .rules-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.simulator-page .rules-table tbody tr.active {
+  background: rgba(0, 255, 149, 0.15);
+  box-shadow: inset 3px 0 0 var(--green);
+}
+
+.simulator-page .rules-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.simulator-page .rules-table tbody td.see {
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.simulator-page .rules-table tbody td.write {
+  color: var(--text);
+}
+
+.simulator-page .rules-table tbody td.move {
+  font-weight: 600;
+  color: var(--orange);
+}
+
+.simulator-page .rules-table tbody td.goto {
+  font-weight: 600;
+  color: var(--green);
+}
+
+.simulator-page .rules-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Algorithm Footer */
+.simulator-page .algo-footer {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+/* Challenge Prompt */
+.simulator-page .challenge-prompt .card {
+  text-align: center;
+  padding: 40px;
+}
+
+.simulator-page .text-green {
+  color: var(--green);
+}
+
+.simulator-page .text-muted {
+  color: var(--text-muted);
+}
+
+.simulator-page .mt-2 {
+  margin-top: 8px;
+}
+
+.simulator-page .mt-3 {
+  margin-top: 12px;
+}
+
+/* END SIMULATOR PAGE STYLES */
+
+/* === OVERLAYS (scanlines, grid) === */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1000;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.3;
+}
+
+.grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(0, 255, 149, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 149, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* === NAVIGATION === */
+.nav {
+  background: rgba(10, 14, 20, 0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.logo-bracket {
+  color: var(--text-muted);
+}
+
+.logo-symbol {
+  color: var(--cyan);
+}
+
+.brand-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.brand-dot {
+  color: var(--green);
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  transition: all 0.15s ease;
+}
+
+.nav-link:hover {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.nav-link.active {
+  background: var(--bg-elevated);
+  color: var(--cyan);
+}
+
+.link-icon {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.link-text {
+  letter-spacing: 1px;
+}
+
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green);
+}
+
+.status-text {
+  letter-spacing: 1px;
+}
+
+/* === MAIN CONTENT === */
+.main {
+  flex: 1;
+  padding: 20px 24px;
+}
+
+/* === LESSON PAGE === */
+.lesson-page {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* === PROGRESS BAR === */
+.lesson-progress {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--cyan));
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* === LESSON CONTAINER === */
+.lesson-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 32px;
+}
+
+.lesson-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.lesson-content {
+  margin-bottom: 20px;
+}
+
+/* === LESSON NAVIGATION === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+/* === BUTTONS === */
+button,
+.btn-primary,
+.btn-secondary,
+.btn-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  border: 2px solid;
+}
+
+.btn-primary {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--bg-dark);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+.btn-secondary:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.btn-success {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+}
+
+.btn-success:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 149, 0.4);
+}
+
+.btn-large {
+  padding: 14px 32px;
+  font-size: 0.9rem;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* === FOOTER === */
+.footer {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-prompt {
+  color: var(--green);
+}
+
+.footer-text {
+  color: var(--text-dim);
+}
+
+.ascii-art {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.copyright {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* =============================================
+   LESSON 1: The Magic Trick
+   ============================================= */
+
+/* Hook intro */
+.hook-intro {
+  text-align: center;
+  padding: 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hook-line {
+  font-size: 3rem;
+  color: var(--cyan);
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { text-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+  50% { text-shadow: 0 0 50px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+}
+
+/* Practice section */
+.practice-section {
+  margin-top: 20px;
+}
+
+.practice-exercise {
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  padding: 32px;
+}
+
+/* Magic demo */
+.magic-demo-container {
+  text-align: center;
+}
+
+.demo-intro {
+  padding: 20px 0;
+}
+
+.demo-prompt {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.demo-prompt strong {
+  color: var(--cyan);
+}
+
+.demo-context {
+  margin: 24px 0;
+  padding: 16px;
+  background: var(--bg-dark);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.binary {
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* Magic simulator */
+.magic-simulator {
+  padding: 24px 0;
+}
+
+.sim-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.state-emoji {
+  font-size: 1.5rem;
+}
+
+.state-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 2px;
+}
+
+/* Tape */
+.tape-wrapper {
+  margin: 24px 0;
+  position: relative;
+}
+
+.tape {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tape-cell {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.tape-cell.blank {
+  color: var(--text-muted);
+}
+
+.tape-cell.head {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px rgba(0, 255, 149, 0.5);
+  transform: scale(1.1);
+}
+
+.head-indicator {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 2px;
+}
+
+.sim-explanation {
+  margin: 20px 0;
+  padding: 12px;
+  background: var(--bg-dark);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.step-counter {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.step-counter strong {
+  color: var(--cyan);
+}
+
+/* Magic result */
+.magic-result {
+  padding: 24px 0;
+}
+
+.result-success {
+  margin-bottom: 24px;
+}
+
+.result-math {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.result-decimal {
+  font-size: 1rem;
+  color: var(--text-dim);
+}
+
+.result-reveal {
+  margin: 32px 0;
+}
+
+.result-reveal p {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.result-reveal strong {
+  color: var(--cyan);
+}
+
+.reveal-punchline {
+  font-size: 1.3rem !important;
+  color: var(--green) !important;
+  font-weight: 700;
+}
+
+/* =============================================
+   LESSON 2: The Tape
+   ============================================= */
+
+/* Concept intro */
+.concept-intro {
+  margin-bottom: 20px;
+}
+
+.concept-intro .lead {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.concept-intro p {
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.concept-intro strong {
+  color: var(--cyan);
+}
+
+/* Tape visual demo - HORIZONTAL */
+.tape-visual-demo {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin: 20px 0;
+}
+
+.tape-visual-demo.horizontal {
+  flex-direction: row;
+}
+
+.tape-visual-demo .tape-cell {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tape-visual-demo .tape-cell.blank {
+  color: var(--text-muted);
+}
+
+.tape-visual-demo .tape-cell.head {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px rgba(0, 255, 149, 0.5);
+  transform: scale(1.1);
+}
+
+/* Insight box */
+.insight-box {
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--cyan);
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.insight-box p {
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.insight-box strong {
+  color: var(--cyan);
+}
+
+.insight-box ul {
+  list-style: none;
+  margin: 12px 0 0 0;
+}
+
+.insight-box li {
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  padding-left: 16px;
+  position: relative;
+}
+
+.insight-box li::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+}
+
+.insight-box li strong {
+  color: var(--green);
+}
+
+/* Wow connection */
+.wow-connection {
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.wow-connection p {
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.wow-connection p:last-child {
+  margin-bottom: 0;
+}
+
+.wow-connection strong {
+  color: var(--orange);
+}
+
+/* Practice prompt */
+.practice-prompt {
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+/* Interactive tape */
+.practice-tape {
+  margin: 16px 0;
+}
+
+.practice-tape .tape {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.practice-tape .tape-cell {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.practice-tape .tape-cell:hover {
+  border-color: var(--cyan);
+}
+
+.practice-tape .tape-cell.selected {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.practice-tape .tape-cell.head {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px rgba(0, 255, 149, 0.5);
+  transform: scale(1.1);
+}
+
+.practice-tape .tape-cell.blank {
+  color: var(--text-muted);
+}
+
+.practice-tape .tape-cell.head.blank {
+  color: var(--bg-dark);
+}
+
+/* Cell inspector */
+.cell-inspector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 16px 0;
+  padding: 12px;
+  background: var(--bg-dark);
+  border-radius: 8px;
+}
+
+.inspector-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inspector-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.inspector-value {
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.inspector-edit {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 1rem;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+
+.edit-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* Tape stats */
+.tape-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+.tape-stats p {
+  color: var(--text-muted);
+}
+
+.tape-stats strong {
+  color: var(--green);
+}
+
+/* =============================================
+   LESSON 3-8: Common Lesson Styles
+   ============================================= */
+
+/* Lead text */
+.lead {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+/* Solution/transition intro */
+.solution-intro,
+.transition-text {
+  margin: 16px 0;
+}
+
+.solution-intro p,
+.transition-text p {
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.solution-intro strong,
+.transition-text strong {
+  color: var(--cyan);
+}
+
+/* Lock connection visual */
+.lock-connection {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+}
+
+.lock-states {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lock-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+}
+
+.lock-state.active {
+  border-color: var(--green);
+  background: rgba(0, 255, 149, 0.1);
+}
+
+.state-num {
+  font-weight: 700;
+  color: var(--cyan);
+  font-size: 0.9rem;
+}
+
+.lock-state.active .state-num {
+  color: var(--green);
+}
+
+.state-meaning {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.lock-arrow {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+}
+
+/* ===========================================
+   LESSON 6 LOCK PUZZLE - Scoped styles
+   These styles ONLY apply to the lock in lesson 6
+   =========================================== */
+
+#practice-lock .lock-simulator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 30px auto;
+  position: relative;
+  width: fit-content;
+}
+
+/* Lock Shackle (the U-shaped part) */
+#practice-lock .lock-shackle {
+  position: relative;
+  width: 100px;
+  height: 60px;
+  margin-bottom: -10px;
+  transition: transform 0.5s ease;
+}
+
+#practice-lock .lock-shackle.open {
+  transform: translateY(-20px) rotate(-30deg);
+  transform-origin: right bottom;
+}
+
+#practice-lock .shackle-left,
+#practice-lock .shackle-right {
+  position: absolute;
+  width: 12px;
+  height: 50px;
+  background: linear-gradient(90deg, #888, #aaa, #888);
+  border-radius: 6px 6px 0 0;
+  bottom: 0;
+}
+
+#practice-lock .shackle-left {
+  left: 15px;
+}
+
+#practice-lock .shackle-right {
+  right: 15px;
+}
+
+#practice-lock .shackle-top {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  right: 15px;
+  height: 25px;
+  border: 12px solid #999;
+  border-bottom: none;
+  border-radius: 35px 35px 0 0;
+  background: transparent;
+}
+
+/* Lock Body */
+#practice-lock .lock-body {
+  background: linear-gradient(145deg, #444, #2a2a2a);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  border: 2px solid #555;
+  min-width: 200px;
+}
+
+/* Lock Display */
+#practice-lock .lock-display {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #111;
+  border-radius: 6px;
+  border: 2px solid #333;
+}
+
+#practice-lock .lock-digit {
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #00ff95;
+  text-shadow: 0 0 10px rgba(0, 255, 149, 0.5);
+  width: 30px;
+  text-align: center;
+}
+
+/* Lock Status */
+#practice-lock .lock-status {
+  text-align: center;
+  padding: 8px;
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.3);
+}
+
+#practice-lock .lock-status.success {
+  color: #00ff95;
+  background: rgba(0, 255, 149, 0.1);
+  font-weight: bold;
+  animation: pulse-success 0.5s ease;
+}
+
+#practice-lock .lock-status.error {
+  color: #ff4444;
+  background: rgba(255, 68, 68, 0.1);
+}
+
+@keyframes pulse-success {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Lock Keypad */
+#practice-lock .lock-keypad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-5);
+  gap: 8px;
 }
 
-.rule-field label {
-  display: block;
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-  color: var(--color-gray-700);
-  margin-bottom: var(--space-2);
+#practice-lock .lock-keypad .key {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: linear-gradient(145deg, #555, #3a3a3a);
+  color: #fff;
+  box-shadow:
+    0 3px 6px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: all 0.1s ease;
+}
+
+#practice-lock .lock-keypad .key:hover {
+  background: linear-gradient(145deg, #666, #444);
+  transform: translateY(-1px);
+}
+
+#practice-lock .lock-keypad .key:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+#practice-lock .lock-keypad .key-clear {
+  background: linear-gradient(145deg, #664444, #443333);
+  color: #ff8888;
+}
+
+#practice-lock .lock-keypad .key-clear:hover {
+  background: linear-gradient(145deg, #774444, #553333);
+}
+
+#practice-lock .lock-keypad .key-enter {
+  background: linear-gradient(145deg, #446644, #334433);
+  color: #88ff88;
+}
+
+#practice-lock .lock-keypad .key-enter:hover {
+  background: linear-gradient(145deg, #447744, #335533);
+}
+
+/* Lock intro text */
+#practice-lock .lock-intro {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#practice-lock .lock-intro p {
+  color: var(--text-dim);
+}
+
+#practice-lock .lock-intro strong {
+  color: var(--cyan);
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+/* END LESSON 6 LOCK STYLES */
+
+/* States visual */
+.states-visual {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 24px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  min-width: 100px;
+}
+
+.state-card.scan {
+  border-color: var(--cyan);
+}
+
+.state-card.add {
+  border-color: var(--orange);
+}
+
+.state-card.done {
+  border-color: var(--green);
+}
+
+.state-emoji {
+  font-size: 1.5rem;
+}
+
+.state-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Rules with states */
+.rules-with-states {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+}
+
+.rules-with-states h3 {
+  color: var(--text);
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.rules-with-states > p {
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.rules-group {
+  margin-bottom: 16px;
+}
+
+.rules-group:last-child {
+  margin-bottom: 0;
+}
+
+.rules-group h4 {
+  color: var(--text);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* Rules display - table style like simulator */
+.rules-display {
+  margin: 20px 0;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rules-display .rule,
+.rules-display .rule-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  font-family: var(--font);
+}
+
+.rules-display .rule:last-child,
+.rules-display .rule-item:last-child {
+  border-bottom: none;
+}
+
+.rules-display .rule strong,
+.rules-display .rule-item strong {
+  color: var(--cyan);
+  margin: 0 4px;
+}
+
+.rules-display .rule-item.active {
+  background: rgba(0, 255, 149, 0.1);
+  color: var(--text);
+}
+
+.rules-display .rule-item.active strong {
+  color: var(--green);
+}
+
+/* Legacy rule style for rules-group */
+.rule {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.rules-group .rule::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+}
+
+.rules-group .rule strong {
+  color: var(--orange);
+}
+
+/* State display */
+.state-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-dark);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.state-label {
+  font-weight: 700;
+  color: var(--green);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+
+/* Rules reference columns */
+.rules-reference {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+.rules-col {
+  padding: 12px 16px;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  min-width: 140px;
+}
+
+.rules-col.active-col {
+  border-color: var(--cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.rules-col h4 {
+  color: var(--text);
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.rule-item {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 4px 0;
+}
+
+.rule-item.active {
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* Sim status/action */
+.sim-status {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.sim-status strong {
+  color: var(--cyan);
+}
+
+.sim-action {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+/* Practice controls */
+.practice-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.practice-controls button {
+  padding: 10px 20px;
+}
+
+/* Step counter */
+.step-counter {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+.step-counter strong {
+  color: var(--cyan);
+}
+
+/* States result */
+.states-result,
+.simple-result,
+.quiz-result {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(0, 255, 149, 0.1);
+  border: 2px solid var(--green);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.states-result .success,
+.quiz-result .success {
+  color: var(--green);
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.states-result p,
+.quiz-result p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* =============================================
+   LESSON 3: The Head
+   ============================================= */
+
+/* Head display */
+.head-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.head-pointer {
+  font-size: 2rem;
+  color: var(--green);
+}
+
+.head-insight {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Actions box */
+.actions-box {
+  margin: 20px 0;
+}
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+}
+
+.action-icon {
+  font-size: 1.2rem;
+}
+
+.action-text {
+  color: var(--text-dim);
+}
+
+.action-text strong {
+  color: var(--cyan);
+}
+
+/* Constraint box */
+.constraint-box {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 8px 8px 0;
+}
+
+.constraint-title {
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.constraint-box p {
+  color: var(--text-dim);
+}
+
+/* Analogy */
+.analogy {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+}
+
+.analogy p {
+  color: var(--text-dim);
+}
+
+.analogy strong {
+  color: var(--cyan);
+}
+
+/* =============================================
+   LESSON 8: Quiz/Summary
+   ============================================= */
+
+/* Quiz input */
+.quiz-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.quiz-input label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.quiz-input input[type="text"] {
+  width: 100px;
+  padding: 8px 12px;
+  font-family: var(--font);
+  font-size: 1rem;
+  background: var(--bg-dark);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+}
+
+.quiz-input input[type="text"]:focus {
+  outline: none;
+  border-color: var(--cyan);
+}
+
+/* Number pad */
+.number-pad {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.number-pad button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.1rem;
+}
+
+/* Summary list */
+.summary-list {
+  margin: 16px 0;
+}
+
+.summary-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-num {
+  color: var(--cyan);
+  font-weight: 700;
+  min-width: 20px;
+}
+
+.summary-text {
+  color: var(--text-dim);
+}
+
+.summary-text strong {
+  color: var(--text);
+}
+
+/* ===========================================
+   CHALLENGE PAGE STYLES
+   =========================================== */
+
+.challenge-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.challenge-page h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+.challenge-page h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--cyan);
+}
+
+.challenge-page h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.challenge-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Challenge Card */
+.challenge-page .challenge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .challenge-task h2 {
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.challenge-page .task-detail {
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* Output Spec Box */
+.challenge-page .output-spec,
+.challenge-page .spec-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.challenge-page .spec-box ul {
+  list-style: none;
+  margin: 12px 0;
+}
+
+.challenge-page .spec-box li {
+  padding: 6px 0;
+  color: var(--text-dim);
+}
+
+.challenge-page .spec-box code {
+  background: var(--bg-dark);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--cyan);
+  font-family: var(--font);
+}
+
+/* Test Table */
+.challenge-page .test-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.challenge-page .test-table th,
+.challenge-page .test-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.challenge-page .test-table th {
+  background: var(--bg-elevated);
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.rule-field select {
-  width: 100%;
-  padding: var(--space-3);
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  background: var(--color-gray-50);
-  transition: all var(--transition-fast);
+.challenge-page .test-table td {
+  color: var(--text);
 }
 
-.rule-field select:focus {
-  border-color: var(--color-primary-400);
-  background: white;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+.challenge-page .test-table code {
+  background: var(--bg-dark);
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: var(--green);
+  font-family: var(--font);
 }
 
-/* ============================================================
-   12. TEST CASES (Challenge Run Page)
-   ============================================================ */
+/* System Info Grid */
+.challenge-page .system-info {
+  margin: 20px 0;
+}
 
-.test-cases-grid {
+.challenge-page .info-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
+  gap: 12px;
 }
 
-.test-case-card {
-  background: white;
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: border-color var(--transition-fast);
-}
-
-.test-case-card.pass {
-  border-color: var(--color-success-500);
-}
-
-.test-case-card.fail {
-  border-color: var(--color-error-500);
-}
-
-.test-case-header {
-  padding: var(--space-4);
-  background: var(--color-gray-50);
+.challenge-page .info-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+}
+
+.challenge-page .badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.challenge-page .badge.start {
+  background: var(--cyan);
+  color: var(--bg-dark);
+}
+
+.challenge-page .badge.done {
+  background: var(--green);
+  color: var(--bg-dark);
+}
+
+.challenge-page .badge.user {
+  background: var(--purple);
+  color: var(--bg-dark);
+}
+
+/* Hint Section */
+.challenge-page .hint-section {
+  margin-top: 20px;
+}
+
+.challenge-page .hint-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background var(--transition-fast);
+  font-family: var(--font);
+  transition: all 0.2s;
 }
 
-.test-case-header:hover {
-  background: var(--color-gray-100);
+.challenge-page .hint-toggle:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
 }
 
-.test-case-card.pass .test-case-header {
-  background: var(--color-success-50);
+.challenge-page .hint-content {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  border-left: 3px solid var(--orange);
+  color: var(--text-dim);
 }
 
-.test-case-card.fail .test-case-header {
-  background: var(--color-error-50);
-}
-
-.test-input {
-  font-family: var(--font-mono);
-  color: var(--color-gray-700);
-}
-
-.test-status {
-  font-size: var(--text-lg);
-}
-
-.test-case-body {
-  padding: var(--space-4);
-  display: none;
-  border-top: 1px solid var(--color-gray-100);
-}
-
-.test-case-card.expanded .test-case-body {
-  display: block;
-}
-
-.test-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-}
-
-.detail-box {
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-}
-
-.detail-box.expected {
-  background: var(--color-success-50);
-}
-
-.detail-box.actual {
-  background: var(--color-error-50);
-}
-
-.detail-box.actual.correct {
-  background: var(--color-success-50);
-}
-
-.detail-label {
-  font-size: var(--text-sm);
-  color: var(--color-gray-500);
-  margin-bottom: var(--space-1);
-}
-
-.detail-value {
-  font-family: var(--font-mono);
-  font-size: var(--text-xl);
-  font-weight: var(--font-semibold);
-  color: var(--color-gray-900);
-}
-
-.test-reason {
-  margin-top: var(--space-3);
-  color: var(--color-gray-500);
-  font-style: italic;
-}
-
-/* Test Results Summary */
-.test-results-summary {
-  background: var(--color-gray-100);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-}
-
-.results-header {
+/* Challenge Actions */
+.challenge-page .challenge-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Challenge Reminder */
+.challenge-page .challenge-reminder {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 3px solid var(--cyan);
+}
+
+.challenge-page .challenge-reminder p {
+  margin: 4px 0;
+  color: var(--text-dim);
+}
+
+.challenge-page .challenge-reminder strong {
+  color: var(--text);
+}
+
+/* Explanation Box */
+.challenge-page .explanation-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .example-box {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+}
+
+.challenge-page .example-box ul {
+  margin: 12px 0 0 20px;
+}
+
+.challenge-page .example-box li {
+  padding: 4px 0;
+  color: var(--text-dim);
+}
+
+.challenge-page .example-box code {
+  background: var(--bg-dark);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--cyan);
+}
+
+/* System States */
+.challenge-page .system-states {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .state-row {
+  display: flex;
   align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
 }
 
-#results-count {
-  font-size: var(--text-lg);
-  font-weight: var(--font-semibold);
-  color: var(--color-gray-800);
+.challenge-page .state-row:last-child {
+  border-bottom: none;
 }
 
-.status.pass {
-  color: var(--color-success-600);
-  font-weight: var(--font-bold);
-}
-
-.status.fail {
-  color: var(--color-error-600);
-  font-weight: var(--font-bold);
-}
-
-/* ============================================================
-   13. PROGRESS INDICATORS
-   ============================================================ */
-
-.progress-bar {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
-}
-
-.progress-step {
-  flex: 1;
-  padding: var(--space-3);
-  text-align: center;
-  background: var(--color-gray-100);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-gray-500);
-  transition: all var(--transition-fast);
-}
-
-.progress-step.active {
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
-}
-
-.progress-step.done {
-  background: var(--color-success-100);
-  color: var(--color-success-700);
-}
-
-/* Lesson Progress */
-.lesson-progress {
-  margin-bottom: var(--space-8);
+.challenge-page .state-badge {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  min-width: 80px;
   text-align: center;
 }
 
-.lesson-progress .progress-bar {
-  height: 6px;
-  background: var(--color-gray-200);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  margin-bottom: var(--space-3);
+.challenge-page .state-badge.start {
+  background: var(--cyan);
+  color: var(--bg-dark);
 }
 
-.lesson-progress .progress-fill {
-  height: 100%;
-  background: var(--color-primary-500);
-  border-radius: var(--radius-full);
-  transition: width var(--transition-slow);
+.challenge-page .state-badge.done {
+  background: var(--green);
+  color: var(--bg-dark);
 }
 
-.lesson-progress .progress-text {
-  font-size: var(--text-sm);
-  color: var(--color-gray-500);
+.challenge-page .state-desc {
+  color: var(--text-dim);
 }
 
-/* ============================================================
-   14. STATES BUILDER (Challenge States Page)
-   ============================================================ */
-
-.states-builder {
-  background: var(--color-gray-50);
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
+/* States Builder */
+.challenge-page .states-builder {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
 }
 
-.states-builder h3 {
-  margin-bottom: var(--space-2);
+.challenge-page .states-builder .hint {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
 }
 
-.states-builder .hint {
-  color: var(--color-gray-500);
-  font-size: var(--text-sm);
-  margin-bottom: var(--space-4);
-}
-
-.user-states-list {
+.challenge-page .user-states-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  margin: var(--space-4) 0;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.user-state-row {
+.challenge-page .user-state-row {
   display: flex;
+  gap: 12px;
   align-items: center;
-  gap: var(--space-3);
 }
 
-.user-state-row input {
+.challenge-page .state-name-input {
   flex: 1;
-  font-family: var(--font-mono);
+  padding: 12px 16px;
+  font-family: var(--font);
+  font-size: 1rem;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
   text-transform: uppercase;
 }
 
-.btn-remove {
-  background: var(--color-error-50);
-  color: var(--color-error-600);
-  border: none;
+.challenge-page .state-name-input:focus {
+  outline: none;
+  border-color: var(--cyan);
+}
+
+.challenge-page .btn-remove {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-md);
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--red);
+  border-radius: 6px;
+  color: var(--red);
+  font-size: 1.5rem;
   cursor: pointer;
-  font-size: var(--text-lg);
-  transition: all var(--transition-fast);
+  transition: all 0.2s;
 }
 
-.btn-remove:hover {
-  background: var(--color-error-100);
-}
-
-/* State Row */
-.state-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-3) 0;
-}
-
-.state-row.system {
-  border-bottom: 1px solid var(--color-warning-100);
-}
-
-.state-row.system:last-child {
-  border-bottom: none;
-}
-
-.state-desc {
-  color: var(--color-gray-600);
-  font-size: var(--text-sm);
+.challenge-page .btn-remove:hover {
+  background: var(--red);
+  color: var(--bg-dark);
 }
 
 /* Suggested States */
-.suggested-states {
-  background: var(--color-success-50);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
+.challenge-page .suggested-states {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
 }
 
-.suggested-state-btn {
-  background: white;
-  border: 2px solid var(--color-success-500);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  margin: var(--space-1);
+.challenge-page .suggested-state-btn {
+  padding: 8px 16px;
+  margin: 4px;
+  background: transparent;
+  border: 1px solid var(--purple);
+  border-radius: 6px;
+  color: var(--purple);
+  font-family: var(--font);
   cursor: pointer;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  transition: all var(--transition-fast);
+  transition: all 0.2s;
 }
 
-.suggested-state-btn:hover {
-  background: var(--color-success-100);
+.challenge-page .suggested-state-btn:hover {
+  background: var(--purple);
+  color: var(--bg-dark);
 }
 
-.suggested-state-btn.used {
-  opacity: 0.5;
+.challenge-page .suggested-state-btn.used {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* ============================================================
-   15. FINAL RESULT BOX
-   ============================================================ */
-
-.final-result {
-  margin-bottom: var(--space-6);
-}
-
-.result-box {
-  padding: var(--space-8);
-  border-radius: var(--radius-lg);
+/* Validation Section */
+.challenge-page .validation-section {
   text-align: center;
+  margin-top: 24px;
 }
 
-.result-box.success {
-  background: var(--color-success-50);
-  border: 2px solid var(--color-success-500);
+.challenge-page .validation-section .note {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: 12px;
 }
 
-.result-box.failure {
-  background: var(--color-error-50);
-  border: 2px solid var(--color-error-500);
-}
-
-.result-box h2 {
-  margin-bottom: var(--space-2);
-}
-
-.result-box p {
-  color: var(--color-gray-600);
-  margin-bottom: var(--space-4);
-}
-
-/* ============================================================
-   16. VISUAL CONTROLS
-   ============================================================ */
-
-.visual-controls {
+/* Progress Bar (Steps) */
+.challenge-page .progress-bar {
   display: flex;
-  justify-content: center;
-  gap: var(--space-2);
+  gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 24px;
 }
 
-.visualization-section {
-  background: var(--color-gray-50);
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
+.challenge-page .progress-step {
+  padding: 8px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-.visualization-section h3 {
-  margin-bottom: var(--space-4);
-  text-align: center;
+.challenge-page .progress-step.active {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--bg-dark);
 }
 
-/* ============================================================
-   17. NAVIGATION BUTTONS
-   ============================================================ */
+.challenge-page .progress-step.done {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg-dark);
+}
 
-.nav-buttons {
+/* State Explanation */
+.challenge-page .state-explanation {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .rule-template {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  color: var(--text-dim);
+}
+
+/* Rules Form Section */
+.challenge-page .rules-form-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .rule-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.challenge-page .rule-card-input {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.challenge-page .rule-card-header {
+  padding: 12px 16px;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.challenge-page .rule-card-header .symbol {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cyan);
+  color: var(--bg-dark);
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.challenge-page .rule-card-header .symbol.blank {
+  background: var(--text-dim);
+}
+
+.challenge-page .rule-card-body {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.challenge-page .rule-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.challenge-page .rule-field label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.challenge-page .rule-field select {
+  padding: 10px 12px;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.challenge-page .rule-field select:focus {
+  outline: none;
+  border-color: var(--cyan);
+}
+
+/* Rules Summary */
+.challenge-page .rules-summary {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .summary-rule {
+  padding: 8px 12px;
+  margin: 8px 0;
+  background: var(--bg-elevated);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* Nav Buttons */
+.challenge-page .nav-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
+  margin-top: 24px;
+  gap: 16px;
 }
 
-.validation-section {
+/* Help Section */
+.challenge-page .help-section {
+  margin-top: 24px;
   text-align: center;
-  margin-top: var(--space-6);
 }
 
-.validation-section .note {
-  color: var(--color-gray-500);
-  font-size: var(--text-sm);
-  margin-top: var(--space-2);
-}
-
-/* ============================================================
-   18. RULES SUMMARY
-   ============================================================ */
-
-.rules-summary {
-  background: var(--color-warning-50);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-}
-
-.rules-summary h3 {
-  margin-bottom: var(--space-3);
-  color: var(--color-gray-800);
-}
-
-.summary-rule {
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-warning-100);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-gray-700);
-}
-
-.summary-rule:last-child {
-  border-bottom: none;
-}
-
-/* ============================================================
-   19. HELP SECTION
-   ============================================================ */
-
-.help-section {
-  border-top: 1px solid var(--color-gray-200);
-  padding-top: var(--space-4);
-  margin-top: var(--space-6);
-}
-
-.help-toggle {
-  background: var(--color-error-50);
-  color: var(--color-error-600);
-  border: none;
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
+.challenge-page .help-toggle {
+  background: transparent;
+  border: 1px solid var(--orange);
+  color: var(--orange);
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: var(--font);
   cursor: pointer;
-  font-weight: var(--font-medium);
-  transition: all var(--transition-fast);
+  transition: all 0.2s;
 }
 
-.help-toggle:hover {
-  background: var(--color-error-100);
+.challenge-page .help-toggle:hover {
+  background: var(--orange);
+  color: var(--bg-dark);
 }
 
-.help-content {
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  background: var(--color-error-50);
-  border-radius: var(--radius-md);
-}
-
-/* ============================================================
-   20. TABLES
-   ============================================================ */
-
-.test-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: var(--space-2);
-}
-
-.test-table th,
-.test-table td {
-  padding: var(--space-3) var(--space-4);
+.challenge-page .help-content {
+  margin-top: 16px;
+  padding: 20px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  border-left: 3px solid var(--orange);
   text-align: left;
-  border-bottom: 1px solid var(--color-gray-200);
 }
 
-.test-table th {
-  background: var(--color-gray-50);
-  font-weight: var(--font-semibold);
-  font-size: var(--text-sm);
-  color: var(--color-gray-600);
+.challenge-page .help-content ul {
+  margin: 12px 0 12px 20px;
 }
 
-.test-table td {
-  color: var(--color-gray-700);
+.challenge-page .help-content li {
+  padding: 4px 0;
+  color: var(--text-dim);
 }
 
-/* ============================================================
-   21. OUTPUT SPEC BOX
-   ============================================================ */
-
-.output-spec {
-  background: var(--color-primary-50);
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-  border-left: 4px solid var(--color-primary-500);
+/* Test Results Summary */
+.challenge-page .test-results-summary {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
 }
 
-.output-spec h3 {
-  color: var(--color-primary-800);
-  margin-bottom: var(--space-3);
+.challenge-page .results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.spec-box {
-  color: var(--color-gray-700);
+.challenge-page .results-header .status {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
-.spec-box ul {
-  margin: var(--space-3) 0;
-  padding-left: var(--space-5);
+.challenge-page .results-header .status.pass {
+  background: var(--green);
+  color: var(--bg-dark);
 }
 
-.spec-box li {
-  margin-bottom: var(--space-2);
+.challenge-page .results-header .status.fail {
+  background: var(--red);
+  color: var(--text);
 }
 
-/* ============================================================
-   22. SYSTEM INFO
-   ============================================================ */
-
-.system-info {
-  background: var(--color-warning-50);
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-}
-
-.system-info h3 {
-  margin-bottom: var(--space-4);
-  color: var(--color-gray-800);
-}
-
-.info-grid {
+/* Test Cases Grid */
+.challenge-page .test-cases-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 12px;
 }
 
-.info-item {
+.challenge-page .test-case-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.challenge-page .test-case-card.pass {
+  border-color: var(--green);
+}
+
+.challenge-page .test-case-card.fail {
+  border-color: var(--red);
+}
+
+.challenge-page .test-case-header {
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.challenge-page .test-case-header:hover {
+  background: var(--bg-dark);
+}
+
+.challenge-page .test-input code {
+  background: var(--bg-dark);
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: var(--cyan);
+}
+
+.challenge-page .test-status {
+  font-weight: 700;
+}
+
+.challenge-page .test-case-card.pass .test-status {
+  color: var(--green);
+}
+
+.challenge-page .test-case-card.fail .test-status {
+  color: var(--red);
+}
+
+.challenge-page .test-case-body {
+  display: none;
+  padding: 16px;
+}
+
+.challenge-page .test-case-card.expanded .test-case-body {
+  display: block;
+}
+
+.challenge-page .test-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.challenge-page .detail-box {
+  padding: 12px;
+  background: var(--bg-elevated);
+  border-radius: 6px;
+}
+
+.challenge-page .detail-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.challenge-page .detail-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.challenge-page .detail-box.correct .detail-value {
+  color: var(--green);
+}
+
+.challenge-page .test-reason {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* Visualization Section */
+.challenge-page .visualization-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.challenge-page .visualization-section .tape-wrapper {
+  position: relative;
+  margin: 20px 0;
+  padding-bottom: 30px;
+}
+
+.challenge-page .visualization-section .tape {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.challenge-page .visualization-section .tape-cell {
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  justify-content: center;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  font-family: var(--font-mono);
+.challenge-page .visualization-section .tape-cell.head {
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
 }
 
-.badge.start {
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
+.challenge-page .visualization-section .tape-cell.blank {
+  color: var(--text-dim);
 }
 
-.badge.done {
-  background: var(--color-success-100);
-  color: var(--color-success-700);
+.challenge-page .visualization-section .head-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--cyan);
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
-.badge.user {
-  background: var(--color-warning-100);
-  color: var(--color-warning-600);
+.challenge-page .machine-state {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 16px 0;
+  color: var(--text-dim);
 }
 
-/* ============================================================
-   23. HINT SECTION
-   ============================================================ */
-
-.hint-section {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-gray-200);
+.challenge-page .machine-state strong {
+  color: var(--cyan);
 }
 
-.hint-toggle {
-  background: none;
-  border: none;
-  color: var(--color-gray-500);
-  cursor: pointer;
-  font-size: var(--text-sm);
-  padding: 0;
+.challenge-page .visual-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.hint-toggle:hover {
-  color: var(--color-primary-600);
+/* Final Result */
+.challenge-page .final-result {
+  margin-top: 24px;
 }
 
-.hint-content {
-  margin-top: var(--space-2);
-  padding: var(--space-3);
-  background: var(--color-gray-100);
-  border-radius: var(--radius-md);
-  font-style: italic;
-  color: var(--color-gray-600);
+.challenge-page .result-box {
+  text-align: center;
+  padding: 32px;
+  border-radius: 12px;
 }
 
-/* ============================================================
-   24. LOADING STATES
-   ============================================================ */
+.challenge-page .result-box.success {
+  background: rgba(0, 255, 149, 0.1);
+  border: 2px solid var(--green);
+}
 
-.loading-overlay {
+.challenge-page .result-box.success h2 {
+  color: var(--green);
+}
+
+.challenge-page .result-box.failure {
+  background: rgba(255, 85, 85, 0.1);
+  border: 2px solid var(--red);
+}
+
+.challenge-page .result-box.failure h2 {
+  color: var(--red);
+}
+
+.challenge-page .result-box p {
+  color: var(--text-dim);
+  margin: 12px 0 20px;
+}
+
+/* Loading Overlay */
+.challenge-page .loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 20, 0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8);
-  color: var(--color-gray-500);
+  z-index: 1000;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-gray-200);
-  border-top-color: var(--color-primary-500);
+.challenge-page .spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-top-color: var(--cyan);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: var(--space-4);
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-.loading {
-  color: var(--color-gray-500);
-  font-style: italic;
-}
-
-.error {
-  color: var(--color-error-600);
-}
-
-/* ============================================================
-   25. CHALLENGE CARD
-   ============================================================ */
-
-.challenge-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  margin-bottom: var(--space-6);
-}
-
-.challenge-task {
-  margin-bottom: var(--space-6);
-}
-
-.challenge-task h2 {
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-3);
-}
-
-.task-detail {
-  color: var(--color-gray-600);
-  font-size: var(--text-lg);
-}
-
-.challenge-actions {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-}
-
-/* ============================================================
-   26. LESSON CONTENT
-   ============================================================ */
-
-.lesson-header {
-  text-align: center;
-  margin-bottom: var(--space-8);
-}
-
-.lesson-header h1 {
-  margin-bottom: var(--space-2);
-}
-
-.lesson-header .lesson-subtitle {
-  color: var(--color-gray-500);
-  font-size: var(--text-lg);
-}
-
-.lesson-content {
-  color: var(--color-gray-700);
-  line-height: 1.8;
-  font-size: var(--text-base);
-}
-
-.lesson-content h2 {
-  margin-top: var(--space-12);
-  margin-bottom: var(--space-6);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-gray-200);
-  font-size: var(--text-xl);
-  color: var(--color-gray-900);
-}
-
-.lesson-content h3 {
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-4);
-  color: var(--color-gray-800);
-}
-
-.lesson-content p {
-  margin-bottom: var(--space-6);
-}
-
-.lesson-content ul, .lesson-content ol {
-  margin-bottom: var(--space-6);
-  padding-left: var(--space-6);
-}
-
-.lesson-content li {
-  margin-bottom: var(--space-3);
-  line-height: 1.7;
-}
-
-.lesson-content img {
-  border-radius: var(--radius-xl);
-  margin: var(--space-8) 0;
-  box-shadow: var(--shadow-md);
-}
-
-.lesson-content strong {
-  color: var(--color-gray-900);
-  font-weight: var(--font-semibold);
-}
-
-.lesson-content .key-insight {
-  color: var(--color-primary-700);
-  font-weight: var(--font-semibold);
-}
-
-.lesson-nav {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--space-12);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--color-gray-200);
-}
-
-/* ============================================================
-   27. SIMULATOR SPECIFIC - Cool Modern Design
-   ============================================================ */
-
-.simulator-page {
-  background: white;
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-xl);
-  padding: var(--space-10);
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.simulator-container {
-  display: grid;
-  gap: var(--space-10);
-}
-
-.simulator-container section {
-  padding: var(--space-8);
-  border-radius: var(--radius-xl);
-  background: var(--color-gray-50);
-  border: 1px solid var(--color-gray-100);
-}
-
-.simulator-container section h2 {
-  font-size: var(--text-lg);
-  font-weight: var(--font-bold);
-  color: var(--color-gray-800);
-  margin-bottom: var(--space-6);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding-bottom: var(--space-3);
-  border-bottom: 2px solid var(--color-gray-200);
-}
-
-/* Tape Section */
-.tape-section {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-}
-
-.tape-input-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-  justify-content: center;
-}
-
-.tape-input-row label {
-  font-weight: var(--font-medium);
-  color: var(--color-gray-600);
-}
-
-.tape-input-row input {
-  width: 150px;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: var(--text-lg);
-  font-weight: var(--font-bold);
-}
-
-.state-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-  padding: var(--space-4);
-  background: white;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-200);
-}
-
-.state-emoji {
-  font-size: var(--text-2xl);
-}
-
-.state-label {
-  color: var(--color-gray-600);
-}
-
-.state-label strong {
-  font-family: var(--font-mono);
-  color: var(--color-primary-600);
-  font-size: var(--text-lg);
-}
-
-.state-description {
-  color: var(--color-gray-500);
-  font-style: italic;
-}
-
-.status-badge {
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-}
-
-.status-badge.running {
-  background: var(--color-success-100);
-  color: var(--color-success-700);
-}
-
-.status-badge.done {
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
-}
-
-/* Next Action Section */
-.next-action-section {
-  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%) !important;
-  border: 2px solid var(--color-primary-200) !important;
-}
-
-.next-action-box {
-  background: white;
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-}
-
-.next-action-situation {
-  font-size: var(--text-lg);
-  color: var(--color-gray-700);
-  margin-bottom: var(--space-4);
-  padding-bottom: var(--space-4);
-  border-bottom: 1px dashed var(--color-gray-200);
-}
-
-.next-action-situation strong {
-  color: var(--color-primary-700);
-  background: var(--color-primary-100);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-}
-
-.next-action-will-do {
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-3);
-}
-
-.next-action-why {
-  color: var(--color-gray-500);
-  font-style: italic;
-}
-
-.goal-display {
-  margin-top: var(--space-4);
-  padding: var(--space-3);
-  background: var(--color-primary-50);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  color: var(--color-primary-700);
-}
-
-/* Controls Section */
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-  padding: var(--space-6);
-  background: white;
-  border-radius: var(--radius-xl);
-  border: 2px solid var(--color-gray-200);
-  box-shadow: var(--shadow-sm);
-}
-
-.speed-control {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-left: var(--space-4);
-  padding-left: var(--space-4);
-  border-left: 1px solid var(--color-gray-200);
-}
-
-.speed-control label {
-  font-size: var(--text-sm);
-  color: var(--color-gray-500);
-}
-
-.speed-control input[type="range"] {
-  width: 100px;
-}
-
-/* State Graph Section */
-.state-graph-section {
-  background: white !important;
-  border: 2px solid var(--color-gray-200) !important;
-}
-
-.state-graph-container {
-  background: var(--color-gray-50);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  min-height: 200px;
-}
-
-/* RULES SECTION - The main redesign */
-.rules-section {
-  background: white !important;
-  border: none !important;
-  padding: var(--space-8) !important;
-}
-
-.rules-header {
-  margin-bottom: var(--space-6);
-}
-
-.rules-header h2 {
-  font-size: var(--text-xl) !important;
-  color: var(--color-gray-900);
-  border-bottom: none !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-.rules-groups {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-8);
-}
-
-@media (max-width: 768px) {
-  .rules-groups {
-    grid-template-columns: 1fr;
-  }
-}
-
-.rules-group {
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.rules-group h3 {
-  padding: var(--space-4) var(--space-5);
-  margin: 0;
-  font-size: var(--text-base);
-  font-weight: var(--font-bold);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.state-emoji-small {
-  font-size: var(--text-lg);
-}
-
-/* SCAN MODE rules - Blue theme */
-#rules-scan {
-  border: 2px solid var(--color-primary-200);
-}
-
-#rules-scan h3 {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-}
-
-#rules-scan .rules-list {
-  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
-  padding: var(--space-4);
-}
-
-/* ADD MODE rules - Green theme */
-#rules-add {
-  border: 2px solid var(--color-success-300);
-}
-
-#rules-add h3 {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  color: white;
-}
-
-#rules-add .rules-list {
-  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
-  padding: var(--space-4);
-}
-
-/* Individual Rule Cards */
-.rules-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.rule-card {
-  background: white;
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--space-4);
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 2px solid transparent;
-  transition: all var(--transition-fast);
-}
-
-.rule-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-.rule-card.active {
-  border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 4px var(--color-primary-100), 0 6px 16px rgba(37, 99, 235, 0.2);
-  background: var(--color-primary-50);
-}
-
-.rule-card .rule-condition {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.rule-card .rule-symbol {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-gray-100);
-  border: 2px solid var(--color-gray-300);
-  border-radius: var(--radius-md);
-  font-family: var(--font-mono);
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  color: var(--color-gray-700);
-}
-
-.rule-card .rule-symbol.blank {
-  color: var(--color-gray-400);
-  border-style: dashed;
-}
-
-.rule-card .see-label {
-  font-size: var(--text-sm);
-  color: var(--color-gray-500);
-  font-weight: var(--font-medium);
-}
-
-.rule-card .rule-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.rule-card .action-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-sm);
-  color: var(--color-gray-600);
-}
-
-.rule-card .action-item .action-icon {
-  width: 20px;
-  text-align: center;
-}
-
-.rule-card .action-item strong {
-  color: var(--color-gray-900);
-  font-family: var(--font-mono);
-}
-
-/* History Section */
-.history-section {
-  background: var(--color-gray-50) !important;
-  max-height: 400px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.history-section h2 {
-  flex-shrink: 0;
-}
-
-.history-log {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding-right: var(--space-2);
-}
-
-.history-entry {
-  background: white;
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-sm);
-  color: var(--color-gray-600);
-  border-left: 3px solid var(--color-gray-300);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.history-entry .step-num {
-  font-family: var(--font-mono);
-  font-weight: var(--font-bold);
-  color: var(--color-gray-400);
-  min-width: 24px;
-}
-
-.history-entry .action-text {
-  flex: 1;
-}
-
-.history-entry.scan {
-  border-left-color: var(--color-primary-400);
-}
-
-.history-entry.add {
-  border-left-color: var(--color-success-400);
-}
-
-.history-entry.done {
-  border-left-color: var(--color-warning-400);
-  background: var(--color-warning-50);
-}
-
-/* Challenge Prompt */
-.challenge-prompt {
-  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%) !important;
-  border: 2px solid var(--color-success-300) !important;
-  text-align: center;
-}
-
-.success-message h2 {
-  color: var(--color-success-700);
-  margin-bottom: var(--space-2);
-}
-
-.success-message p {
-  color: var(--color-gray-600);
-  margin-bottom: var(--space-6);
-}
-
-.controls-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  justify-content: center;
-}
-
-/* State Explanation Box */
-.state-explanation {
-  background: var(--color-primary-50);
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
-  border-left: 4px solid var(--color-primary-500);
-}
-
-.state-explanation h3 {
-  color: var(--color-primary-800);
-  margin-bottom: var(--space-2);
-}
-
-.state-explanation p {
-  color: var(--color-gray-700);
-}
-
-/* Rule Template Box */
-.rule-template {
-  margin: var(--space-6) 0;
-  padding: var(--space-5);
-  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
-  border: 2px solid var(--color-primary-300);
-  border-radius: var(--radius-xl);
-  font-size: var(--text-base);
-  color: var(--color-gray-800);
-  line-height: 1.8;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-}
-
-.rule-template strong {
-  color: var(--color-primary-700);
-  background: white;
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-}
-
-.example-rule {
-  margin: var(--space-6) 0;
-  padding: var(--space-5);
-  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
-  border: 2px solid var(--color-success-500);
-  border-left: 6px solid var(--color-success-500);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
-}
-
-.example-rule p {
-  margin-bottom: var(--space-2);
-}
-
-.example-rule .badge {
+.challenge-page .loading-overlay p {
+  margin-top: 16px;
+  color: var(--text-dim);
+}
+
+/* Challenge Page Buttons */
+.challenge-page .btn-primary,
+.challenge-page .btn-secondary,
+.challenge-page .btn-large,
+.challenge-page .btn-small {
   display: inline-block;
-  padding: 4px 12px;
-  background: var(--color-success-600);
-  color: white;
-  font-weight: var(--font-bold);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-}
-
-.example-rule ul {
-  margin: var(--space-3) 0;
-  padding-left: var(--space-6);
-}
-
-.example-rule li {
-  margin-bottom: var(--space-2);
-  font-weight: var(--font-medium);
-}
-
-/* Rules Form Section */
-.rules-form-section {
-  margin-bottom: var(--space-6);
-}
-
-/* Current State Badge */
-.current-state {
-  display: inline-block;
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-md);
-  font-family: var(--font-mono);
-  font-weight: var(--font-semibold);
-}
-
-/* Test Cases Preview */
-.test-cases-preview {
-  margin: var(--space-6) 0;
-}
-
-.test-cases-preview h3 {
-  margin-bottom: var(--space-3);
-}
-
-/* ============================================================
-   28. UTILITY CLASSES
-   ============================================================ */
-
-.hidden {
-  display: none !important;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-muted {
-  color: var(--color-gray-500);
-}
-
-.font-mono {
-  font-family: var(--font-mono);
-}
-
-.mt-2 { margin-top: var(--space-2); }
-.mt-4 { margin-top: var(--space-4); }
-.mt-6 { margin-top: var(--space-6); }
-.mb-2 { margin-bottom: var(--space-2); }
-.mb-4 { margin-bottom: var(--space-4); }
-.mb-6 { margin-bottom: var(--space-6); }
-
-/* ============================================================
-   29. STATE GRAPH (Lesson 5)
-   ============================================================ */
-
-#lesson-graph {
-  margin: var(--space-6) 0;
-  background: var(--color-gray-50);
-  border-radius: var(--radius-xl);
-  padding: var(--space-4);
-  overflow: hidden;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-#lesson-graph svg {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  max-height: 320px;
-  width: auto;
-  height: auto;
-}
-
-.state-graph-svg {
-  max-width: 100%;
-  max-height: 320px;
-  height: auto !important;
-}
-
-
-.state-node .node-circle {
-  fill: var(--color-primary-500);
-}
-
-.state-node.active .node-circle {
-  fill: var(--color-success-500);
-}
-
-/* ============================================================
-   30. PRACTICE SECTIONS
-   ============================================================ */
-
-.practice-section {
-  margin-top: var(--space-12);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--color-gray-200);
-}
-
-.practice-header {
-  font-size: var(--text-xl);
-  margin-bottom: var(--space-6);
-  color: var(--color-gray-900);
-}
-
-.practice-exercise {
-  background: var(--color-gray-50);
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-}
-
-.practice-exercise p {
-  margin-bottom: var(--space-4);
-}
-
-.practice-controls {
-  display: flex;
-  gap: var(--space-3);
-  justify-content: center;
-  margin-top: var(--space-6);
-}
-
-.practice-result {
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  background: var(--color-success-50);
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-
-.practice-result .success {
-  color: var(--color-success-700);
-  font-weight: var(--font-semibold);
-}
-
-.head-display {
-  text-align: center;
-  margin: var(--space-4) 0;
-  font-size: var(--text-lg);
-  color: var(--color-gray-600);
-}
-
-.head-display strong {
-  color: var(--color-primary-600);
-  font-family: var(--font-mono);
-  font-size: var(--text-xl);
-}
-
-.question-box {
-  margin: var(--space-6) 0;
-}
-
-.question-box textarea {
-  width: 100%;
-  min-height: 100px;
-  resize: vertical;
-}
-
-.feedback-box {
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  background: var(--color-gray-100);
-  border-radius: var(--radius-md);
-}
-
-.feedback-box .success {
-  color: var(--color-success-700);
-}
-
-.feedback-box .error {
-  color: var(--color-error-600);
-}
-
-.feedback-box .hint {
-  color: var(--color-warning-600);
-}
-
-.examples-box {
-  background: white;
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin: var(--space-4) 0;
-}
-
-.examples-box ul {
-  margin-top: var(--space-2);
-  margin-left: var(--space-4);
-}
-
-.rules-reference {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
-  margin: var(--space-6) 0;
-}
-
-@media (max-width: 600px) {
-  .rules-reference {
-    grid-template-columns: 1fr;
-  }
-}
-
-.rules-column {
-  background: white;
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-gray-200);
-}
-
-.rules-column h4 {
-  margin-bottom: var(--space-3);
-  color: var(--color-gray-800);
-}
-
-.rule-item {
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-gray-100);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-gray-600);
-}
-
-.rule-item:last-child {
-  border-bottom: none;
-}
-
-.practice-divider {
-  margin: var(--space-6) 0;
+  padding: 12px 24px;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
   border: none;
-  border-top: 1px solid var(--color-gray-200);
 }
 
-.action-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  margin: var(--space-4) 0;
+.challenge-page .btn-primary {
+  background: var(--cyan);
+  color: var(--bg-dark);
 }
 
-.action-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
+.challenge-page .btn-primary:hover {
+  background: #00cccc;
+  transform: translateY(-2px);
 }
 
-.action-row label {
-  min-width: 100px;
-  font-weight: var(--font-medium);
+.challenge-page .btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
-.action-row select {
-  flex: 1;
-  max-width: 200px;
+.challenge-page .btn-secondary:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
 }
 
-/* Binary converter */
-.converter-section {
-  background: white;
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  margin-bottom: var(--space-6);
+.challenge-page .btn-large {
+  padding: 16px 32px;
+  font-size: 1rem;
 }
 
-.converter-section h4 {
-  margin-bottom: var(--space-3);
+.challenge-page .btn-small {
+  padding: 8px 16px;
+  font-size: 0.8rem;
 }
 
-.binary-display {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-2);
-  margin: var(--space-4) 0;
+/* Current State Highlight */
+.challenge-page .current-state {
+  color: var(--cyan);
 }
 
-.bit-box {
-  text-align: center;
-}
-
-.bit-box .bit {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
-  font-family: var(--font-mono);
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  border-radius: var(--radius-md);
-}
-
-.bit-box .weight {
-  font-size: var(--text-xs);
-  color: var(--color-gray-500);
-  margin-top: var(--space-1);
-}
-
-.sum-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  margin: var(--space-4) 0;
-  font-family: var(--font-mono);
-}
-
-.sum-display input {
-  width: 80px;
-}
-
-.hint-text {
-  color: var(--color-gray-500);
-  font-size: var(--text-sm);
+/* Loading Text */
+.challenge-page .loading {
+  color: var(--text-dim);
   font-style: italic;
 }
 
-/* Practice tape smaller */
-.practice-tape .tape-cell {
-  width: 44px;
-  height: 44px;
-  font-size: var(--text-lg);
+/* Error Text */
+.challenge-page .error {
+  color: var(--red);
 }
 
-/* ============================================================
-   31. RESPONSIVE DESIGN
-   ============================================================ */
-
+/* Responsive */
 @media (max-width: 768px) {
-  :root {
-    --nav-height: 56px;
+  .challenge-page {
+    padding: 20px 16px;
   }
 
-  .nav-container {
-    padding: 0 var(--space-4);
-  }
-
-  .nav-brand-text {
-    font-size: var(--text-base);
-  }
-
-  .nav-link {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--text-xs);
-  }
-
-  .main-content {
-    padding: var(--space-4);
-  }
-
-  .challenge-container,
-  .lesson-page,
-  .simulator-page,
-  .page-container {
-    padding: var(--space-5);
-    border-radius: var(--radius-lg);
-  }
-
-  h1 { font-size: var(--text-2xl); }
-  h2 { font-size: var(--text-xl); }
-  h3 { font-size: var(--text-lg); }
-
-  .rule-card-body {
+  .challenge-page .rule-card-body {
     grid-template-columns: 1fr;
   }
 
-  .test-details {
+  .challenge-page .test-details {
     grid-template-columns: 1fr;
   }
 
-  .nav-buttons {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .nav-buttons .btn,
-  .nav-buttons a {
-    width: 100%;
-    text-align: center;
-  }
-
-  .progress-bar {
+  .challenge-page .nav-buttons {
     flex-direction: column;
   }
 
-  .tape-cell {
-    width: 40px;
-    height: 40px;
-    font-size: var(--text-lg);
-  }
-}
-
-@media (max-width: 480px) {
-  .nav-links {
-    gap: var(--space-1);
-  }
-
-  .nav-link {
-    padding: var(--space-1) var(--space-2);
-  }
-
-  .breadcrumbs {
-    font-size: var(--text-xs);
-  }
-
-  .visual-controls {
-    flex-direction: column;
-  }
-
-  .visual-controls .btn,
-  .visual-controls button {
-    width: 100%;
-  }
-}
-
-/* ============================================================
-   30. PRINT STYLES
-   ============================================================ */
-
-@media print {
-  .main-nav,
-  .breadcrumbs-wrapper,
-  .nav-buttons,
-  .btn {
-    display: none !important;
-  }
-
-  body {
-    background: white;
-  }
-
-  .main-content {
-    max-width: 100%;
-    padding: 0;
-  }
-
-  .challenge-container,
-  .lesson-page {
-    box-shadow: none;
-    border: 1px solid #ddd;
+  .challenge-page .visual-controls {
+    flex-wrap: wrap;
   }
 }

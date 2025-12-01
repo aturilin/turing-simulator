@@ -48,9 +48,8 @@
                     </div>
                     <div class="tape-wrapper">
                         <div class="tape" id="tape">
-                            <!-- Tape cells render here -->
+                            <!-- Tape cells render here (JS creates tape-cell-wrapper > tape-cell + head-label) -->
                         </div>
-                        <div class="head-indicator">HEAD</div>
                     </div>
                     <div class="state-display">
                         <span class="state-emoji" id="state-emoji"></span>
@@ -104,15 +103,8 @@
                     <div class="rules-header">
                         <h2>The Rules</h2>
                     </div>
-                    <div class="rules-groups">
-                        <div class="rules-group" id="rules-scan">
-                            <h3><span class="state-emoji-small">🔍</span> SCAN MODE</h3>
-                            <div class="rules-list" id="rules-list-scan"></div>
-                        </div>
-                        <div class="rules-group" id="rules-add">
-                            <h3><span class="state-emoji-small">➕</span> ADD MODE</h3>
-                            <div class="rules-list" id="rules-list-add"></div>
-                        </div>
+                    <div class="rules-groups" id="rules-cards">
+                        <!-- JS dynamically creates state-card elements here -->
                     </div>
                 </section>
 

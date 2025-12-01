@@ -8,30 +8,179 @@
         <div class="progress-bar">
             <div class="progress-fill" style="width: {{ (lesson_num / total_lessons) * 100 }}%"></div>
         </div>
-        <span class="progress-text">Lesson {{ lesson_num }} of {{ total_lessons }}</span>
+        <span class="progress-text">{{ lesson_num }} / {{ total_lessons }}</span>
     </div>
 
     <div class="lesson-container">
+        <h1 class="lesson-title">{{ lesson.title }}</h1>
+
         <div class="lesson-content">
             {{ lesson.content | safe }}
         </div>
 
-
-        {% if has_practice %}
-        <!-- Practice Section - embedded in lesson -->
+        {% if practice_type %}
+        <!-- Practice Section -->
         <div class="practice-section">
-            <h2 class="practice-header">Try It Yourself!</h2>
 
-            {% if lesson_num == 4 %}
-            <!-- Lesson 4: Control the Head -->
+            {% if practice_type == 'magic-demo' %}
+            <!-- MODULE 1: THE MAGIC TRICK - Auto-run demo -->
+            <div class="practice-exercise" id="practice-magic">
+                <div class="magic-demo-container">
+                    <div class="demo-intro" id="demo-intro">
+                        <p class="demo-prompt">I'm going to show you a machine that does <strong>math</strong>.</p>
+                        <p class="demo-prompt">It's going to add 1 to a binary number.</p>
+                        <p class="demo-context"><span class="binary">1011</span> (that's 11) will become <span class="binary">1100</span> (that's 12)</p>
+                        <button id="btn-start-magic" class="btn-primary btn-large">Show Me</button>
+                    </div>
+
+                    <div class="magic-simulator hidden" id="magic-simulator">
+                        <div class="sim-state">
+                            <span class="state-emoji" id="magic-emoji">🔍</span>
+                            <span class="state-label" id="magic-label">SCAN</span>
+                        </div>
+
+                        <div class="tape-wrapper">
+                            <div class="tape" id="magic-tape">
+                                <div class="tape-cell blank">_</div>
+                                <div class="tape-cell head">1</div>
+                                <div class="tape-cell">0</div>
+                                <div class="tape-cell">1</div>
+                                <div class="tape-cell">1</div>
+                                <div class="tape-cell blank">_</div>
+                            </div>
+                            <div class="head-indicator">HEAD</div>
+                        </div>
+
+                        <div class="sim-explanation" id="magic-explanation">
+                            <p>Starting...</p>
+                        </div>
+
+                        <div class="step-counter">
+                            Step: <strong id="magic-step">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="magic-result hidden" id="magic-result">
+                        <div class="result-success">
+                            <p class="result-math"><span class="binary">1011</span> + 1 = <span class="binary">1100</span></p>
+                            <p class="result-decimal">11 + 1 = 12</p>
+                        </div>
+                        <div class="result-reveal">
+                            <p>That machine just did <strong>math</strong>.</p>
+                            <p>Using only <strong>6 simple rules</strong>.</p>
+                            <p class="reveal-punchline">That's how <strong>EVERY computer works</strong>.</p>
+                        </div>
+                        <button id="btn-replay-magic" class="btn-secondary">Watch Again</button>
+                    </div>
+                </div>
+            </div>
+
+            {% elif practice_type == 'lock-puzzle' %}
+            <!-- MODULE 6: THE LOCK PUZZLE (introduces states) -->
+            <div class="practice-exercise" id="practice-lock">
+                <div class="lock-intro">
+                    <p>Try entering the code <strong>1-2-3-4</strong> on this lock:</p>
+                </div>
+
+                <div class="lock-simulator">
+                    <!-- Lock shackle (the U-shaped part) -->
+                    <div class="lock-shackle" id="lock-shackle">
+                        <div class="shackle-left"></div>
+                        <div class="shackle-top"></div>
+                        <div class="shackle-right"></div>
+                    </div>
+
+                    <!-- Lock body -->
+                    <div class="lock-body">
+                        <div class="lock-display">
+                            <span class="lock-digit" id="lock-d1">_</span>
+                            <span class="lock-digit" id="lock-d2">_</span>
+                            <span class="lock-digit" id="lock-d3">_</span>
+                            <span class="lock-digit" id="lock-d4">_</span>
+                        </div>
+                        <div class="lock-status" id="lock-status">Enter code...</div>
+                        <div class="lock-keypad">
+                            <button class="key" data-key="1">1</button>
+                            <button class="key" data-key="2">2</button>
+                            <button class="key" data-key="3">3</button>
+                            <button class="key" data-key="4">4</button>
+                            <button class="key" data-key="5">5</button>
+                            <button class="key" data-key="6">6</button>
+                            <button class="key" data-key="7">7</button>
+                            <button class="key" data-key="8">8</button>
+                            <button class="key" data-key="9">9</button>
+                            <button class="key key-clear" data-key="clear">C</button>
+                            <button class="key" data-key="0">0</button>
+                            <button class="key key-enter" data-key="enter">OK</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lock-insight hidden" id="lock-insight">
+                    <div class="insight-reveal">
+                        <p class="insight-question">Here's a question:</p>
+                        <p>When you pressed <strong>'3'</strong>...</p>
+                        <p>How did the lock know it was the <strong>third digit</strong>?</p>
+                    </div>
+                    <div class="insight-answer">
+                        <p>The lock <strong>remembered</strong> that you already pressed two digits.</p>
+                        <p>It was keeping track of <strong>"which position am I at?"</strong></p>
+                        <p class="insight-term">We call this a <strong>STATE</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="lock-connection hidden" id="lock-connection">
+                    <p><strong>This is exactly what our machine needs!</strong></p>
+                    <p>Remember the add 1 problem? The machine couldn't tell if it was <em>scanning</em> or <em>adding</em>.</p>
+                    <p>If it could remember its <strong>state</strong> &mdash; like the lock does &mdash; problem solved!</p>
+                </div>
+            </div>
+
+            {% elif practice_type == 'explore-tape' %}
+            <!-- MODULE 3: EXPLORE THE TAPE -->
+            <div class="practice-exercise" id="practice-tape">
+                <p class="practice-prompt">Click any cell to explore:</p>
+
+                <div class="tape-wrapper practice-tape clickable">
+                    <div class="tape" id="explore-tape">
+                        <div class="tape-cell blank" data-pos="0">_</div>
+                        <div class="tape-cell" data-pos="1">1</div>
+                        <div class="tape-cell" data-pos="2">0</div>
+                        <div class="tape-cell" data-pos="3">1</div>
+                        <div class="tape-cell" data-pos="4">1</div>
+                        <div class="tape-cell blank" data-pos="5">_</div>
+                    </div>
+                </div>
+
+                <div class="cell-inspector" id="cell-inspector">
+                    <div class="inspector-content">
+                        <span class="inspector-label">Selected:</span>
+                        <span class="inspector-value" id="inspector-value">Click a cell</span>
+                    </div>
+                    <div class="inspector-edit hidden" id="inspector-edit">
+                        <button class="edit-btn" data-write="0">0</button>
+                        <button class="edit-btn" data-write="1">1</button>
+                        <button class="edit-btn" data-write="_">_</button>
+                    </div>
+                </div>
+
+                <div class="tape-stats">
+                    <p>Binary: <strong id="tape-binary">1011</strong></p>
+                    <p>Decimal: <strong id="tape-decimal">11</strong></p>
+                </div>
+            </div>
+
+            {% elif practice_type == 'control-head' %}
+            <!-- MODULE 4: CONTROL THE HEAD -->
             <div class="practice-exercise" id="practice-head">
-                <p>Move the head to find the second "1" on the tape.</p>
+                <p class="practice-prompt">Use the buttons to move the head:</p>
 
                 <div class="tape-wrapper practice-tape">
-                    <div class="tape" id="practice-tape" style="display: flex; flex-direction: row; gap: 4px;">
+                    <div class="tape" id="head-tape">
                         <div class="tape-cell blank">_</div>
-                        <div class="tape-cell">0</div>
                         <div class="tape-cell head">1</div>
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell">1</div>
                         <div class="tape-cell">1</div>
                         <div class="tape-cell blank">_</div>
                     </div>
@@ -39,160 +188,222 @@
                 </div>
 
                 <div class="head-display">
-                    <span>Head sees: <strong id="head-sees">1</strong></span>
+                    <span class="label">Head sees:</span>
+                    <span class="value" id="head-sees">1</span>
                 </div>
 
                 <div class="practice-controls">
-                    <button id="btn-left" class="btn-secondary">◀ Left</button>
-                    <button id="btn-right" class="btn-secondary">Right ▶</button>
+                    <button id="btn-left" class="btn-secondary">&larr; Left</button>
+                    <button id="btn-right" class="btn-secondary">Right &rarr;</button>
                 </div>
 
-                <div class="practice-result hidden" id="practice-result">
-                    <p class="success">Great job! You found the second 1!</p>
-                </div>
-            </div>
-
-            {% elif lesson_num == 5 %}
-            <!-- Lesson 5: Think About States -->
-            <div class="practice-exercise" id="practice-states">
-                <p><strong>Task:</strong> Design states to check if there's at least one "1" on the tape.</p>
-
-                <div class="examples-box">
-                    <p>Examples:</p>
-                    <ul>
-                        <li><code>000</code> → NO (no ones)</li>
-                        <li><code>010</code> → YES (found a one)</li>
-                    </ul>
+                <div class="write-controls">
+                    <span class="label">Write:</span>
+                    <button class="write-btn" data-write="0">0</button>
+                    <button class="write-btn" data-write="1">1</button>
                 </div>
 
-                <div class="question-box">
-                    <p><strong>What does the machine need to "remember"?</strong></p>
-                    <textarea id="memory-answer" placeholder="Type your answer..."></textarea>
-                </div>
-
-                <button id="btn-check-states" class="btn-primary">Check My Thinking</button>
-
-                <div class="feedback-box hidden" id="feedback-box">
-                    <p id="feedback-message"></p>
+                <div class="head-insight hidden" id="head-insight">
+                    <p>Notice: the head can only see <strong>ONE</strong> cell at a time.</p>
+                    <p>Yet with simple rules, it can do amazing things!</p>
                 </div>
             </div>
 
-            {% elif lesson_num == 6 %}
-            <!-- Lesson 6: Apply the Rules -->
-            <div class="practice-exercise" id="practice-rules">
-                <p><strong>Here are all 6 rules:</strong></p>
+            {% elif practice_type == 'simple-rules' %}
+            <!-- MODULE 5: SIMPLE RULES (Bit Flip) -->
+            <div class="practice-exercise" id="practice-simple">
+                <p class="practice-prompt">Watch the machine flip every bit:</p>
 
-                <div class="rules-reference">
-                    <div class="rules-column">
-                        <h4>🔍 SCAN mode:</h4>
-                        <div class="rule-item">see 0 → keep 0, move RIGHT, stay SCAN</div>
-                        <div class="rule-item">see 1 → keep 1, move RIGHT, stay SCAN</div>
-                        <div class="rule-item">see _ → keep _, move LEFT, go to ADD</div>
-                    </div>
-                    <div class="rules-column">
-                        <h4>➕ ADD mode:</h4>
-                        <div class="rule-item">see 0 → write 1, STOP, go to DONE</div>
-                        <div class="rule-item">see 1 → write 0, move LEFT, stay ADD</div>
-                        <div class="rule-item">see _ → write 1, STOP, go to DONE</div>
-                    </div>
+                <div class="rules-display active-rules">
+                    <div class="rule-item" id="rule-0">See <strong>0</strong> &rarr; write 1, move right</div>
+                    <div class="rule-item" id="rule-1">See <strong>1</strong> &rarr; write 0, move right</div>
+                    <div class="rule-item" id="rule-blank">See <strong>_</strong> &rarr; stop</div>
                 </div>
-
-                <hr class="practice-divider">
-
-                <p><strong>Situation:</strong> The machine is in <span class="state-badge">ADD</span> mode and sees:</p>
 
                 <div class="tape-wrapper practice-tape">
-                    <div class="tape" id="rule-tape" style="display: flex; flex-direction: row; gap: 4px;">
-                        <div class="tape-cell">0</div>
+                    <div class="tape" id="simple-tape">
+                        <div class="tape-cell blank">_</div>
                         <div class="tape-cell head">1</div>
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell">1</div>
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell blank">_</div>
+                    </div>
+                    <div class="head-indicator">HEAD</div>
+                </div>
+
+                <div class="sim-status">
+                    <span>Sees: <strong id="simple-sees">1</strong></span>
+                    <span id="simple-action">Will write 0, move right</span>
+                </div>
+
+                <div class="practice-controls">
+                    <button id="btn-simple-step" class="btn-primary">Step</button>
+                    <button id="btn-simple-run" class="btn-secondary">Run All</button>
+                    <button id="btn-simple-reset" class="btn-secondary">Reset</button>
+                </div>
+
+                <div class="simple-result hidden" id="simple-result">
+                    <p class="success"><strong>1010</strong> became <strong>0101</strong></p>
+                    <p>Every bit flipped! Simple rules, powerful results.</p>
+                </div>
+            </div>
+
+            {% elif practice_type == 'the-problem' %}
+            <!-- MODULE 6: THE PROBLEM -->
+            <div class="practice-exercise" id="practice-problem">
+                <p class="practice-prompt">Let's try to add 1 with <strong>simple rules</strong>:</p>
+
+                <div class="problem-attempt">
+                    <div class="rules-display problem-rules">
+                        <div class="rule-item">See 0 &rarr; write 1, stop <span class="rule-note">(0+1=1, done)</span></div>
+                        <div class="rule-item">See 1 &rarr; write 0, move left <span class="rule-note">(carry)</span></div>
+                    </div>
+
+                    <div class="tape-wrapper practice-tape">
+                        <div class="tape" id="problem-tape">
+                            <div class="tape-cell blank">_</div>
+                            <div class="tape-cell">1</div>
+                            <div class="tape-cell">0</div>
+                            <div class="tape-cell">1</div>
+                            <div class="tape-cell head">1</div>
+                            <div class="tape-cell blank">_</div>
+                        </div>
+                        <div class="head-indicator">HEAD</div>
+                    </div>
+
+                    <div class="problem-question">
+                        <p>Wait... how did the head know to <strong>start at the end</strong>?</p>
+                        <p>With simple rules, it starts at the <strong>beginning</strong>!</p>
+                    </div>
+                </div>
+
+                <div class="problem-reveal hidden" id="problem-reveal">
+                    <p class="reveal-title">The Problem:</p>
+                    <p>We need <strong>two phases</strong>:</p>
+                    <ol>
+                        <li>SCAN: Find the end of the number</li>
+                        <li>ADD: Do the math from right to left</li>
+                    </ol>
+                    <p class="reveal-question">When the head sees '1', how does it know which phase it's in?</p>
+                    <p class="reveal-answer"><strong>It can't! Unless...</strong></p>
+                </div>
+
+                <div class="practice-controls">
+                    <button id="btn-show-problem" class="btn-primary">Show Me The Problem</button>
+                </div>
+            </div>
+
+            {% elif practice_type == 'states-solve' %}
+            <!-- MODULE 7: STATES SOLVE EVERYTHING -->
+            <div class="practice-exercise" id="practice-states">
+                <p class="practice-prompt">Now watch with <strong>states</strong>:</p>
+
+                <div class="state-display">
+                    <span class="state-emoji" id="states-emoji">🔍</span>
+                    <span class="state-label" id="states-label">SCAN</span>
+                    <span class="state-desc" id="states-desc">Looking for the end</span>
+                </div>
+
+                <div class="rules-reference">
+                    <div class="rules-col" id="scan-col">
+                        <h4>🔍 SCAN</h4>
+                        <div class="rule-item" data-rule="scan,0">0 &rarr; keep, RIGHT</div>
+                        <div class="rule-item" data-rule="scan,1">1 &rarr; keep, RIGHT</div>
+                        <div class="rule-item" data-rule="scan,_">_ &rarr; LEFT, go ADD</div>
+                    </div>
+                    <div class="rules-col" id="add-col">
+                        <h4>➕ ADD</h4>
+                        <div class="rule-item" data-rule="add,0">0 &rarr; write 1, STOP</div>
+                        <div class="rule-item" data-rule="add,1">1 &rarr; write 0, LEFT</div>
+                        <div class="rule-item" data-rule="add,_">_ &rarr; write 1, STOP</div>
+                    </div>
+                </div>
+
+                <div class="tape-wrapper practice-tape">
+                    <div class="tape" id="states-tape">
+                        <div class="tape-cell blank">_</div>
+                        <div class="tape-cell head">1</div>
+                        <div class="tape-cell">1</div>
                         <div class="tape-cell">1</div>
                         <div class="tape-cell blank">_</div>
                     </div>
                     <div class="head-indicator">HEAD</div>
                 </div>
 
-                <p><strong>What will the machine do?</strong></p>
+                <div class="sim-status">
+                    <span>State: <strong id="exp-state">SCAN</strong></span>
+                    <span>Sees: <strong id="exp-symbol">1</strong></span>
+                </div>
+                <div class="sim-action" id="exp-action">Will keep 1, move RIGHT, stay SCAN</div>
 
-                <div class="action-form">
-                    <div class="action-row">
-                        <label>1. Write:</label>
-                        <select id="action-write">
-                            <option value="">Select...</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="_">_ (blank)</option>
-                        </select>
-                    </div>
-                    <div class="action-row">
-                        <label>2. Move:</label>
-                        <select id="action-move">
-                            <option value="">Select...</option>
-                            <option value="left">LEFT</option>
-                            <option value="right">RIGHT</option>
-                            <option value="stay">STOP</option>
-                        </select>
-                    </div>
-                    <div class="action-row">
-                        <label>3. Go to state:</label>
-                        <select id="action-state">
-                            <option value="">Select...</option>
-                            <option value="SCAN">SCAN</option>
-                            <option value="ADD">ADD</option>
-                            <option value="DONE">DONE</option>
-                        </select>
-                    </div>
+                <div class="practice-controls">
+                    <button id="btn-states-step" class="btn-primary">Step</button>
+                    <button id="btn-states-run" class="btn-secondary">Run All</button>
+                    <button id="btn-states-reset" class="btn-secondary">Reset</button>
                 </div>
 
-                <button id="btn-check-rule" class="btn-primary">Check</button>
+                <div class="step-counter">Step: <strong id="states-step">0</strong></div>
 
-                <div class="feedback-box hidden" id="rule-feedback">
-                    <p id="rule-feedback-message"></p>
+                <div class="states-result hidden" id="states-result">
+                    <p class="success"><strong>111</strong> (7) became <strong>1000</strong> (8)!</p>
+                    <p>The state change from SCAN to ADD is the key!</p>
                 </div>
             </div>
 
-            {% elif lesson_num == 8 %}
-            <!-- Lesson 8: Binary Converter -->
-            <div class="practice-exercise" id="practice-binary">
-                <div class="converter-section">
-                    <h4>Binary → Decimal</h4>
-                    <p>What is <strong>1010</strong> in decimal?</p>
-                    <div class="binary-display">
-                        <div class="bit-box"><div class="bit">1</div><div class="weight">8</div></div>
-                        <div class="bit-box"><div class="bit">0</div><div class="weight">4</div></div>
-                        <div class="bit-box"><div class="bit">1</div><div class="weight">2</div></div>
-                        <div class="bit-box"><div class="bit">0</div><div class="weight">1</div></div>
+            {% elif practice_type == 'finale' %}
+            <!-- MODULE 8: FINALE -->
+            <div class="practice-exercise" id="practice-finale">
+                <p class="practice-prompt">Test yourself! Predict the output:</p>
+
+                <div class="final-challenges">
+                    <div class="challenge-card">
+                        <span class="challenge-input">1</span> + 1 =
+                        <input type="text" class="predict-input" data-answer="10" placeholder="?">
+                        <span class="predict-feedback"></span>
                     </div>
-                    <div class="sum-display">
-                        8 + 0 + 2 + 0 = <input type="number" id="decimal-answer" placeholder="?">
+                    <div class="challenge-card">
+                        <span class="challenge-input">111</span> + 1 =
+                        <input type="text" class="predict-input" data-answer="1000" placeholder="?">
+                        <span class="predict-feedback"></span>
                     </div>
-                    <button id="btn-check-binary" class="btn-primary btn-small">Check</button>
+                    <div class="challenge-card">
+                        <span class="challenge-input">1111</span> + 1 =
+                        <input type="text" class="predict-input" data-answer="10000" placeholder="?">
+                        <span class="predict-feedback"></span>
+                    </div>
                 </div>
 
-                <div class="converter-section">
-                    <h4>Decimal → Binary</h4>
-                    <p>Convert <strong>6</strong> to binary:</p>
-                    <p class="hint-text">Hint: 6 = 4 + 2</p>
-                    <input type="text" id="binary-answer" placeholder="Enter binary">
-                    <button id="btn-check-decimal" class="btn-primary btn-small">Check</button>
+                <div class="practice-controls">
+                    <button id="btn-check" class="btn-primary">Check Answers</button>
+                    <a href="/simulator" class="btn-success">Open Full Simulator</a>
                 </div>
 
-                <div class="feedback-box hidden" id="binary-feedback">
-                    <p id="binary-feedback-message"></p>
+                <div class="final-score hidden" id="final-score">
+                    <p class="score-text"></p>
+                </div>
+
+                <div class="final-message">
+                    <p><strong>Congratulations!</strong></p>
+                    <p>You now understand the fundamental principle behind every computer ever built.</p>
                 </div>
             </div>
             {% endif %}
+
         </div>
         {% endif %}
 
         <div class="lesson-nav">
             {% if lesson_num > 1 %}
-                <a href="/lesson/{{ lesson_num - 1 }}" class="btn-secondary">← Back</a>
+                <a href="/lesson/{{ lesson_num - 1 }}" class="btn-secondary">&larr; Back</a>
+            {% else %}
+                <span></span>
             {% endif %}
 
             {% if lesson_num < total_lessons %}
-                <a href="/lesson/{{ lesson_num + 1 }}" class="btn-primary" id="btn-next">Next →</a>
+                <a href="/lesson/{{ lesson_num + 1 }}" class="btn-primary" id="btn-next">Next &rarr;</a>
             {% else %}
-                <a href="/simulator" class="btn-success btn-large">Let's Try It! →</a>
+                <a href="/simulator" class="btn-success btn-large">Open Full Simulator</a>
             {% endif %}
         </div>
     </div>
@@ -202,16 +413,17 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const lessonNum = {{ lesson_num }};
-    const nextBtn = document.getElementById('btn-next');
+    const practiceType = '{{ practice_type }}';
 
-    {% if lesson.id == 'states' %}
-    // Initialize state graph for lesson 5 (states)
-    const states = {
-        scan: { label: 'SCAN', emoji: '🔍', description: 'Looking for the end' },
-        add: { label: 'ADD', emoji: '➕', description: 'Adding 1' },
-        done: { label: 'DONE', emoji: '✅', description: 'Finished' }
+    // State info
+    const stateInfo = {
+        scan: { emoji: '🔍', label: 'SCAN', desc: 'Looking for the end' },
+        add: { emoji: '➕', label: 'ADD', desc: 'Adding 1 (with carry)' },
+        done: { emoji: '✅', label: 'DONE', desc: 'Finished!' },
+        flip: { emoji: '🔄', label: 'FLIP', desc: 'Flipping bits' }
     };
+
+    // Transitions for binary increment
     const transitions = {
         'scan,0': ['scan', '0', 'R'],
         'scan,1': ['scan', '1', 'R'],
@@ -221,108 +433,497 @@ document.addEventListener('DOMContentLoaded', function() {
         'add,_': ['done', '1', 'N']
     };
 
-    if (typeof StateGraph !== 'undefined') {
-        new StateGraph('lesson-graph', states, transitions, { animated: false });
-    }
-    {% endif %}
+    // Transitions for bit flip
+    const flipTransitions = {
+        'flip,0': ['flip', '1', 'R'],
+        'flip,1': ['flip', '0', 'R'],
+        'flip,_': ['done', '_', 'N']
+    };
 
-    {% if has_practice %}
-    // Practice exercises
+    {% if practice_type == 'magic-demo' %}
+    // ============== MAGIC DEMO ==============
+    const magicTape = document.getElementById('magic-tape');
+    let magicCells = magicTape.querySelectorAll('.tape-cell');
+    let magicState = 'scan';
+    let magicHead = 1;
+    let magicStepCount = 0;
 
-    {% if lesson_num == 4 %}
-    // Head control practice
-    const tapeCells = document.querySelectorAll('#practice-tape .tape-cell');
-    let headPos = 2;
+    const explanations = {
+        'scan,0': 'Scanning... see 0, keep going right',
+        'scan,1': 'Scanning... see 1, keep going right',
+        'scan,_': 'Found the end! Going back to add...',
+        'add,0': '0 + 1 = 1. Done!',
+        'add,1': '1 + 1 = 10. Write 0, carry the 1...',
+        'add,_': 'Need to write the carry. Done!'
+    };
 
-    function updateHead() {
-        tapeCells.forEach((cell, i) => cell.classList.remove('head'));
-        tapeCells[headPos].classList.add('head');
-        document.getElementById('head-sees').textContent = tapeCells[headPos].textContent || '_';
+    function updateMagicDisplay() {
+        const info = stateInfo[magicState];
+        document.getElementById('magic-emoji').textContent = info.emoji;
+        document.getElementById('magic-label').textContent = info.label;
+        document.getElementById('magic-step').textContent = magicStepCount;
 
-        if (headPos === 3) {
-            document.getElementById('practice-result').classList.remove('hidden');
+        magicCells.forEach((cell, i) => cell.classList.remove('head'));
+        if (magicHead >= 0 && magicHead < magicCells.length) {
+            magicCells[magicHead].classList.add('head');
         }
     }
 
-    document.getElementById('btn-left').addEventListener('click', () => {
-        if (headPos > 0) { headPos--; updateHead(); }
+    function magicStep() {
+        if (magicState === 'done') return false;
+
+        const symbol = magicCells[magicHead].textContent.trim() || '_';
+        const key = magicState + ',' + symbol;
+        const trans = transitions[key];
+
+        if (!trans) return false;
+
+        // Show explanation
+        document.getElementById('magic-explanation').innerHTML = '<p>' + (explanations[key] || '') + '</p>';
+
+        const [nextState, writeSymbol, direction] = trans;
+
+        magicCells[magicHead].textContent = writeSymbol === '_' ? '_' : writeSymbol;
+        magicCells[magicHead].classList.toggle('blank', writeSymbol === '_');
+
+        if (direction === 'R') magicHead++;
+        else if (direction === 'L') magicHead--;
+
+        magicState = nextState;
+        magicStepCount++;
+        updateMagicDisplay();
+
+        return nextState !== 'done';
+    }
+
+    function runMagicDemo() {
+        document.getElementById('demo-intro').classList.add('hidden');
+        document.getElementById('magic-simulator').classList.remove('hidden');
+
+        const interval = setInterval(function() {
+            if (!magicStep()) {
+                clearInterval(interval);
+                setTimeout(function() {
+                    document.getElementById('magic-simulator').classList.add('hidden');
+                    document.getElementById('magic-result').classList.remove('hidden');
+                }, 800);
+            }
+        }, 600);
+    }
+
+    function resetMagicDemo() {
+        magicState = 'scan';
+        magicHead = 1;
+        magicStepCount = 0;
+
+        const values = ['_', '1', '0', '1', '1', '_'];
+        magicTape.innerHTML = '';
+        values.forEach((v, i) => {
+            const cell = document.createElement('div');
+            cell.className = 'tape-cell' + (v === '_' ? ' blank' : '') + (i === 1 ? ' head' : '');
+            cell.textContent = v;
+            magicTape.appendChild(cell);
+        });
+        magicCells = magicTape.querySelectorAll('.tape-cell');
+        updateMagicDisplay();
+    }
+
+    document.getElementById('btn-start-magic').addEventListener('click', runMagicDemo);
+    document.getElementById('btn-replay-magic').addEventListener('click', function() {
+        document.getElementById('magic-result').classList.add('hidden');
+        resetMagicDemo();
+        runMagicDemo();
     });
-    document.getElementById('btn-right').addEventListener('click', () => {
-        if (headPos < tapeCells.length - 1) { headPos++; updateHead(); }
+
+    {% elif practice_type == 'lock-puzzle' %}
+    // ============== LOCK PUZZLE ==============
+    const lockDigits = [
+        document.getElementById('lock-d1'),
+        document.getElementById('lock-d2'),
+        document.getElementById('lock-d3'),
+        document.getElementById('lock-d4')
+    ];
+    const lockStatus = document.getElementById('lock-status');
+    let lockPosition = 0;
+    let lockCode = '';
+    const correctCode = '1234';
+
+    document.querySelectorAll('.lock-keypad .key').forEach(key => {
+        key.addEventListener('click', function() {
+            const keyVal = this.dataset.key;
+
+            if (keyVal === 'clear') {
+                lockPosition = 0;
+                lockCode = '';
+                lockDigits.forEach(d => d.textContent = '_');
+                lockStatus.textContent = 'Enter code...';
+                lockStatus.className = 'lock-status';
+                // Close the shackle
+                const shackle = document.getElementById('lock-shackle');
+                if (shackle) shackle.classList.remove('open');
+                return;
+            }
+
+            if (keyVal === 'enter') {
+                if (lockCode === correctCode) {
+                    lockStatus.textContent = 'UNLOCKED!';
+                    lockStatus.className = 'lock-status success';
+                    // Open the shackle with animation
+                    const shackle = document.getElementById('lock-shackle');
+                    if (shackle) shackle.classList.add('open');
+                    document.getElementById('lock-insight').classList.remove('hidden');
+                    setTimeout(function() {
+                        document.getElementById('lock-connection').classList.remove('hidden');
+                    }, 2000);
+                } else {
+                    lockStatus.textContent = 'WRONG CODE';
+                    lockStatus.className = 'lock-status error';
+                    setTimeout(function() {
+                        lockPosition = 0;
+                        lockCode = '';
+                        lockDigits.forEach(d => d.textContent = '_');
+                        lockStatus.textContent = 'Try again...';
+                        lockStatus.className = 'lock-status';
+                    }, 1000);
+                }
+                return;
+            }
+
+            if (lockPosition < 4) {
+                lockDigits[lockPosition].textContent = keyVal;
+                lockCode += keyVal;
+                lockPosition++;
+                lockStatus.textContent = 'Position ' + lockPosition + ' of 4';
+            }
+        });
     });
 
-    {% elif lesson_num == 5 %}
-    // States thinking exercise
-    document.getElementById('btn-check-states').addEventListener('click', function() {
-        const answer = document.getElementById('memory-answer').value.toLowerCase();
-        const feedback = document.getElementById('feedback-box');
-        const message = document.getElementById('feedback-message');
+    {% elif practice_type == 'explore-tape' %}
+    // ============== EXPLORE TAPE ==============
+    const exploreTape = document.getElementById('explore-tape');
+    const cells = exploreTape.querySelectorAll('.tape-cell');
+    const inspectorValue = document.getElementById('inspector-value');
+    const inspectorEdit = document.getElementById('inspector-edit');
+    let selectedCell = null;
 
-        feedback.classList.remove('hidden');
+    function updateTapeStats() {
+        let binary = '';
+        cells.forEach(cell => {
+            const val = cell.textContent.trim();
+            if (val !== '_' && val !== '') binary += val;
+        });
+        document.getElementById('tape-binary').textContent = binary || '0';
+        document.getElementById('tape-decimal').textContent = parseInt(binary || '0', 2);
+    }
 
-        if (answer.includes('found') || answer.includes('seen') || answer.includes('remember') ||
-            answer.includes('нашел') || answer.includes('видел') || answer.includes('помн')) {
-            message.innerHTML = '<span class="success">✓ Exactly! The machine needs to remember whether it has found a 1 yet.</span>';
-        } else if (answer.length < 10) {
-            message.innerHTML = '<span class="hint">Try to think: what changes after seeing a 1?</span>';
+    cells.forEach(cell => {
+        cell.addEventListener('click', function() {
+            cells.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedCell = this;
+
+            const value = this.textContent.trim() || '_';
+            inspectorValue.textContent = value === '_' ? 'blank' : value;
+            inspectorEdit.classList.remove('hidden');
+        });
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!selectedCell) return;
+            const writeVal = this.dataset.write;
+            selectedCell.textContent = writeVal;
+            selectedCell.classList.toggle('blank', writeVal === '_');
+            inspectorValue.textContent = writeVal === '_' ? 'blank' : writeVal;
+            updateTapeStats();
+        });
+    });
+
+    {% elif practice_type == 'control-head' %}
+    // ============== CONTROL HEAD ==============
+    const headTape = document.getElementById('head-tape');
+    let headCells = headTape.querySelectorAll('.tape-cell');
+    let headPos = 1;
+
+    function updateHeadDisplay() {
+        headCells.forEach((cell, i) => cell.classList.remove('head'));
+        headCells[headPos].classList.add('head');
+        const symbol = headCells[headPos].textContent.trim() || '_';
+        document.getElementById('head-sees').textContent = symbol;
+    }
+
+    document.getElementById('btn-left').addEventListener('click', function() {
+        if (headPos > 0) { headPos--; updateHeadDisplay(); }
+    });
+
+    document.getElementById('btn-right').addEventListener('click', function() {
+        if (headPos < headCells.length - 1) { headPos++; updateHeadDisplay(); }
+        // Show insight after exploring
+        if (headPos >= 3) {
+            document.getElementById('head-insight').classList.remove('hidden');
+        }
+    });
+
+    document.querySelectorAll('.write-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const writeVal = this.dataset.write;
+            headCells[headPos].textContent = writeVal;
+            headCells[headPos].classList.toggle('blank', writeVal === '_');
+            updateHeadDisplay();
+        });
+    });
+
+    {% elif practice_type == 'simple-rules' %}
+    // ============== SIMPLE RULES (BIT FLIP) ==============
+    const simpleTape = document.getElementById('simple-tape');
+    let simpleCells = simpleTape.querySelectorAll('.tape-cell');
+    let simpleHead = 1;
+    let simpleState = 'flip';
+    let simpleRunning = false;
+
+    function updateSimpleDisplay() {
+        simpleCells.forEach((cell, i) => cell.classList.remove('head'));
+        if (simpleHead >= 0 && simpleHead < simpleCells.length) {
+            simpleCells[simpleHead].classList.add('head');
+        }
+
+        const symbol = simpleCells[simpleHead]?.textContent.trim() || '_';
+        document.getElementById('simple-sees').textContent = symbol;
+
+        // Highlight active rule
+        document.getElementById('rule-0').classList.toggle('active', symbol === '0');
+        document.getElementById('rule-1').classList.toggle('active', symbol === '1');
+        document.getElementById('rule-blank').classList.toggle('active', symbol === '_');
+
+        // Update action
+        if (simpleState === 'done') {
+            document.getElementById('simple-action').textContent = 'Done!';
+        } else if (symbol === '0') {
+            document.getElementById('simple-action').textContent = 'Will write 1, move right';
+        } else if (symbol === '1') {
+            document.getElementById('simple-action').textContent = 'Will write 0, move right';
         } else {
-            message.innerHTML = '<span class="hint">Good thinking! The key insight: the machine needs to remember "Have I seen a 1 yet?"</span>';
+            document.getElementById('simple-action').textContent = 'Reached blank - stopping';
+        }
+    }
+
+    function simpleStep() {
+        if (simpleState === 'done') return false;
+
+        const symbol = simpleCells[simpleHead].textContent.trim() || '_';
+        const key = simpleState + ',' + symbol;
+        const trans = flipTransitions[key];
+
+        if (!trans) return false;
+
+        const [nextState, writeSymbol, direction] = trans;
+
+        simpleCells[simpleHead].textContent = writeSymbol;
+        simpleCells[simpleHead].classList.toggle('blank', writeSymbol === '_');
+
+        if (direction === 'R') simpleHead++;
+        else if (direction === 'L') simpleHead--;
+
+        simpleState = nextState;
+        updateSimpleDisplay();
+
+        return nextState !== 'done';
+    }
+
+    document.getElementById('btn-simple-step').addEventListener('click', function() {
+        if (!simpleStep()) {
+            document.getElementById('simple-result').classList.remove('hidden');
         }
     });
 
-    {% elif lesson_num == 6 %}
-    // Rule application practice
-    document.getElementById('btn-check-rule').addEventListener('click', function() {
-        const write = document.getElementById('action-write').value;
-        const move = document.getElementById('action-move').value;
-        const state = document.getElementById('action-state').value;
-        const feedback = document.getElementById('rule-feedback');
-        const message = document.getElementById('rule-feedback-message');
+    document.getElementById('btn-simple-run').addEventListener('click', function() {
+        if (simpleRunning) return;
+        simpleRunning = true;
 
-        feedback.classList.remove('hidden');
+        const interval = setInterval(function() {
+            if (!simpleStep()) {
+                clearInterval(interval);
+                document.getElementById('simple-result').classList.remove('hidden');
+                simpleRunning = false;
+            }
+        }, 400);
+    });
 
-        if (!write || !move || !state) {
-            message.innerHTML = '<span class="error">Please fill in all fields!</span>';
-            return;
+    document.getElementById('btn-simple-reset').addEventListener('click', function() {
+        simpleState = 'flip';
+        simpleHead = 1;
+        simpleRunning = false;
+
+        const values = ['_', '1', '0', '1', '0', '_'];
+        simpleTape.innerHTML = '';
+        values.forEach((v, i) => {
+            const cell = document.createElement('div');
+            cell.className = 'tape-cell' + (v === '_' ? ' blank' : '') + (i === 1 ? ' head' : '');
+            cell.textContent = v;
+            simpleTape.appendChild(cell);
+        });
+        simpleCells = simpleTape.querySelectorAll('.tape-cell');
+
+        updateSimpleDisplay();
+        document.getElementById('simple-result').classList.add('hidden');
+    });
+
+    updateSimpleDisplay();
+
+    {% elif practice_type == 'the-problem' %}
+    // ============== THE PROBLEM ==============
+    document.getElementById('btn-show-problem').addEventListener('click', function() {
+        document.getElementById('problem-reveal').classList.remove('hidden');
+        this.classList.add('hidden');
+    });
+
+    {% elif practice_type == 'states-solve' %}
+    // ============== STATES SOLVE ==============
+    const statesTape = document.getElementById('states-tape');
+    let statesCells = statesTape.querySelectorAll('.tape-cell');
+    let currentState = 'scan';
+    let statesHead = 1;
+    let statesStepCount = 0;
+    let statesRunning = false;
+
+    function updateStatesDisplay() {
+        const info = stateInfo[currentState];
+        document.getElementById('states-emoji').textContent = info.emoji;
+        document.getElementById('states-label').textContent = info.label;
+        document.getElementById('states-desc').textContent = info.desc;
+        document.getElementById('states-step').textContent = statesStepCount;
+
+        statesCells.forEach((cell, i) => cell.classList.remove('head'));
+        if (statesHead >= 0 && statesHead < statesCells.length) {
+            statesCells[statesHead].classList.add('head');
         }
 
-        // Correct: ADD + see 1 → write 0, move LEFT, stay ADD
-        if (write === '0' && move === 'left' && state === 'ADD') {
-            message.innerHTML = '<span class="success">✓ Correct! ADD + see 1 → write 0, move LEFT, stay ADD. The carry propagates!</span>';
+        const symbol = statesCells[statesHead]?.textContent.trim() || '_';
+        document.getElementById('exp-state').textContent = info.label;
+        document.getElementById('exp-symbol').textContent = symbol;
+
+        // Highlight active rule
+        document.querySelectorAll('.rule-item').forEach(r => r.classList.remove('active'));
+        const ruleKey = currentState + ',' + symbol;
+        const activeRule = document.querySelector(`[data-rule="${ruleKey}"]`);
+        if (activeRule) activeRule.classList.add('active');
+
+        // Highlight active column
+        document.getElementById('scan-col').classList.toggle('active-col', currentState === 'scan');
+        document.getElementById('add-col').classList.toggle('active-col', currentState === 'add');
+
+        // Update action text
+        const trans = transitions[ruleKey];
+        if (currentState === 'done') {
+            document.getElementById('exp-action').textContent = 'Finished!';
+        } else if (trans) {
+            const [nextState, write, dir] = trans;
+            const dirText = dir === 'R' ? 'move RIGHT' : dir === 'L' ? 'move LEFT' : 'STOP';
+            const stateText = nextState !== currentState ? ', switch to ' + nextState.toUpperCase() : '';
+            document.getElementById('exp-action').textContent = 'Will write ' + write + ', ' + dirText + stateText;
+        }
+    }
+
+    function statesStep() {
+        if (currentState === 'done') return false;
+
+        const symbol = statesCells[statesHead].textContent.trim() || '_';
+        const key = currentState + ',' + symbol;
+        const trans = transitions[key];
+
+        if (!trans) return false;
+
+        const [nextState, writeSymbol, direction] = trans;
+
+        statesCells[statesHead].textContent = writeSymbol;
+        statesCells[statesHead].classList.toggle('blank', writeSymbol === '_');
+
+        if (direction === 'R') statesHead++;
+        else if (direction === 'L') statesHead--;
+
+        currentState = nextState;
+        statesStepCount++;
+        updateStatesDisplay();
+
+        return nextState !== 'done';
+    }
+
+    document.getElementById('btn-states-step').addEventListener('click', function() {
+        if (!statesStep()) {
+            document.getElementById('states-result').classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('btn-states-run').addEventListener('click', function() {
+        if (statesRunning) return;
+        statesRunning = true;
+
+        const interval = setInterval(function() {
+            if (!statesStep()) {
+                clearInterval(interval);
+                document.getElementById('states-result').classList.remove('hidden');
+                statesRunning = false;
+            }
+        }, 500);
+    });
+
+    document.getElementById('btn-states-reset').addEventListener('click', function() {
+        currentState = 'scan';
+        statesHead = 1;
+        statesStepCount = 0;
+        statesRunning = false;
+
+        const values = ['_', '1', '1', '1', '_'];
+        statesTape.innerHTML = '';
+        values.forEach((v, i) => {
+            const cell = document.createElement('div');
+            cell.className = 'tape-cell' + (v === '_' ? ' blank' : '') + (i === 1 ? ' head' : '');
+            cell.textContent = v;
+            statesTape.appendChild(cell);
+        });
+        statesCells = statesTape.querySelectorAll('.tape-cell');
+
+        updateStatesDisplay();
+        document.getElementById('states-result').classList.add('hidden');
+    });
+
+    updateStatesDisplay();
+
+    {% elif practice_type == 'finale' %}
+    // ============== FINALE ==============
+    document.getElementById('btn-check').addEventListener('click', function() {
+        const inputs = document.querySelectorAll('.predict-input');
+        let correct = 0;
+
+        inputs.forEach(input => {
+            const answer = input.dataset.answer;
+            const userAnswer = input.value.trim();
+            const feedback = input.nextElementSibling;
+
+            if (userAnswer === answer) {
+                correct++;
+                feedback.textContent = '✓';
+                feedback.className = 'predict-feedback correct';
+                input.classList.add('correct');
+            } else {
+                feedback.textContent = answer;
+                feedback.className = 'predict-feedback wrong';
+                input.classList.add('wrong');
+            }
+        });
+
+        const scoreSection = document.getElementById('final-score');
+        scoreSection.classList.remove('hidden');
+        const scoreText = scoreSection.querySelector('.score-text');
+
+        if (correct === 3) {
+            scoreText.innerHTML = '<strong>Perfect!</strong> You truly understand how computers work!';
+        } else if (correct >= 2) {
+            scoreText.innerHTML = '<strong>' + correct + '/3</strong> - Getting it!';
         } else {
-            message.innerHTML = '<span class="error">Not quite. Look at the rule for ADD mode when seeing 1.</span>';
+            scoreText.innerHTML = '<strong>' + correct + '/3</strong> - Try the simulator to see how it works!';
         }
     });
-
-    {% elif lesson_num == 8 %}
-    // Binary converter practice
-    document.getElementById('btn-check-binary').addEventListener('click', function() {
-        const answer = parseInt(document.getElementById('decimal-answer').value);
-        const feedback = document.getElementById('binary-feedback');
-        const message = document.getElementById('binary-feedback-message');
-
-        feedback.classList.remove('hidden');
-        if (answer === 10) {
-            message.innerHTML = '<span class="success">✓ Correct! 1010 = 8+0+2+0 = 10</span>';
-        } else {
-            message.innerHTML = '<span class="error">Try again. Add up: 8 + 0 + 2 + 0 = ?</span>';
-        }
-    });
-
-    document.getElementById('btn-check-decimal').addEventListener('click', function() {
-        const answer = document.getElementById('binary-answer').value.trim();
-        const feedback = document.getElementById('binary-feedback');
-        const message = document.getElementById('binary-feedback-message');
-
-        feedback.classList.remove('hidden');
-        if (answer === '110') {
-            message.innerHTML = '<span class="success">✓ Correct! 6 = 4+2 = 110</span>';
-        } else {
-            message.innerHTML = '<span class="error">Try again. 6 = 4 + 2 + 0</span>';
-        }
-    });
-    {% endif %}
-
     {% endif %}
 });
 </script>

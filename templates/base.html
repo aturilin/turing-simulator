@@ -3,70 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Turing Machine Simulator{% endblock %}</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon.svg">
-
-    <!-- Fonts -->
+    <title>{% block title %}TURING.MACHINE{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Styles - v6 cache bust -->
-    <link rel="stylesheet" href="/static/style.css?v=20251128v7">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20251201v2">
+    {% block head %}{% endblock %}
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-container">
+    <!-- Scanlines overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Grid background -->
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
             <a href="/" class="nav-brand">
-                <svg class="nav-logo" viewBox="0 0 32 32" width="28" height="28">
-                    <rect x="1" y="9" width="9" height="14" rx="2" fill="#e2e8f0"/>
-                    <text x="5.5" y="19" font-family="system-ui" font-size="9" font-weight="600" fill="#64748b" text-anchor="middle">1</text>
-                    <rect x="11" y="7" width="10" height="18" rx="2" fill="#2563eb"/>
-                    <text x="16" y="20" font-family="system-ui" font-size="11" font-weight="700" fill="white" text-anchor="middle">0</text>
-                    <rect x="22" y="9" width="9" height="14" rx="2" fill="#e2e8f0"/>
-                    <text x="26.5" y="19" font-family="system-ui" font-size="9" font-weight="600" fill="#64748b" text-anchor="middle">1</text>
-                    <polygon points="16,3 13,7 19,7" fill="#2563eb"/>
-                </svg>
-                <span class="nav-brand-text">Turing Machine</span>
+                <div class="brand-logo">
+                    <span class="logo-bracket">[</span>
+                    <span class="logo-symbol">TM</span>
+                    <span class="logo-bracket">]</span>
+                </div>
+                <span class="brand-text">TURING<span class="brand-dot">.</span>MACHINE</span>
             </a>
             <div class="nav-links">
-                <a href="/lesson/1" class="nav-link {% if active_page == 'lessons' %}active{% endif %}">Course</a>
-                <a href="/simulator" class="nav-link {% if active_page == 'simulator' %}active{% endif %}">Simulator</a>
-                <a href="/challenge" class="nav-link {% if active_page == 'challenge' %}active{% endif %}">Challenge</a>
+                <a href="/lesson/1" class="nav-link {% if active_page == 'lessons' %}active{% endif %}">
+                    <span class="link-icon">01</span>
+                    <span class="link-text">LEARN</span>
+                </a>
+                <a href="/simulator" class="nav-link {% if active_page == 'simulator' %}active{% endif %}">
+                    <span class="link-icon">02</span>
+                    <span class="link-text">SIMULATE</span>
+                </a>
+                <a href="/challenge" class="nav-link {% if active_page == 'challenge' %}active{% endif %}">
+                    <span class="link-icon">03</span>
+                    <span class="link-text">CHALLENGE</span>
+                </a>
+            </div>
+            <div class="nav-status">
+                <span class="status-indicator"></span>
+                <span class="status-text">SYS_ONLINE</span>
             </div>
         </div>
     </nav>
 
-    {% if breadcrumbs %}
-    <div class="breadcrumbs-wrapper">
-        <div class="breadcrumbs">
-            {% for crumb in breadcrumbs %}
-                {% if not loop.last %}
-                    <a href="{{ crumb.url }}" class="breadcrumb {% if crumb.completed %}completed{% endif %}">
-                        {% if crumb.completed %}<span class="check">✓</span>{% endif %}
-                        {{ crumb.label }}
-                    </a>
-                    <span class="breadcrumb-separator">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                {% else %}
-                    <span class="breadcrumb current">{{ crumb.label }}</span>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    <main class="main-content">
+    <!-- Main content -->
+    <main class="main">
         {% block content %}{% endblock %}
     </main>
 
-    <script src="/static/script.js"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="terminal-prompt">~/turing $</span>
+                <span class="footer-text">Computational Theory Simulator</span>
+            </div>
+            <div class="footer-center">
+                <span class="copyright">&copy; 2025 Корпоратив многоэтажк</span>
+            </div>
+            <div class="footer-right">
+                <span class="cursor-blink">_</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}?v=20251130v1"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,188 +1,294 @@
-"""Educational Turing machine - Learn First, Then Play."""
+"""Educational Turing machine - Pedagogical Redesign v4.
 
-# Lessons shown BEFORE the simulator
+NEW ORDER (Bottom-up, delayed state introduction):
+1. Magic Demo - Hook
+2. Tape - What data looks like
+3. Head - How it reads/writes/moves
+4. Simple Rules - Rules that work (bit flip)
+5. The Problem - Why add 1 fails with simple rules
+6. Lock Puzzle - NOW introduce states via lock metaphor
+7. States Solve Everything - The solution
+8. Finale
+"""
+
+# 8 Modules: Bottom-up discovery with delayed state introduction
 LESSONS = [
+    # ============================================================
+    # MODULE 1: THE MAGIC TRICK (Demo FIRST - see it before theory)
+    # ============================================================
     {
-        "id": "welcome",
-        "title": "Welcome!",
+        "id": "magic-trick",
+        "title": "The Magic Trick",
+        "practice_type": "magic-demo",
         "content": """
-            <div class="lesson-image-hero">
-                <img src="/static/media/page1.jpeg" alt="The Analytical Turing Engine">
+            <div class="hook-intro">
+                <p class="hook-line">Watch this.</p>
             </div>
-            <h2>Welcome to the Turing Machine Simulator!</h2>
-            <p class="lead">Learn how the simplest computer works.</p>
-            <p>Today we'll teach a machine to add 1 to a binary number.</p>
-            <p class="muted">(Don't worry, we'll explain everything step by step!)</p>
         """
     },
-    {
-        "id": "what-is-tm",
-        "title": "What is a Turing Machine?",
-        "content": """
-            <h2>What is a Turing Machine?</h2>
-            <div class="lesson-image-float">
-                <img src="/static/media/page2.jpeg" alt="Turing Machine Assembly">
-                <span class="image-caption">Fig. 1 — The components of a Turing Machine</span>
-            </div>
-            <p>A Turing machine is the <strong>simplest possible computer</strong>.</p>
-            <p>It was invented by Alan Turing in 1936.</p>
-            <div class="highlight-box">
-                <p>It has only <strong>3 parts</strong>:</p>
-                <ol>
-                    <li><strong>A TAPE</strong> - like an infinite strip of paper</li>
-                    <li><strong>A HEAD</strong> - that reads and writes on the tape</li>
-                    <li><strong>RULES</strong> - that tell it what to do</li>
-                </ol>
-            </div>
-            <p>That's it! Yet it can compute <em>anything</em> a modern computer can.</p>
-        """
-    },
+
+    # ============================================================
+    # MODULE 2: THE TAPE (Data storage - now earlier)
+    # ============================================================
     {
         "id": "tape",
         "title": "The Tape",
+        "practice_type": "explore-tape",
         "content": """
-            <h2>The Tape</h2>
-            <div class="lesson-image-inline">
-                <img src="/static/media/page3.jpeg" alt="The Tape with Algorithm">
-                <span class="image-caption">Fig. 2 — Binary data on the tape</span>
+            <div class="concept-intro">
+                <p class="lead">Now let's look at the machine you just watched.</p>
+                <p>It has a <strong>tape</strong> &mdash; a row of boxes that hold symbols.</p>
             </div>
-            <p>The tape is divided into boxes called <strong>"cells"</strong>.</p>
-            <p>Each cell holds <strong>ONE symbol</strong>.</p>
-            <div class="tape-demo">
-                <div class="tape-cell">_</div>
+
+            <div class="tape-visual-demo horizontal">
+                <div class="tape-cell blank">_</div>
                 <div class="tape-cell">1</div>
                 <div class="tape-cell">0</div>
                 <div class="tape-cell">1</div>
                 <div class="tape-cell">1</div>
-                <div class="tape-cell">_</div>
+                <div class="tape-cell blank">_</div>
             </div>
-            <ul>
-                <li>The tape goes on <strong>FOREVER</strong> in both directions</li>
-                <li>Empty cells contain "blank" (shown as _)</li>
-                <li>Our tape holds binary numbers: <strong>0s and 1s</strong></li>
-            </ul>
+
+            <div class="insight-box">
+                <p>Each box holds exactly <strong>ONE symbol</strong>:</p>
+                <ul>
+                    <li><strong>0</strong> or <strong>1</strong> &mdash; binary digits</li>
+                    <li><strong>_</strong> &mdash; blank (empty)</li>
+                </ul>
+            </div>
+
+            <div class="wow-connection">
+                <p>That photo on your phone? <strong>10 million boxes</strong> like this.</p>
+                <p>Each one just a 0 or 1. The computer doesn't "see" the photo &mdash; it just reads symbols.</p>
+            </div>
         """
     },
+
+    # ============================================================
+    # MODULE 3: THE HEAD (Control - one cell at a time)
+    # ============================================================
     {
         "id": "head",
         "title": "The Head",
+        "practice_type": "control-head",
         "content": """
-            <h2>The Head</h2>
-            <div class="lesson-image-float">
-                <img src="/static/media/page5.jpeg" alt="The Read/Write Head">
-                <span class="image-caption">Fig. 3 — The read/write head mechanism</span>
+            <div class="concept-intro">
+                <p class="lead">The machine has a <strong>head</strong> &mdash; like a finger pointing at one box.</p>
             </div>
-            <p>The head points to <strong>ONE cell</strong> at a time.</p>
-            <div class="tape-demo">
-                <div class="tape-cell">_</div>
+
+            <div class="tape-visual-demo horizontal with-head">
+                <div class="tape-cell blank">_</div>
                 <div class="tape-cell">1</div>
                 <div class="tape-cell head">0</div>
                 <div class="tape-cell">1</div>
                 <div class="tape-cell">1</div>
-                <div class="tape-cell">_</div>
+                <div class="tape-cell blank">_</div>
             </div>
-            <div class="head-pointer">▲ HEAD</div>
-            <div class="highlight-box">
-                <p>The head can:</p>
-                <ul>
-                    <li>✓ <strong>READ</strong> the symbol in the current cell</li>
-                    <li>✓ <strong>WRITE</strong> a new symbol</li>
-                    <li>✓ <strong>MOVE</strong> left or right</li>
-                </ul>
+            <div class="head-pointer">HEAD</div>
+
+            <div class="constraint-box">
+                <p class="constraint-title">The Catch:</p>
+                <p>The head can only see <strong>ONE box</strong> at a time.</p>
+                <p class="analogy"><em>Like reading a book through a keyhole &mdash; one letter at a time.</em></p>
+            </div>
+
+            <div class="actions-box">
+                <p>The head can do exactly <strong>3 things</strong>:</p>
+                <div class="action-list">
+                    <div class="action-item">
+                        <span class="action-icon">👁️</span>
+                        <span class="action-text"><strong>READ</strong> the symbol</span>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-icon">✏️</span>
+                        <span class="action-text"><strong>WRITE</strong> a new symbol</span>
+                    </div>
+                    <div class="action-item">
+                        <span class="action-icon">👆</span>
+                        <span class="action-text"><strong>MOVE</strong> left or right</span>
+                    </div>
+                </div>
             </div>
         """
     },
-    {
-        "id": "states",
-        "title": "States = Memory",
-        "content": """
-            <h2>States = The Machine's Memory</h2>
 
-            <div class="highlight-box important">
-                <p><strong>Key insight:</strong> States are what the machine <strong>remembers</strong>.</p>
-                <p>The machine can only see ONE cell at a time. States let it remember what it's doing!</p>
+    # ============================================================
+    # MODULE 4: SIMPLE RULES (Rules that work WITHOUT states)
+    # ============================================================
+    {
+        "id": "simple-rules",
+        "title": "Simple Rules",
+        "practice_type": "simple-rules",
+        "content": """
+            <div class="concept-intro">
+                <p class="lead">The machine follows <strong>rules</strong>.</p>
+                <p>Let's start simple: <strong>flip every bit</strong>.</p>
             </div>
 
-            <div class="lesson-graph-container">
-                <div class="state-graph-container" id="lesson-graph">
-                    <!-- State graph renders here -->
+            <div class="rules-display simple">
+                <div class="rule">See <strong>0</strong> → write <strong>1</strong>, move right</div>
+                <div class="rule">See <strong>1</strong> → write <strong>0</strong>, move right</div>
+                <div class="rule">See <strong>_</strong> → stop</div>
+            </div>
+
+            <div class="insight-box">
+                <p>That's it. <strong>"When I see X, do Y."</strong></p>
+                <p>Every program ever written &mdash; from Instagram to Excel &mdash; is just rules like this. Lots of them.</p>
+            </div>
+        """
+    },
+
+    # ============================================================
+    # MODULE 5: THE LOCK PUZZLE (NOW introduce states)
+    # ============================================================
+    {
+        "id": "lock-puzzle",
+        "title": "The Lock Puzzle",
+        "practice_type": "lock-puzzle",
+        "content": """
+            <div class="puzzle-intro">
+                <p class="lead">Let me show you something that will help.</p>
+                <p>Try entering the code <strong>1-2-3-4</strong> on this lock.</p>
+            </div>
+        """
+    },
+
+    # ============================================================
+    # MODULE 6: STATES SOLVE EVERYTHING
+    # ============================================================
+    {
+        "id": "states",
+        "title": "States Solve Everything",
+        "practice_type": "states-solve",
+        "content": """
+            <div class="solution-intro">
+                <p class="lead">Remember the lock?</p>
+                <p>It knew which digit it was waiting for: <strong>1st, 2nd, 3rd, or 4th</strong>.</p>
+                <p>That memory is called a <strong>STATE</strong>.</p>
+            </div>
+
+            <div class="lock-connection">
+                <div class="lock-states">
+                    <div class="lock-state">
+                        <span class="state-num">State 1</span>
+                        <span class="state-meaning">"Waiting for 1st digit"</span>
+                    </div>
+                    <div class="lock-arrow">→</div>
+                    <div class="lock-state">
+                        <span class="state-num">State 2</span>
+                        <span class="state-meaning">"Waiting for 2nd digit"</span>
+                    </div>
+                    <div class="lock-arrow">→</div>
+                    <div class="lock-state">
+                        <span class="state-num">State 3</span>
+                        <span class="state-meaning">"Waiting for 3rd digit"</span>
+                    </div>
+                    <div class="lock-arrow">→</div>
+                    <div class="lock-state active">
+                        <span class="state-num">OPEN!</span>
+                        <span class="state-meaning">"All correct!"</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="highlight-box">
-                <p>Our machine uses these states:</p>
-                <div class="state-item"><span class="state-emoji">🔍</span> <strong>SCAN</strong> — looking for the end of the number</div>
-                <div class="state-item"><span class="state-emoji">➕</span> <strong>ADD</strong> — adding 1 and handling carries</div>
-                <div class="state-item"><span class="state-emoji">✅</span> <strong>DONE</strong> — finished!</div>
+            <div class="insight-box">
+                <p><strong>Key insight:</strong> The lock's behavior depends on TWO things:</p>
+                <ol>
+                    <li>What button you press (the <strong>input</strong>)</li>
+                    <li>Which digit it's waiting for (the <strong>state</strong>)</li>
+                </ol>
             </div>
 
-            <p class="muted">When you design an algorithm, ask: "What does my machine need to <strong>remember</strong>?"</p>
-        """
-    },
-    {
-        "id": "rules",
-        "title": "The Rules",
-        "content": """
-            <h2>The Rules</h2>
-            <div class="lesson-image-float">
-                <img src="/static/media/page4.jpeg" alt="Algorithm Process Flow">
-                <span class="image-caption">Fig. 5 — Following the algorithm</span>
+            <div class="transition-text">
+                <p>Our Turing machine needs the same thing!</p>
             </div>
-            <p>Rules tell the machine what to do.</p>
-            <p>Each rule says:</p>
-            <div class="rule-template">
-                "When in <strong>[STATE]</strong> and I see <strong>[SYMBOL]</strong>:<br>
-                → Write <strong>[NEW SYMBOL]</strong><br>
-                → Move <strong>[LEFT/RIGHT/STAY]</strong><br>
-                → Switch to <strong>[NEW STATE]</strong>"
+
+            <div class="states-visual">
+                <div class="state-card scan">
+                    <span class="state-emoji">🔍</span>
+                    <strong>SCAN</strong>
+                    <span class="state-desc">"Looking for the end"</span>
+                </div>
+                <div class="state-card add">
+                    <span class="state-emoji">➕</span>
+                    <strong>ADD</strong>
+                    <span class="state-desc">"Now I'm adding"</span>
+                </div>
+                <div class="state-card done">
+                    <span class="state-emoji">✅</span>
+                    <strong>DONE</strong>
+                    <span class="state-desc">"Finished!"</span>
+                </div>
             </div>
-            <div class="example-rule">
-                <p><strong>Example rule:</strong></p>
-                <p>When in <span class="badge">SCAN</span> and I see <span class="badge">1</span>:</p>
-                <ul>
-                    <li>→ Keep the 1 (write 1)</li>
-                    <li>→ Move RIGHT</li>
-                    <li>→ Stay in SCAN mode</li>
-                </ul>
-                <p class="muted">(This means: "Still looking, move to next cell")</p>
+
+            <div class="rules-with-states">
+                <h3>Now the rules work!</h3>
+                <p>Each rule says: <strong>"In STATE X, when I see Y, do Z"</strong></p>
+
+                <div class="rules-group">
+                    <h4>🔍 SCAN mode:</h4>
+                    <div class="rule">See 0 → keep it, move RIGHT, stay SCAN</div>
+                    <div class="rule">See 1 → keep it, move RIGHT, stay SCAN</div>
+                    <div class="rule">See _ → move LEFT, switch to <strong>ADD</strong></div>
+                </div>
+
+                <div class="rules-group">
+                    <h4>➕ ADD mode:</h4>
+                    <div class="rule">See 0 → write 1, DONE!</div>
+                    <div class="rule">See 1 → write 0, move LEFT, stay ADD</div>
+                    <div class="rule">See _ → write 1, DONE!</div>
+                </div>
             </div>
-        """
-    },
-    {
-        "id": "all-rules",
-        "title": "All the Rules",
-        "content": """
-            <h2>All 6 Rules for Adding 1</h2>
-            <div class="rules-group">
-                <h3>🔍 SCAN MODE (looking for the end):</h3>
-                <div class="rule">See <strong>0</strong> → keep it, move right, stay in SCAN</div>
-                <div class="rule">See <strong>1</strong> → keep it, move right, stay in SCAN</div>
-                <div class="rule">See <strong>blank</strong> → found the end! move left, switch to ADD</div>
-            </div>
-            <div class="rules-group">
-                <h3>➕ ADD MODE (doing the math):</h3>
-                <div class="rule">See <strong>0</strong> → write 1, stop, DONE <span class="muted">(0+1=1)</span></div>
-                <div class="rule">See <strong>1</strong> → write 0, move left, stay in ADD <span class="muted">(1+1=10, carry!)</span></div>
-                <div class="rule">See <strong>blank</strong> → write 1, stop, DONE</div>
+
+            <div class="wow-connection">
+                <p>Same symbol (like <strong>1</strong>), different state = different action.</p>
+                <p>Just like the lock: same button, different position = different result!</p>
             </div>
         """
     },
+
+    # ============================================================
+    # MODULE 7: YOU NOW UNDERSTAND COMPUTERS
+    # ============================================================
     {
-        "id": "binary",
-        "title": "Binary Numbers",
+        "id": "finale",
+        "title": "You Now Understand Computers",
+        "practice_type": "finale",
         "content": """
-            <h2>Binary Numbers (Super Quick!)</h2>
-            <p>Binary only uses <strong>0</strong> and <strong>1</strong>.</p>
-            <p>Each position is worth <strong>2x</strong> the one to its right.</p>
-            <div class="binary-example">
-                <code>1011</code> in binary = 8 + 0 + 2 + 1 = <strong>11</strong> in decimal
+            <div class="finale-intro">
+                <h2>The Complete Picture</h2>
             </div>
-            <p>Adding 1 is like counting:</p>
-            <div class="binary-example">
-                <code>1011</code> (11) + 1 = <code>1100</code> (12)
+
+            <div class="recap-box">
+                <div class="recap-item">
+                    <span class="num">1</span>
+                    <strong>Tape</strong> = memory (0s and 1s)
+                </div>
+                <div class="recap-item">
+                    <span class="num">2</span>
+                    <strong>Head</strong> = processor (read, write, move)
+                </div>
+                <div class="recap-item">
+                    <span class="num">3</span>
+                    <strong>States</strong> = what the CPU is "thinking about"
+                </div>
+                <div class="recap-item">
+                    <span class="num">4</span>
+                    <strong>Rules</strong> = the program
+                </div>
             </div>
-            <p>When a digit goes from 1 to 2, it becomes 0 and we <strong>"carry"</strong> 1 to the left.</p>
-            <p class="muted">(Just like 9+1=10 in regular numbers!)</p>
+
+            <div class="wow-box">
+                <p>That game on your phone? It's just rules.</p>
+                <p>Very complicated rules, but rules.</p>
+                <p>The CPU reads data, checks what mode it's in, and follows rules.</p>
+            </div>
+
+            <div class="final-revelation">
+                <p>The <strong>ONLY</strong> difference between this Turing Machine and your iPhone?</p>
+                <p class="revelation-answer"><strong>SPEED.</strong></p>
+                <p>Your phone does this <strong>3,000,000,000</strong> times per second.</p>
+            </div>
         """
     }
 ]
@@ -217,7 +323,6 @@ EXAMPLES = {
             }
         },
 
-        # Explanations shown BEFORE each action
         "next_action_explanations": {
             "scan,0": {
                 "action": "Keep the 0, move RIGHT, stay in SCAN",
@@ -261,6 +366,42 @@ EXAMPLES = {
             "add,0": ["done", "1", "N"],
             "add,1": ["add", "0", "L"],
             "add,_": ["done", "1", "N"]
+        }
+    },
+
+    "bit_flip": {
+        "name": "Flip All Bits",
+        "description": "Turn every 0 into 1 and every 1 into 0",
+        "goal": "Invert all bits",
+        "initial_state": "flip",
+        "accept_states": ["done"],
+        "reject_states": [],
+        "blank_symbol": "_",
+        "default_input": "1010",
+
+        "states": {
+            "flip": {
+                "label": "FLIP",
+                "emoji": "🔄",
+                "description": "Flipping bits one by one"
+            },
+            "done": {
+                "label": "DONE",
+                "emoji": "✅",
+                "description": "Finished!"
+            }
+        },
+
+        "rules": [
+            {"state": "flip", "see": "0", "write": "1", "move": "right", "goto": "flip"},
+            {"state": "flip", "see": "1", "write": "0", "move": "right", "goto": "flip"},
+            {"state": "flip", "see": "_", "write": "_", "move": "stay", "goto": "done"}
+        ],
+
+        "transitions": {
+            "flip,0": ["flip", "1", "R"],
+            "flip,1": ["flip", "0", "R"],
+            "flip,_": ["done", "_", "N"]
         }
     }
 }

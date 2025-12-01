@@ -509,7 +509,9 @@ class TuringSimulator {
         this.btnSetTape = document.getElementById('btn-set-tape');
         this.speedSlider = document.getElementById('speed-slider');
 
-        // Rules
+        // Rules - new simplified layout
+        this.rulesCards = document.getElementById('rules-cards');
+        // Old elements (kept for compatibility)
         this.rulesListScan = document.getElementById('rules-list-scan');
         this.rulesListAdd = document.getElementById('rules-list-add');
 
@@ -854,40 +856,44 @@ class TuringSimulator {
         this.tape.innerHTML = '';
 
         const positions = Object.keys(cells).map(Number).sort((a, b) => a - b);
-        let headCellElement = null;
+        let headCellWrapper = null;
 
         positions.forEach(pos => {
+            // Create wrapper for cell + optional head label
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tape-cell-wrapper';
+
             const cell = document.createElement('div');
             cell.className = 'tape-cell';
-            cell.textContent = cells[pos] === '_' ? '' : cells[pos];
+            cell.textContent = cells[pos] === '_' ? '_' : cells[pos];
 
             if (pos === head_position) {
                 cell.classList.add('head');
-                headCellElement = cell;
+                headCellWrapper = wrapper;
+
+                // Add HEAD label BELOW the cell (like original)
+                const headLabel = document.createElement('div');
+                headLabel.className = 'head-label';
+                headLabel.textContent = 'HEAD';
+                wrapper.appendChild(cell);
+                wrapper.appendChild(headLabel);
+            } else {
+                wrapper.appendChild(cell);
             }
+
             if (cells[pos] === '_') {
                 cell.classList.add('blank');
             }
 
-            this.tape.appendChild(cell);
+            this.tape.appendChild(wrapper);
         });
 
-        // Position head indicator
-        if (headCellElement) {
+        // Scroll to center head
+        if (headCellWrapper) {
             setTimeout(() => {
-                const tapeWrapper = this.tape.parentElement;
-                const headRect = headCellElement.getBoundingClientRect();
-                const tapeRect = this.tape.getBoundingClientRect();
-                const wrapperRect = tapeWrapper.getBoundingClientRect();
-
-                const headIndicator = tapeWrapper.querySelector('.head-indicator');
-                const headCenterX = headRect.left + headRect.width / 2 - tapeRect.left;
-                headIndicator.style.left = headCenterX + 'px';
-                headIndicator.style.transform = 'translateX(-50%)';
-
-                // Scroll to center head
-                const scrollLeft = headCellElement.offsetLeft - (wrapperRect.width / 2) + (headRect.width / 2);
-                tapeWrapper.scrollLeft = scrollLeft;
+                const tapeContainer = this.tape.parentElement;
+                const scrollLeft = headCellWrapper.offsetLeft - (tapeContainer.offsetWidth / 2) + (headCellWrapper.offsetWidth / 2);
+                tapeContainer.scrollLeft = scrollLeft;
             }, 0);
         }
     }
@@ -970,58 +976,87 @@ class TuringSimulator {
     }
 
     renderRules(rules) {
-        this.rulesListScan.innerHTML = '';
-        this.rulesListAdd.innerHTML = '';
+        // Store rules for highlighting
+        this.currentRules = rules;
 
-        rules.forEach((rule, index) => {
-            const card = document.createElement('div');
-            card.className = 'rule-card';
-            card.dataset.state = rule.state;
-            card.dataset.see = rule.see;
+        // Clear old elements (for compatibility)
+        if (this.rulesListScan) this.rulesListScan.innerHTML = '';
+        if (this.rulesListAdd) this.rulesListAdd.innerHTML = '';
 
-            // Build action descriptions
-            const moveIcon = {
-                'right': '→',
-                'left': '←',
-                'stay': '■'
-            }[rule.move] || '?';
+        // New simplified card layout
+        if (!this.rulesCards) return;
+        this.rulesCards.innerHTML = '';
 
-            const moveText = {
-                'right': 'Move RIGHT',
-                'left': 'Move LEFT',
-                'stay': 'STOP'
-            }[rule.move] || rule.move;
+        // Group rules by state
+        const stateGroups = {};
+        rules.forEach(rule => {
+            if (!stateGroups[rule.state]) {
+                stateGroups[rule.state] = [];
+            }
+            stateGroups[rule.state].push(rule);
+        });
 
-            const seeDisplay = rule.see === '_' ? '_' : rule.see;
-            const writeDisplay = rule.write === '_' ? '_' : rule.write;
-            const isBlank = rule.see === '_';
+        // Create a card for each state
+        Object.keys(stateGroups).forEach(stateName => {
+            const stateRules = stateGroups[stateName];
 
-            card.innerHTML = `
-                <div class="rule-condition">
-                    <div class="rule-symbol ${isBlank ? 'blank' : ''}">${seeDisplay}</div>
-                    <span class="see-label">see</span>
-                </div>
-                <div class="rule-actions">
-                    <div class="action-item">
-                        <span class="action-icon">✏️</span>
-                        Write <strong>${writeDisplay}</strong>
-                    </div>
-                    <div class="action-item">
-                        <span class="action-icon">${moveIcon}</span>
-                        <strong>${moveText}</strong>
-                    </div>
-                    <div class="action-item">
-                        <span class="action-icon">⟳</span>
-                        Go to <strong>${rule.goto.toUpperCase()}</strong>
-                    </div>
-                </div>
+            const stateCard = document.createElement('div');
+            stateCard.className = 'state-card';
+            stateCard.dataset.state = stateName;
+
+            // State header - clean design like original
+            const header = document.createElement('div');
+            header.className = 'state-card-header';
+            header.innerHTML = `<span class="state-name">${stateName.toUpperCase()}</span>`;
+            stateCard.appendChild(header);
+
+            // Rules as a proper table
+            const table = document.createElement('table');
+            table.className = 'rules-table';
+
+            // Table header - exact like original
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>READ</th>
+                        <th>WRITE</th>
+                        <th>MOVE</th>
+                        <th>NEXT STATE</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
             `;
 
-            if (rule.state === 'scan') {
-                this.rulesListScan.appendChild(card);
-            } else if (rule.state === 'add') {
-                this.rulesListAdd.appendChild(card);
-            }
+            const tbody = table.querySelector('tbody');
+
+            // Create rule rows
+            stateRules.forEach(rule => {
+                const row = document.createElement('tr');
+                row.className = 'rule-row';
+                row.dataset.state = rule.state;
+                row.dataset.see = rule.see;
+
+                // Human readable values
+                const seeText = rule.see === '_' ? 'blank' : rule.see;
+                const writeText = rule.write === '_' ? 'blank' : rule.write;
+                const moveText = {
+                    'right': 'RIGHT',
+                    'left': 'LEFT',
+                    'stay': 'STAY'
+                }[rule.move] || rule.move.toUpperCase();
+
+                row.innerHTML = `
+                    <td class="see">${seeText}</td>
+                    <td class="write">${writeText}</td>
+                    <td class="move">${moveText}</td>
+                    <td class="goto">${rule.goto.toUpperCase()}</td>
+                `;
+
+                tbody.appendChild(row);
+            });
+
+            stateCard.appendChild(table);
+            this.rulesCards.appendChild(stateCard);
         });
     }
 
@@ -1029,7 +1064,23 @@ class TuringSimulator {
         // Clear previous highlights
         this.clearActiveRules();
 
-        // Find and highlight the matching rule
+        // Highlight active state card
+        const stateCards = document.querySelectorAll('.state-card');
+        stateCards.forEach(card => {
+            if (card.dataset.state === state) {
+                card.classList.add('active-state');
+            }
+        });
+
+        // Find and highlight the matching rule row
+        const allRows = document.querySelectorAll('.rule-row');
+        allRows.forEach(row => {
+            if (row.dataset.state === state && row.dataset.see === symbol) {
+                row.classList.add('active');
+            }
+        });
+
+        // Also support old layout (for compatibility)
         const allCards = document.querySelectorAll('.rule-card');
         allCards.forEach(card => {
             if (card.dataset.state === state && card.dataset.see === symbol) {
@@ -1039,6 +1090,14 @@ class TuringSimulator {
     }
 
     clearActiveRules() {
+        // Clear new layout
+        const stateCards = document.querySelectorAll('.state-card');
+        stateCards.forEach(card => card.classList.remove('active-state'));
+
+        const allRows = document.querySelectorAll('.rule-row');
+        allRows.forEach(row => row.classList.remove('active'));
+
+        // Clear old layout (for compatibility)
         const allCards = document.querySelectorAll('.rule-card');
         allCards.forEach(card => card.classList.remove('active'));
     }

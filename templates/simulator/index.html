@@ -1,115 +1,117 @@
 {% extends "base.html" %}
 
-{% block title %}Simulator - Turing Machine{% endblock %}
+{% block title %}Simulator :: TURING.MACHINE{% endblock %}
 
 {% block content %}
 <div class="simulator-page">
-    <div class="simulator-container">
-        <!-- Tape Section -->
-        <section class="tape-section">
-            <h2>The Tape</h2>
-            <div class="tape-input-row">
-                <label>Your number:</label>
-                <input type="text" id="tape-input" placeholder="e.g., 1011">
-                <button id="btn-set-tape" class="btn-small btn-secondary">Change</button>
-            </div>
-            <div class="tape-wrapper">
-                <div class="tape" id="tape">
-                    <!-- Tape cells render here -->
-                </div>
-                <div class="head-indicator">HEAD</div>
-            </div>
-            <div class="state-display">
-                <span class="state-emoji" id="state-emoji"></span>
-                <span class="state-label">Mode: <strong id="current-state">-</strong></span>
-                <span class="state-description" id="state-description"></span>
-                <span id="status-badge" class="status-badge"></span>
-            </div>
-        </section>
+    <!-- Input Row -->
+    <div class="input-row">
+        <input type="text" id="tape-input" class="tape-input" placeholder="1011" value="1011">
+        <button id="btn-set-tape" class="btn btn-set">SET</button>
+    </div>
 
-        <!-- NEXT ACTION: What WILL happen (shown BEFORE the action) -->
-        <section class="next-action-section">
-            <h2>Next Action</h2>
-            <div class="next-action-box" id="next-action-box">
-                <div class="next-action-situation">
-                    <span>I'm in <strong id="next-state">SCAN</strong> mode and I see: <strong id="next-symbol">1</strong></span>
-                </div>
-                <div class="next-action-will-do">
-                    <p id="next-action-text">Keep the 1, move RIGHT, stay in SCAN</p>
-                </div>
-                <div class="next-action-why">
-                    <p id="next-action-why">I'm still looking for the end of the number.</p>
-                </div>
-            </div>
-            <div class="goal-display" id="goal-display">
-                <!-- Goal info shows here -->
-            </div>
-        </section>
-
-        <!-- Controls -->
-        <div class="controls">
-            <button id="btn-step" class="btn-primary">Do This Step</button>
-            <button id="btn-run" class="btn-success">Run All</button>
-            <button id="btn-pause" class="btn-warning" disabled>Pause</button>
-            <button id="btn-reset" class="btn-danger">Start Over</button>
-            <div class="speed-control">
-                <label>Speed:</label>
-                <input type="range" id="speed-slider" min="1" max="100" value="50">
+    <!-- Tape Section -->
+    <section class="tape-section card">
+        <div class="card-header">TAPE</div>
+        <div class="tape-container">
+            <div class="tape" id="tape">
+                <!-- Tape cells render here dynamically with HEAD label -->
             </div>
         </div>
+    </section>
 
-        <!-- State Graph Section -->
-        <section class="state-graph-section">
-            <h2>State Machine</h2>
-            <div class="state-graph-container" id="simulator-graph">
-                <!-- State graph renders here -->
-            </div>
-        </section>
+    <!-- State Display -->
+    <section class="state-section card">
+        <div class="state-display">
+            <span class="state-indicator" id="state-indicator"></span>
+            <span class="state-label">Mode:</span>
+            <span class="state-value" id="current-state">SCAN</span>
+            <span class="state-emoji" id="state-emoji"></span>
+            <span class="state-description" id="state-description"></span>
+            <span id="status-badge" class="status-badge"></span>
+        </div>
+    </section>
 
-        <!-- Rules Section -->
-        <section class="rules-section">
-            <div class="rules-header">
-                <h2>The Rules</h2>
+    <!-- Controls -->
+    <section class="controls-section card">
+        <div class="controls-container">
+            <div class="controls-group">
+                <button id="btn-step" class="btn btn-secondary">
+                    <span class="btn-icon">|&gt;</span> STEP
+                </button>
+                <button id="btn-run" class="btn btn-primary">
+                    <span class="btn-icon">&#9654;</span> RUN
+                </button>
+                <button id="btn-pause" class="btn btn-outline" disabled>
+                    PAUSE
+                </button>
+                <button id="btn-reset" class="btn btn-danger">
+                    <span class="btn-icon">&#8635;</span> RESET
+                </button>
             </div>
-            <div class="rules-groups">
-                <div class="rules-group" id="rules-scan">
-                    <h3><span class="state-emoji-small">🔍</span> SCAN MODE</h3>
-                    <div class="rules-list" id="rules-list-scan"></div>
-                </div>
-                <div class="rules-group" id="rules-add">
-                    <h3><span class="state-emoji-small">➕</span> ADD MODE</h3>
-                    <div class="rules-list" id="rules-list-add"></div>
-                </div>
+            <div class="speed-control">
+                <span class="speed-label">SPD</span>
+                <input type="range" id="speed-slider" class="speed-slider" min="1" max="100" value="50">
+                <span class="speed-value" id="speed-value">5x</span>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- History Log -->
-        <section class="history-section">
-            <h2>What Happened</h2>
-            <div class="history-log" id="history-log">
-                <!-- History entries render here -->
-            </div>
-        </section>
+    <!-- Rules Section - no wrapper card, tables have their own headers like original -->
+    <section class="rules-section">
+        <div class="rules-grid" id="rules-cards">
+            <!-- Dynamic state cards render here -->
+        </div>
+    </section>
 
-        <!-- Challenge Mode Button (shows after completing example) -->
-        <section class="challenge-prompt hidden" id="challenge-prompt">
-            <div class="success-message">
-                <h2>Great job! You completed the example!</h2>
-                <p>Ready to design your own algorithm?</p>
-                <a href="/challenge" class="btn-success btn-large">Try a Challenge!</a>
-            </div>
-        </section>
+    <!-- Algorithm Footer -->
+    <div class="algo-footer">
+        BINARY INCREMENT ALGORITHM &bull; ALAN TURING, 1936
     </div>
+
+    <!-- Hidden elements for JS compatibility -->
+    <div id="rules-list-scan" class="hidden"></div>
+    <div id="rules-list-add" class="hidden"></div>
+    <div id="history-log" class="hidden"></div>
+    <div id="simulator-graph" class="hidden"></div>
+    <div class="goal-display hidden" id="goal-display"></div>
+
+    <!-- Hidden next action box -->
+    <div id="next-action-box" class="hidden">
+        <span id="next-state"></span>
+        <span id="next-symbol"></span>
+        <span id="next-action-text"></span>
+        <span id="next-action-why"></span>
+    </div>
+
+    <section class="challenge-prompt hidden" id="challenge-prompt">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="text-green">Computation Complete!</h2>
+                <p class="text-muted mt-2">Ready for a challenge?</p>
+                <a href="/challenge" class="btn btn-primary mt-3">Try Challenge Mode</a>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize simulator without onboarding - go straight to simulator
     const simulator = new TuringSimulator();
     simulator.skipOnboarding = true;
     simulator.init();
+
+    // Speed slider display
+    const speedSlider = document.getElementById('speed-slider');
+    const speedValue = document.getElementById('speed-value');
+    if (speedSlider && speedValue) {
+        speedSlider.addEventListener('input', function() {
+            const val = Math.round(this.value / 10);
+            speedValue.textContent = val + 'x';
+        });
+    }
 });
 </script>
 {% endblock %}
