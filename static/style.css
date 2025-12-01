@@ -1319,64 +1319,29 @@ button:disabled {
 }
 
 /* ============================================
-   LOCK PUZZLE - Problem Setup
+   LOCK PUZZLE - Puzzle Styles
    ============================================ */
-.problem-setup {
-  margin-bottom: 20px;
-}
-
-.problem-setup .lead {
-  color: var(--text);
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-}
-
-.problem-setup p {
-  color: var(--text-dim);
-}
-
-.problem-setup strong {
-  color: var(--orange);
-}
-
-.problem-example {
-  margin: 20px 0;
-  padding: 16px;
-  background: var(--bg-elevated);
-  border-radius: 8px;
+.puzzle-intro {
+  margin-bottom: 24px;
   text-align: center;
 }
 
-.problem-case {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-family: var(--font-mono);
+.puzzle-intro .lead {
+  color: var(--text);
   font-size: 1.2rem;
+  margin-bottom: 8px;
 }
 
-.case-label {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  font-family: var(--font-main);
+.puzzle-intro p {
+  color: var(--text-dim);
 }
 
-.case-input {
+.puzzle-intro strong {
   color: var(--cyan);
-  font-weight: 700;
+  font-family: var(--font);
 }
 
-.case-arrow {
-  color: var(--text-muted);
-}
-
-.case-output {
-  color: var(--green);
-  font-weight: 700;
-}
-
-.problem-challenge {
+.puzzle-question {
   margin: 20px 0;
   padding: 16px;
   background: rgba(255, 107, 53, 0.1);
@@ -1384,53 +1349,73 @@ button:disabled {
   border-radius: 0 8px 8px 0;
 }
 
-.problem-challenge p {
+.puzzle-question p {
   color: var(--text);
   margin: 0 0 8px 0;
 }
 
-.problem-challenge p:last-child {
+.puzzle-question p:last-child {
   margin-bottom: 0;
 }
 
-.problem-challenge p.dim {
+.puzzle-question p.dim {
   color: var(--text-muted);
   font-size: 0.9rem;
+  font-family: var(--font);
 }
 
-.problem-challenge strong {
+.puzzle-question strong {
   color: var(--orange);
 }
 
-.problem-challenge em {
-  color: var(--cyan);
-  font-style: normal;
-}
-
-.problem-insight {
+.puzzle-insight {
   margin: 20px 0;
   padding: 16px;
   background: var(--bg-elevated);
   border-radius: 8px;
-  text-align: center;
 }
 
-.problem-insight p {
+.puzzle-insight p {
   color: var(--text);
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
 }
 
-.problem-insight p:last-child {
+.puzzle-insight p:last-child {
   margin-bottom: 0;
 }
 
-.problem-insight p.dim {
+.puzzle-insight p.dim {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
-.problem-insight strong {
+.puzzle-insight strong {
   color: var(--cyan);
+}
+
+.puzzle-reveal {
+  margin: 24px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 149, 0.1));
+  border: 2px solid var(--cyan);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.puzzle-reveal p {
+  color: var(--text);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.puzzle-reveal em {
+  color: var(--text-dim);
+  font-style: normal;
+}
+
+.puzzle-reveal strong {
+  color: var(--green);
+  font-size: 1.3rem;
 }
 
 /* ============================================

@@ -146,34 +146,25 @@ LESSONS = [
         "title": "The Lock Puzzle",
         "practice_type": "lock-puzzle",
         "content": """
-            <div class="problem-setup">
-                <p class="lead">Simple rules worked for flipping bits.</p>
-                <p>But what about <strong>adding 1</strong> to a binary number?</p>
-            </div>
-
-            <div class="problem-example">
-                <div class="problem-case">
-                    <span class="case-label">Example:</span>
-                    <span class="case-input">1011</span>
-                    <span class="case-arrow">&rarr;</span>
-                    <span class="case-output">1100</span>
-                </div>
-            </div>
-
-            <div class="problem-challenge">
-                <p>The problem: when the machine sees <strong>1</strong>...</p>
-                <p class="dim">...should it keep scanning? Or start adding?</p>
-                <p>It depends on <em>what the machine is currently doing</em>.</p>
-            </div>
-
-            <div class="problem-insight">
-                <p>The machine needs to <strong>remember</strong> its current task.</p>
-                <p class="dim">Simple rules can't do that. We need something more.</p>
-            </div>
-
             <div class="puzzle-intro">
-                <p class="lead">Let me show you something that will help.</p>
-                <p>Try entering the code <strong>1-2-3-4</strong> on this lock.</p>
+                <p class="lead">Here's a lock with code <strong>1-2-3-4</strong>.</p>
+                <p>Try to open it.</p>
+            </div>
+
+            <div class="puzzle-question">
+                <p>Think about it: if the lock only had <strong>simple rules</strong>...</p>
+                <p class="dim">"When I see 1 → check. When I see 2 → check..."</p>
+                <p>...it would open when you press <strong>any</strong> correct digit!</p>
+            </div>
+
+            <div class="puzzle-insight">
+                <p>But that's not how locks work.</p>
+                <p>The lock must <strong>remember</strong> which digit it's waiting for.</p>
+                <p class="dim">First it waits for 1. Then for 2. Then for 3. Then for 4.</p>
+            </div>
+
+            <div class="puzzle-reveal">
+                <p>That memory &mdash; knowing <em>what to expect next</em> &mdash; is called a <strong>STATE</strong>.</p>
             </div>
         """
     },
