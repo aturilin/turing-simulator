@@ -655,6 +655,68 @@ a {
   letter-spacing: 1px;
 }
 
+/* === NAVIGATION MOBILE === */
+@media (max-width: 600px) {
+  .nav {
+    padding: 0 10px;
+    overflow-x: hidden;
+  }
+
+  .nav-inner {
+    height: auto;
+    min-height: 44px;
+    padding: 6px 0;
+    gap: 8px;
+  }
+
+  .nav-brand {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .brand-logo {
+    font-size: 0.95rem;
+  }
+
+  .logo-bracket {
+    display: none;
+  }
+
+  .brand-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.3px;
+  }
+
+  .nav-links {
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .nav-link {
+    padding: 5px 8px;
+    font-size: 0.65rem;
+  }
+
+  .link-icon {
+    display: none;
+  }
+
+  .nav-status {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-text {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 5px 6px;
+    font-size: 0.6rem;
+  }
+}
+
 /* === MAIN CONTENT === */
 .main {
   flex: 1;
