@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Test Your Algorithm - Challenge{% endblock %}
+{% block title %}Тестирование алгоритма - Испытание{% endblock %}
 
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 3: Test Your Algorithm</h1>
+        <h1>Шаг 3: Тестируй свой алгоритм</h1>
 
         <!-- Task reminder -->
         <div class="challenge-reminder" id="challenge-reminder">
@@ -15,7 +15,7 @@
         <!-- Test results summary -->
         <div class="test-results-summary hidden" id="test-results-summary">
             <div class="results-header">
-                <span id="results-count">0/0 tests passed</span>
+                <span id="results-count">0/0 тестов пройдено</span>
                 <span id="results-status" class="status"></span>
             </div>
         </div>
@@ -27,43 +27,43 @@
 
         <!-- Visualization area -->
         <div class="visualization-section hidden" id="visualization-section">
-            <h3>Watch the Machine Run</h3>
+            <h3>Наблюдай за работой машины</h3>
             <div class="tape-wrapper">
                 <div class="tape" id="visual-tape">
                     <!-- Tape cells render here -->
                 </div>
-                <div class="head-indicator">HEAD</div>
+                <div class="head-indicator">ГОЛОВКА</div>
             </div>
             <div class="machine-state">
-                <span>State: <strong id="visual-state">START</strong></span>
-                <span>Step: <span id="visual-step">0</span></span>
+                <span>Состояние: <strong id="visual-state">СТАРТ</strong></span>
+                <span>Шаг: <span id="visual-step">0</span></span>
             </div>
             <div class="visual-controls">
-                <button id="btn-step" class="btn-secondary">Step</button>
-                <button id="btn-run-slow" class="btn-secondary">Run Slow</button>
-                <button id="btn-run-fast" class="btn-primary">Run Fast</button>
-                <button id="btn-reset-visual" class="btn-secondary">Reset</button>
+                <button id="btn-step" class="btn-secondary">Шаг</button>
+                <button id="btn-run-slow" class="btn-secondary">Медленно</button>
+                <button id="btn-run-fast" class="btn-primary">Быстро</button>
+                <button id="btn-reset-visual" class="btn-secondary">Сброс</button>
             </div>
         </div>
 
         <!-- Final result -->
         <div class="final-result hidden" id="final-result">
             <div class="result-box success hidden" id="result-success">
-                <h2>All Tests Passed!</h2>
-                <p>Your Turing machine correctly solves the challenge.</p>
-                <a href="/challenge" class="btn-primary btn-large">Try Another Challenge</a>
+                <h2>Все тесты пройдены!</h2>
+                <p>Твоя машина Тьюринга правильно решает задачу.</p>
+                <a href="/challenge" class="btn-primary btn-large">Попробовать другое испытание</a>
             </div>
             <div class="result-box failure hidden" id="result-failure">
-                <h2>Some Tests Failed</h2>
-                <p>Check the failed tests above and adjust your rules.</p>
-                <a href="/challenge/rules/START" class="btn-secondary">Edit Rules</a>
+                <h2>Некоторые тесты не прошли</h2>
+                <p>Проверь неудачные тесты выше и исправь правила.</p>
+                <a href="/challenge/rules/START" class="btn-secondary">Редактировать правила</a>
             </div>
         </div>
 
         <!-- Navigation -->
         <div class="nav-buttons">
-            <a href="/challenge/states" class="btn-secondary">← Edit States</a>
-            <button id="btn-run-all-tests" class="btn-primary btn-large">Run All Tests</button>
+            <a href="/challenge/states" class="btn-secondary">← Редактировать состояния</a>
+            <button id="btn-run-all-tests" class="btn-primary btn-large">Запустить все тесты</button>
         </div>
     </div>
 </div>
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show task reminder
     if (challenge.task) {
-        reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
+        reminderDiv.innerHTML = `<p><strong>Задача:</strong> ${challenge.task}</p>`;
     }
 
     // Turing Machine Simulator
@@ -175,22 +175,22 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.index = idx;
         card.innerHTML = `
             <div class="test-case-header">
-                <span class="test-input">Input: <code>${tc.input || '(empty)'}</code></span>
+                <span class="test-input">Вход: <code>${tc.input || '(пусто)'}</code></span>
                 <span class="test-status" id="status-${idx}">-</span>
             </div>
             <div class="test-case-body">
                 <div class="test-details">
                     <div class="detail-box expected">
-                        <div class="detail-label">Expected Output</div>
+                        <div class="detail-label">Ожидаемый выход</div>
                         <div class="detail-value">${tc.expected}</div>
                     </div>
                     <div class="detail-box actual" id="actual-${idx}">
-                        <div class="detail-label">Your Output</div>
+                        <div class="detail-label">Твой выход</div>
                         <div class="detail-value" id="actual-value-${idx}">-</div>
                     </div>
                 </div>
                 <div class="test-reason">${tc.reason}</div>
-                <button class="btn-secondary btn-small" style="margin-top: 0.5rem;" onclick="visualize(${idx})">Visualize</button>
+                <button class="btn-secondary btn-small" style="margin-top: 0.5rem;" onclick="visualize(${idx})">Показать</button>
             </div>
         `;
         testCasesGrid.appendChild(card);
@@ -216,24 +216,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const actualValueEl = document.getElementById(`actual-value-${idx}`);
 
             if (result.timeout) {
-                statusEl.textContent = '⏱ Timeout';
-                actualValueEl.textContent = 'Infinite loop?';
+                statusEl.textContent = '⏱ Таймаут';
+                actualValueEl.textContent = 'Бесконечный цикл?';
                 card.classList.add('fail');
                 card.classList.remove('pass');
             } else if (result.state !== 'DONE') {
-                statusEl.textContent = '⚠ Did not finish';
-                actualValueEl.textContent = `Stopped in ${result.state}`;
+                statusEl.textContent = '⚠ Не завершено';
+                actualValueEl.textContent = `Остановлено в ${result.state}`;
                 card.classList.add('fail');
                 card.classList.remove('pass');
             } else if (result.output === tc.expected) {
-                statusEl.textContent = '✓ Pass';
+                statusEl.textContent = '✓ Пройден';
                 actualValueEl.textContent = result.output;
                 actualEl.classList.add('correct');
                 card.classList.add('pass');
                 card.classList.remove('fail');
                 passed++;
             } else {
-                statusEl.textContent = '✗ Fail';
+                statusEl.textContent = '✗ Не пройден';
                 actualValueEl.textContent = result.output;
                 card.classList.add('fail');
                 card.classList.remove('pass');
@@ -242,16 +242,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Show summary
         resultsSummary.classList.remove('hidden');
-        resultsCount.textContent = `${passed}/${testCases.length} tests passed`;
+        resultsCount.textContent = `${passed}/${testCases.length} тестов пройдено`;
 
         if (passed === testCases.length) {
-            resultsStatus.textContent = 'SUCCESS!';
+            resultsStatus.textContent = 'УСПЕХ!';
             resultsStatus.className = 'status pass';
             finalResult.classList.remove('hidden');
             document.getElementById('result-success').classList.remove('hidden');
             document.getElementById('result-failure').classList.add('hidden');
         } else {
-            resultsStatus.textContent = 'NEEDS WORK';
+            resultsStatus.textContent = 'НУЖНА ДОРАБОТКА';
             resultsStatus.className = 'status fail';
             finalResult.classList.remove('hidden');
             document.getElementById('result-success').classList.add('hidden');

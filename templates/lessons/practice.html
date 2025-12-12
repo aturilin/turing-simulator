@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Practice - Lesson {{ lesson_num }}{% endblock %}
+{% block title %}Практика - Урок {{ lesson_num }}{% endblock %}
 
 {% block content %}
 <div class="practice-page">
     <div class="practice-container">
-        <h1>Practice Time!</h1>
+        <h1>Время практики!</h1>
 
         {% if lesson_num == 4 %}
         <!-- Lesson 4: Control the Head -->
         <div class="practice-exercise" id="practice-head">
-            <h2>Control the Head</h2>
-            <p>Move the head to find the second "1" on the tape.</p>
+            <h2>Управление головкой</h2>
+            <p>Передвинь головку чтобы найти вторую "1" на ленте.</p>
 
             <div class="tape-wrapper practice-tape">
                 <div class="tape" id="practice-tape">
@@ -21,53 +21,53 @@
                     <div class="tape-cell">1</div>
                     <div class="tape-cell blank">_</div>
                 </div>
-                <div class="head-indicator">HEAD</div>
+                <div class="head-indicator">ГОЛОВКА</div>
             </div>
 
             <div class="head-display">
-                <span>Head sees: <strong id="head-sees">1</strong></span>
+                <span>Головка видит: <strong id="head-sees">1</strong></span>
             </div>
 
             <div class="practice-controls">
-                <button id="btn-left" class="btn-secondary">◀ Left</button>
-                <button id="btn-right" class="btn-secondary">Right ▶</button>
+                <button id="btn-left" class="btn-secondary">◀ Влево</button>
+                <button id="btn-right" class="btn-secondary">Вправо ▶</button>
             </div>
 
             <div class="practice-result hidden" id="practice-result">
-                <p class="success">Great job! You found the second 1!</p>
+                <p class="success">Отлично! Ты нашёл вторую 1!</p>
             </div>
         </div>
 
         {% elif lesson_num == 5 %}
         <!-- Lesson 5: Design States -->
         <div class="practice-exercise" id="practice-states">
-            <h2>Think About States</h2>
-            <p><strong>Task:</strong> Determine if there's at least one "1" on the tape.</p>
+            <h2>Подумай о состояниях</h2>
+            <p><strong>Задача:</strong> Определить, есть ли хотя бы одна "1" на ленте.</p>
 
             <div class="examples-box">
-                <p>Examples:</p>
+                <p>Примеры:</p>
                 <ul>
-                    <li><code>000</code> → NO (no ones)</li>
-                    <li><code>010</code> → YES (found a one)</li>
-                    <li><code>111</code> → YES (found ones)</li>
+                    <li><code>000</code> → НЕТ (нет единиц)</li>
+                    <li><code>010</code> → ДА (нашли единицу)</li>
+                    <li><code>111</code> → ДА (нашли единицы)</li>
                 </ul>
             </div>
 
             <div class="question-box">
-                <p><strong>What does the machine need to "remember"?</strong></p>
-                <textarea id="memory-answer" placeholder="Type your answer..."></textarea>
+                <p><strong>Что машина должна "запомнить"?</strong></p>
+                <textarea id="memory-answer" placeholder="Напиши свой ответ..."></textarea>
             </div>
 
             <div class="states-builder">
-                <h3>Your States:</h3>
+                <h3>Твои состояния:</h3>
                 <div class="start-state">
-                    <div class="state-badge">🏁 START</div>
+                    <div class="state-badge">🏁 СТАРТ</div>
                 </div>
                 <div id="custom-states"></div>
-                <button id="btn-add-state" class="btn-small btn-secondary">+ Add State</button>
+                <button id="btn-add-state" class="btn-small btn-secondary">+ Добавить состояние</button>
             </div>
 
-            <button id="btn-check-states" class="btn-primary">Check My Answer</button>
+            <button id="btn-check-states" class="btn-primary">Проверить ответ</button>
 
             <div class="feedback-box hidden" id="feedback-box">
                 <p id="feedback-message"></p>
@@ -77,20 +77,20 @@
         {% elif lesson_num == 6 %}
         <!-- Lesson 6: Apply a Rule -->
         <div class="practice-exercise" id="practice-rules">
-            <h2>Be the Turing Machine!</h2>
-            <p>Apply this rule manually:</p>
+            <h2>Стань машиной Тьюринга!</h2>
+            <p>Примени это правило вручную:</p>
 
             <div class="rule-display">
-                <p>"In <strong>SCAN</strong>, if I see <strong>1</strong>:</p>
+                <p>"В режиме <strong>СКАН</strong>, если вижу <strong>1</strong>:</p>
                 <ul>
-                    <li>→ Write <strong>0</strong></li>
-                    <li>→ Move <strong>RIGHT</strong></li>
-                    <li>→ Go to <strong>ADD</strong>"</li>
+                    <li>→ Записать <strong>0</strong></li>
+                    <li>→ Идти <strong>ВПРАВО</strong></li>
+                    <li>→ Перейти в <strong>СЛОЖЕНИЕ</strong>"</li>
                 </ul>
             </div>
 
             <div class="current-situation">
-                <p>Current state: <strong>SCAN</strong></p>
+                <p>Текущее состояние: <strong>СКАН</strong></p>
                 <div class="tape-wrapper practice-tape">
                     <div class="tape" id="rule-tape">
                         <div class="tape-cell blank">_</div>
@@ -102,40 +102,40 @@
             </div>
 
             <div class="action-form">
-                <h3>What will you do?</h3>
+                <h3>Что ты сделаешь?</h3>
                 <div class="action-row">
-                    <label>1. Write:</label>
+                    <label>1. Записать:</label>
                     <select id="action-write">
-                        <option value="">Select...</option>
+                        <option value="">Выбери...</option>
                         <option value="0">0</option>
                         <option value="1">1</option>
-                        <option value="_">blank</option>
+                        <option value="_">пусто</option>
                     </select>
                 </div>
                 <div class="action-row">
-                    <label>2. Move:</label>
+                    <label>2. Идти:</label>
                     <select id="action-move">
-                        <option value="">Select...</option>
-                        <option value="left">Left</option>
-                        <option value="right">Right</option>
-                        <option value="stay">Stay</option>
+                        <option value="">Выбери...</option>
+                        <option value="left">Влево</option>
+                        <option value="right">Вправо</option>
+                        <option value="stay">Стоять</option>
                     </select>
                 </div>
                 <div class="action-row">
-                    <label>3. New state:</label>
+                    <label>3. Новое состояние:</label>
                     <select id="action-state">
-                        <option value="">Select...</option>
-                        <option value="SCAN">SCAN</option>
-                        <option value="ADD">ADD</option>
-                        <option value="DONE">DONE</option>
+                        <option value="">Выбери...</option>
+                        <option value="SCAN">СКАН</option>
+                        <option value="ADD">СЛОЖЕНИЕ</option>
+                        <option value="DONE">ГОТОВО</option>
                     </select>
                 </div>
 
-                <button id="btn-apply-rule" class="btn-primary">Apply!</button>
+                <button id="btn-apply-rule" class="btn-primary">Применить!</button>
             </div>
 
             <div class="result-section hidden" id="result-section">
-                <h3>Result:</h3>
+                <h3>Результат:</h3>
                 <div class="tape-wrapper practice-tape">
                     <div class="tape" id="result-tape"></div>
                 </div>
@@ -146,25 +146,25 @@
         {% elif lesson_num == 7 %}
         <!-- Lesson 7: Trace Execution -->
         <div class="practice-exercise" id="practice-trace">
-            <h2>Trace the Algorithm</h2>
-            <p>Follow "Add 1" on the number 11 (binary)</p>
+            <h2>Проследи алгоритм</h2>
+            <p>Проследи "Прибавить 1" для числа 11 (двоичное)</p>
 
             <div class="trace-step" id="trace-step">
-                <p>Step <span id="step-num">1</span>:</p>
+                <p>Шаг <span id="step-num">1</span>:</p>
                 <div class="tape-wrapper practice-tape">
                     <div class="tape" id="trace-tape"></div>
                 </div>
-                <p>State: <strong id="trace-state">SCAN</strong>, sees: <strong id="trace-symbol">1</strong></p>
+                <p>Состояние: <strong id="trace-state">СКАН</strong>, видит: <strong id="trace-symbol">1</strong></p>
             </div>
 
             <div class="question-box">
-                <p>What rule applies? What happens next?</p>
+                <p>Какое правило применить? Что произойдёт дальше?</p>
                 <select id="next-rule">
-                    <option value="">Select the rule...</option>
+                    <option value="">Выбери правило...</option>
                 </select>
             </div>
 
-            <button id="btn-check-trace" class="btn-primary">Check</button>
+            <button id="btn-check-trace" class="btn-primary">Проверить</button>
 
             <div class="feedback-box hidden" id="trace-feedback">
                 <p id="trace-feedback-message"></p>
@@ -174,10 +174,10 @@
         {% elif lesson_num == 8 %}
         <!-- Lesson 8: Binary Converter -->
         <div class="practice-exercise" id="practice-binary">
-            <h2>Binary Converter</h2>
+            <h2>Конвертер систем счисления</h2>
 
             <div class="converter-section">
-                <h3>Binary → Decimal</h3>
+                <h3>Двоичное → Десятичное</h3>
                 <div class="binary-display">
                     <div class="bit-box" data-value="8">
                         <div class="bit">1</div>
@@ -199,14 +199,14 @@
                 <div class="sum-display">
                     = <input type="number" id="decimal-answer" placeholder="?">
                 </div>
-                <button id="btn-check-binary" class="btn-primary btn-small">Check</button>
+                <button id="btn-check-binary" class="btn-primary btn-small">Проверить</button>
             </div>
 
             <div class="converter-section">
-                <h3>Decimal → Binary</h3>
-                <p>Convert <strong>13</strong> to binary:</p>
-                <input type="text" id="binary-answer" placeholder="Enter binary (e.g., 1101)">
-                <button id="btn-check-decimal" class="btn-primary btn-small">Check</button>
+                <h3>Десятичное → Двоичное</h3>
+                <p>Переведи <strong>13</strong> в двоичную систему:</p>
+                <input type="text" id="binary-answer" placeholder="Введи двоичное (например, 1101)">
+                <button id="btn-check-decimal" class="btn-primary btn-small">Проверить</button>
             </div>
 
             <div class="feedback-box hidden" id="binary-feedback">
@@ -216,14 +216,14 @@
         {% endif %}
 
         <div class="practice-nav">
-            <a href="/lesson/{{ lesson_num }}" class="btn-secondary">← Back to Lesson</a>
+            <a href="/lesson/{{ lesson_num }}" class="btn-secondary">← Назад к уроку</a>
             {% if lesson_num < 8 %}
             <a href="/lesson/{{ lesson_num + 1 }}" class="btn-primary" id="btn-next-lesson" style="display: none;">
-                Next Lesson →
+                Следующий урок →
             </a>
             {% else %}
             <a href="/simulator" class="btn-success" id="btn-next-lesson" style="display: none;">
-                Go to Simulator →
+                Перейти к симулятору →
             </a>
             {% endif %}
         </div>
@@ -281,11 +281,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="tape-cell head">0</div>
                 <div class="tape-cell blank">_</div>
             `;
-            document.getElementById('result-state').innerHTML = '<span class="success">✓ Correct! State: ADD</span>';
+            document.getElementById('result-state').innerHTML = '<span class="success">✓ Верно! Состояние: СЛОЖЕНИЕ</span>';
             showNextButton();
         } else {
             document.getElementById('result-section').classList.remove('hidden');
-            document.getElementById('result-state').innerHTML = '<span class="error">Not quite. Re-read the rule and try again!</span>';
+            document.getElementById('result-state').innerHTML = '<span class="error">Не совсем. Перечитай правило и попробуй снова!</span>';
         }
     });
 
@@ -298,10 +298,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         feedback.classList.remove('hidden');
         if (answer === 11) { // 1011 = 8+0+2+1 = 11
-            message.innerHTML = '<span class="success">✓ Correct! 1011 = 8+2+1 = 11</span>';
+            message.innerHTML = '<span class="success">✓ Верно! 1011 = 8+2+1 = 11</span>';
             showNextButton();
         } else {
-            message.innerHTML = '<span class="error">Try again. Add up: 8 + 0 + 2 + 1 = ?</span>';
+            message.innerHTML = '<span class="error">Попробуй ещё. Сложи: 8 + 0 + 2 + 1 = ?</span>';
         }
     });
 
@@ -312,10 +312,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         feedback.classList.remove('hidden');
         if (answer === '1101') { // 13 = 8+4+0+1 = 1101
-            message.innerHTML = '<span class="success">✓ Correct! 13 = 8+4+1 = 1101</span>';
+            message.innerHTML = '<span class="success">✓ Верно! 13 = 8+4+1 = 1101</span>';
             showNextButton();
         } else {
-            message.innerHTML = '<span class="error">Try again. 13 = 8 + 4 + 0 + 1</span>';
+            message.innerHTML = '<span class="error">Попробуй ещё. 13 = 8 + 4 + 0 + 1</span>';
         }
     });
     {% endif %}

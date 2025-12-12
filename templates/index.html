@@ -1,182 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turing Machine Simulator</title>
+    <title>Симулятор машины Тьюринга</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <!-- ONBOARDING: Shown first, before simulator -->
+        <!-- ОБУЧЕНИЕ: Показывается первым, до симулятора -->
         <div id="onboarding" class="onboarding">
             <div class="lesson-container">
                 <div class="lesson-progress">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
-                    <span class="progress-text">Lesson <span id="lesson-current">1</span> of <span id="lesson-total">8</span></span>
+                    <span class="progress-text">Урок <span id="lesson-current">1</span> из <span id="lesson-total">7</span></span>
                 </div>
 
                 <div class="lesson-content" id="lesson-content">
-                    <!-- Lesson content loads here -->
+                    <!-- Содержимое урока загружается сюда -->
                 </div>
 
                 <div class="lesson-nav">
-                    <button id="btn-lesson-prev" class="btn-secondary" disabled>Back</button>
-                    <button id="btn-lesson-next" class="btn-primary">Next</button>
-                    <button id="btn-start-simulator" class="btn-success hidden">Let's Try It!</button>
+                    <button id="btn-lesson-prev" class="btn-secondary" disabled>Назад</button>
+                    <button id="btn-lesson-next" class="btn-primary">Дальше</button>
+                    <button id="btn-start-simulator" class="btn-success hidden">Попробовать!</button>
                 </div>
             </div>
         </div>
 
-        <!-- SIMULATOR: Hidden until onboarding complete -->
+        <!-- СИМУЛЯТОР: Скрыт до окончания обучения -->
         <div id="simulator" class="simulator hidden">
             <header>
-                <h1>Turing Machine Simulator</h1>
-                <button id="btn-review-lessons" class="tutorial-btn">Review Lessons</button>
+                <h1>Симулятор машины Тьюринга</h1>
+                <button id="btn-review-lessons" class="tutorial-btn">Повторить уроки</button>
             </header>
 
             <main>
-                <!-- Tape Section -->
+                <!-- Секция ленты -->
                 <section class="tape-section">
-                    <h2>The Tape</h2>
+                    <h2>Лента</h2>
                     <div class="tape-input-row">
-                        <label>Your number:</label>
-                        <input type="text" id="tape-input" placeholder="e.g., 1011">
-                        <button id="btn-set-tape" class="btn-small btn-secondary">Change</button>
+                        <label>Твоё число:</label>
+                        <input type="text" id="tape-input" placeholder="например, 1011">
+                        <button id="btn-set-tape" class="btn-small btn-secondary">Изменить</button>
                     </div>
                     <div class="tape-wrapper">
                         <div class="tape" id="tape">
-                            <!-- Tape cells render here (JS creates tape-cell-wrapper > tape-cell + head-label) -->
+                            <!-- Ячейки ленты рисуются здесь -->
                         </div>
                     </div>
                     <div class="state-display">
                         <span class="state-emoji" id="state-emoji"></span>
-                        <span class="state-label">Mode: <strong id="current-state">-</strong></span>
+                        <span class="state-label">Режим: <strong id="current-state">-</strong></span>
                         <span class="state-description" id="state-description"></span>
                         <span id="status-badge" class="status-badge"></span>
                     </div>
                 </section>
 
-                <!-- NEXT ACTION: What WILL happen (shown BEFORE the action) -->
+                <!-- СЛЕДУЮЩЕЕ ДЕЙСТВИЕ: Что ПРОИЗОЙДЁТ (показывается ДО действия) -->
                 <section class="next-action-section">
-                    <h2>Next Action</h2>
+                    <h2>Следующее действие</h2>
                     <div class="next-action-box" id="next-action-box">
                         <div class="next-action-situation">
-                            <span>I'm in <strong id="next-state">SCAN</strong> mode and I see: <strong id="next-symbol">1</strong></span>
+                            <span>Я в режиме <strong id="next-state">СКАН</strong> и вижу: <strong id="next-symbol">1</strong></span>
                         </div>
                         <div class="next-action-will-do">
-                            <p id="next-action-text">Keep the 1, move RIGHT, stay in SCAN</p>
+                            <p id="next-action-text">Оставляю 1, иду ВПРАВО, остаюсь в СКАН</p>
                         </div>
                         <div class="next-action-why">
-                            <p id="next-action-why">I'm still looking for the end of the number.</p>
+                            <p id="next-action-why">Всё ещё ищу конец числа.</p>
                         </div>
                     </div>
                     <div class="goal-display" id="goal-display">
-                        <!-- Goal info shows here -->
+                        <!-- Информация о цели показывается здесь -->
                     </div>
                 </section>
 
-                <!-- Controls -->
+                <!-- Управление -->
                 <div class="controls">
-                    <button id="btn-step" class="btn-primary">Do This Step</button>
-                    <button id="btn-run" class="btn-success">Run All</button>
-                    <button id="btn-pause" class="btn-warning" disabled>Pause</button>
-                    <button id="btn-reset" class="btn-danger">Start Over</button>
+                    <button id="btn-step" class="btn-primary">Сделать шаг</button>
+                    <button id="btn-run" class="btn-success">Запустить всё</button>
+                    <button id="btn-pause" class="btn-warning" disabled>Пауза</button>
+                    <button id="btn-reset" class="btn-danger">Начать сначала</button>
                     <div class="speed-control">
-                        <label>Speed:</label>
+                        <label>Скорость:</label>
                         <input type="range" id="speed-slider" min="1" max="100" value="50">
                     </div>
                 </div>
 
-                <!-- State Graph Section -->
+                <!-- Секция графа состояний -->
                 <section class="state-graph-section">
-                    <h2>State Machine</h2>
+                    <h2>Автомат состояний</h2>
                     <div class="state-graph-container" id="simulator-graph">
-                        <!-- State graph renders here -->
+                        <!-- Граф состояний рисуется здесь -->
                     </div>
                 </section>
 
-                <!-- Rules Section -->
+                <!-- Секция правил -->
                 <section class="rules-section">
                     <div class="rules-header">
-                        <h2>The Rules</h2>
+                        <h2>Правила</h2>
                     </div>
                     <div class="rules-groups" id="rules-cards">
-                        <!-- JS dynamically creates state-card elements here -->
+                        <!-- JS динамически создаёт элементы карточек состояний -->
                     </div>
                 </section>
 
-                <!-- History Log -->
+                <!-- Лог истории -->
                 <section class="history-section">
-                    <h2>What Happened</h2>
+                    <h2>Что произошло</h2>
                     <div class="history-log" id="history-log">
-                        <!-- History entries render here -->
+                        <!-- Записи истории рисуются здесь -->
                     </div>
                 </section>
 
-                <!-- Challenge Mode Button (shows after completing example) -->
+                <!-- Кнопка режима испытаний (появляется после завершения примера) -->
                 <section class="challenge-prompt hidden" id="challenge-prompt">
                     <div class="success-message">
-                        <h2>Great job! You completed the example!</h2>
-                        <p>Ready to design your own algorithm?</p>
-                        <button id="btn-start-challenge" class="btn-success btn-large">Try a Challenge!</button>
+                        <h2>Отлично! Ты завершил пример!</h2>
+                        <p>Готов создать свой алгоритм?</p>
+                        <button id="btn-start-challenge" class="btn-success btn-large">Попробовать испытание!</button>
                     </div>
                 </section>
             </main>
         </div>
 
-        <!-- CHALLENGE MODE: Hidden until user clicks "Try a Challenge" -->
+        <!-- РЕЖИМ ИСПЫТАНИЙ: Скрыт пока пользователь не нажмёт "Попробовать испытание" -->
         <div id="challenge-mode" class="challenge-mode hidden">
             <header>
-                <h1>Challenge Mode</h1>
-                <button id="btn-back-to-simulator" class="tutorial-btn">Back to Simulator</button>
+                <h1>Режим испытаний</h1>
+                <button id="btn-back-to-simulator" class="tutorial-btn">Вернуться к симулятору</button>
             </header>
 
             <main>
-                <!-- Challenge Display -->
+                <!-- Отображение испытания -->
                 <section class="challenge-section">
-                    <h2>Your Challenge</h2>
+                    <h2>Твоё испытание</h2>
                     <div class="challenge-card" id="challenge-card">
                         <div class="challenge-task" id="challenge-task">
-                            <!-- Challenge task loads here -->
-                            <p class="loading">Loading challenge...</p>
+                            <!-- Задание загружается сюда -->
+                            <p class="loading">Загрузка испытания...</p>
                         </div>
                         <div class="challenge-examples" id="challenge-examples">
-                            <!-- Examples load here -->
+                            <!-- Примеры загружаются сюда -->
                         </div>
-                        <button id="btn-new-challenge" class="btn-secondary btn-small">Get Different Challenge</button>
+                        <button id="btn-new-challenge" class="btn-secondary btn-small">Другое испытание</button>
                     </div>
                 </section>
 
-                <!-- Student's Plan Input -->
+                <!-- Ввод плана алгоритма -->
                 <section class="plan-section">
-                    <h2>Your Algorithm Plan</h2>
-                    <p class="plan-instructions">Describe your algorithm in plain English. What states will you use? What should happen when the head sees each symbol?</p>
-                    <textarea id="student-plan" placeholder="Describe your approach step by step:
-1. What state will my machine start in?
-2. What happens when I see a 0? A 1? A blank?
-3. What other states do I need and why?
-4. How do I know when to stop?
-5. What determines the final answer?"></textarea>
-                    <button id="btn-check-plan" class="btn-primary btn-large">Check My Plan</button>
+                    <h2>Твой план алгоритма</h2>
+                    <p class="plan-instructions">Опиши свой алгоритм простым языком. Какие состояния ты будешь использовать? Что должно происходить когда головка видит каждый символ?</p>
+                    <textarea id="student-plan" placeholder="Опиши свой подход по шагам:
+1. В каком состоянии начнёт моя машина?
+2. Что происходит когда я вижу 0? 1? Пустую ячейку?
+3. Какие ещё состояния мне нужны и зачем?
+4. Как я узнаю когда остановиться?
+5. Что определяет финальный ответ?"></textarea>
+                    <button id="btn-check-plan" class="btn-primary btn-large">Проверить мой план</button>
                 </section>
 
-                <!-- Feedback Section -->
+                <!-- Секция обратной связи -->
                 <section class="feedback-section hidden" id="feedback-section">
                     <div class="feedback-box" id="feedback-box">
                         <div class="feedback-icon" id="feedback-icon"></div>
                         <p class="feedback-message" id="feedback-message"></p>
                         <p class="feedback-hint" id="feedback-hint"></p>
                     </div>
-                    <button id="btn-run-solution" class="btn-success btn-large hidden">Run My Solution!</button>
+                    <button id="btn-run-solution" class="btn-success btn-large hidden">Запустить моё решение!</button>
                 </section>
 
-                <!-- Loading Indicator -->
+                <!-- Индикатор загрузки -->
                 <div class="loading-overlay hidden" id="loading-overlay">
                     <div class="spinner"></div>
-                    <p>AI is thinking...</p>
+                    <p>ИИ думает...</p>
                 </div>
             </main>
         </div>

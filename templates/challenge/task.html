@@ -1,33 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}Challenge - Turing Machine{% endblock %}
+{% block title %}Испытание - Машина Тьюринга{% endblock %}
 
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Your Challenge</h1>
+        <h1>Твоё испытание</h1>
 
         <div class="challenge-card" id="challenge-card">
             <!-- Task description -->
             <div class="challenge-task" id="challenge-task">
-                <p class="loading">Loading challenge...</p>
+                <p class="loading">Загрузка испытания...</p>
             </div>
 
             <!-- Clear output specification -->
             <div class="output-spec hidden" id="output-spec">
-                <h3>What Your Machine Must Do:</h3>
+                <h3>Что должна сделать твоя машина:</h3>
                 <div class="spec-box" id="spec-content"></div>
             </div>
 
             <!-- Test cases with expected outputs -->
             <div class="test-cases-preview hidden" id="test-cases-preview">
-                <h3>Test Cases (Your Machine Must Pass All):</h3>
+                <h3>Тестовые случаи (машина должна пройти все):</h3>
                 <table class="test-table">
                     <thead>
                         <tr>
-                            <th>Input</th>
-                            <th>Expected Output</th>
-                            <th>Why</th>
+                            <th>Вход</th>
+                            <th>Ожидаемый выход</th>
+                            <th>Почему</th>
                         </tr>
                     </thead>
                     <tbody id="test-cases-body">
@@ -37,42 +37,42 @@
 
             <!-- System info -->
             <div class="system-info hidden" id="system-info">
-                <h3>How It Works:</h3>
+                <h3>Как это работает:</h3>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="badge start">START</span>
-                        <span>Machine always begins in START state</span>
+                        <span class="badge start">СТАРТ</span>
+                        <span>Машина всегда начинает в состоянии СТАРТ</span>
                     </div>
                     <div class="info-item">
-                        <span class="badge done">DONE</span>
-                        <span>Machine stops when it reaches DONE state</span>
+                        <span class="badge done">ГОТОВО</span>
+                        <span>Машина останавливается в состоянии ГОТОВО</span>
                     </div>
                     <div class="info-item">
-                        <span class="badge user">YOUR STATES</span>
-                        <span>You create states to remember things</span>
+                        <span class="badge user">ТВОИ СОСТОЯНИЯ</span>
+                        <span>Ты создаёшь состояния чтобы запоминать</span>
                     </div>
                 </div>
             </div>
 
             <!-- Hint (collapsed) -->
             <div class="hint-section hidden" id="hint-section">
-                <button class="hint-toggle" id="hint-toggle">Need a hint?</button>
+                <button class="hint-toggle" id="hint-toggle">Нужна подсказка?</button>
                 <div class="hint-content hidden" id="hint-content"></div>
             </div>
 
-            <button id="btn-new-challenge" class="btn-secondary btn-small">Get Different Challenge</button>
+            <button id="btn-new-challenge" class="btn-secondary btn-small">Другое испытание</button>
         </div>
 
         <div class="challenge-actions">
             <a href="/challenge/states" class="btn-primary btn-large" id="btn-start-challenge" style="display: none;">
-                I Understand - Start Building!
+                Понятно - Начать создавать!
             </a>
         </div>
 
         <!-- Loading Indicator -->
         <div class="loading-overlay hidden" id="loading-overlay">
             <div class="spinner"></div>
-            <p>AI is generating a challenge...</p>
+            <p>ИИ генерирует испытание...</p>
         </div>
     </div>
 </div>
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadChallenge() {
         loadingOverlay.classList.remove('hidden');
-        taskDiv.innerHTML = '<p class="loading">Loading challenge...</p>';
+        taskDiv.innerHTML = '<p class="loading">Загрузка испытания...</p>';
         outputSpec.classList.add('hidden');
         testCasesPreview.classList.add('hidden');
         systemInfo.classList.add('hidden');
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const challenge = await response.json();
 
             if (challenge.error) {
-                taskDiv.innerHTML = `<p class="error">Error: ${challenge.error}</p>`;
+                taskDiv.innerHTML = `<p class="error">Ошибка: ${challenge.error}</p>`;
                 return;
             }
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             `<li>${k}: write <code>${v}</code></li>`
                         ).join('')}
                     </ul>
-                    <p><em>Output is checked at the head position when machine stops.</em></p>
+                    <p><em>Выход проверяется на позиции головки когда машина останавливается.</em></p>
                 `;
                 outputSpec.classList.remove('hidden');
             }
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             startBtn.style.display = 'inline-block';
 
         } catch (error) {
-            taskDiv.innerHTML = `<p class="error">Failed to load challenge. Please try again.</p>`;
+            taskDiv.innerHTML = `<p class="error">Не удалось загрузить испытание. Попробуй ещё раз.</p>`;
             console.error('Error:', error);
         } finally {
             loadingOverlay.classList.add('hidden');
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hint toggle
     hintToggle.addEventListener('click', () => {
         hintContent.classList.toggle('hidden');
-        hintToggle.textContent = hintContent.classList.contains('hidden') ? 'Need a hint?' : 'Hide hint';
+        hintToggle.textContent = hintContent.classList.contains('hidden') ? 'Нужна подсказка?' : 'Скрыть подсказку';
     });
 
     newChallengeBtn.addEventListener('click', loadChallenge);

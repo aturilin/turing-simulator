@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Review Algorithm - Challenge{% endblock %}
+{% block title %}Просмотр алгоритма - Испытание{% endblock %}
 
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 3: Review Your Algorithm</h1>
+        <h1>Шаг 3: Просмотр алгоритма</h1>
 
         <div class="review-section">
             <div class="graph-section large">
-                <h3>Your Complete Algorithm</h3>
+                <h3>Твой полный алгоритм</h3>
                 <div class="state-graph-container" id="review-graph">
                     <!-- Full graph renders here -->
                 </div>
             </div>
 
             <div class="rules-summary-section">
-                <h3>All Rules</h3>
+                <h3>Все правила</h3>
                 <div id="all-rules-summary">
                     <!-- Rules summary renders here -->
                 </div>
@@ -24,8 +24,8 @@
         </div>
 
         <div class="nav-buttons">
-            <a href="/challenge/states" class="btn-secondary">← Edit States</a>
-            <a href="/challenge/run" class="btn-success btn-large">Run Tests! →</a>
+            <a href="/challenge/states" class="btn-secondary">← Редактировать состояния</a>
+            <a href="/challenge/run" class="btn-success btn-large">Запустить тесты! →</a>
         </div>
     </div>
 </div>
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     if (hasDone && !graphStates['done']) {
-        graphStates['done'] = { label: 'DONE', emoji: '✅', description: 'Finished' };
+        graphStates['done'] = { label: 'ГОТОВО', emoji: '✅', description: 'Завершено' };
     }
 
     // Build transitions
@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ['0', '1', '_'].forEach(symbol => {
             if (stateRules[symbol]) {
                 const r = stateRules[symbol];
-                const displaySymbol = symbol === '_' ? 'blank' : symbol;
-                html += `<li>See ${displaySymbol} → write ${r.write === '_' ? 'blank' : r.write}, move ${r.move}, go to ${r.goto}</li>`;
+                const displaySymbol = symbol === '_' ? 'пусто' : symbol;
+                html += `<li>Вижу ${displaySymbol} → записать ${r.write === '_' ? 'пусто' : r.write}, идти ${r.move}, перейти в ${r.goto}</li>`;
             }
         });
         html += '</ul></div>';

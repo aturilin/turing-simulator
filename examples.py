@@ -1,43 +1,42 @@
-"""Educational Turing machine - Pedagogical Redesign v4.
+"""Обучающая машина Тьюринга - Педагогический редизайн v4.
 
-NEW ORDER (Bottom-up, delayed state introduction):
-1. Magic Demo - Hook
-2. Tape - What data looks like
-3. Head - How it reads/writes/moves
-4. Simple Rules - Rules that work (bit flip)
-5. The Problem - Why add 1 fails with simple rules
-6. Lock Puzzle - NOW introduce states via lock metaphor
-7. States Solve Everything - The solution
-8. Finale
+ПОРЯДОК (снизу вверх, отложенное введение состояний):
+1. Магический трюк - Хук
+2. Лента - Как выглядят данные
+3. Головка - Как читает/пишет/двигается
+4. Простые правила - Правила которые работают (переворот бита)
+5. Загадка замка - ТЕПЕРЬ вводим состояния через метафору замка
+6. Состояния решают всё - Решение
+7. Финал
 """
 
-# 8 Modules: Bottom-up discovery with delayed state introduction
+# 7 Модулей: Открытие снизу вверх с отложенным введением состояний
 LESSONS = [
     # ============================================================
-    # MODULE 1: THE MAGIC TRICK (Demo FIRST - see it before theory)
+    # МОДУЛЬ 1: МАГИЧЕСКИЙ ТРЮК (Демо СНАЧАЛА - смотрим до теории)
     # ============================================================
     {
         "id": "magic-trick",
-        "title": "The Magic Trick",
+        "title": "Магический трюк",
         "practice_type": "magic-demo",
         "content": """
             <div class="hook-intro">
-                <p class="hook-line">Watch this.</p>
+                <p class="hook-line">Смотри.</p>
             </div>
         """
     },
 
     # ============================================================
-    # MODULE 2: THE TAPE (Data storage - now earlier)
+    # МОДУЛЬ 2: ЛЕНТА (Хранение данных - теперь раньше)
     # ============================================================
     {
         "id": "tape",
-        "title": "The Tape",
+        "title": "Лента",
         "practice_type": "explore-tape",
         "content": """
             <div class="concept-intro">
-                <p class="lead">Now let's look at the machine you just watched.</p>
-                <p>It has a <strong>tape</strong> &mdash; a row of boxes that hold symbols.</p>
+                <p class="lead">Теперь посмотрим на машину, которую ты только что видел.</p>
+                <p>У неё есть <strong>лента</strong> &mdash; ряд ячеек, которые хранят символы.</p>
             </div>
 
             <div class="tape-visual-demo horizontal">
@@ -50,30 +49,30 @@ LESSONS = [
             </div>
 
             <div class="insight-box">
-                <p>Each box holds exactly <strong>ONE symbol</strong>:</p>
+                <p>Каждая ячейка хранит ровно <strong>ОДИН символ</strong>:</p>
                 <ul>
-                    <li><strong>0</strong> or <strong>1</strong> &mdash; binary digits</li>
-                    <li><strong>_</strong> &mdash; blank (empty)</li>
+                    <li><strong>0</strong> или <strong>1</strong> &mdash; двоичные цифры</li>
+                    <li><strong>_</strong> &mdash; пустая ячейка</li>
                 </ul>
             </div>
 
             <div class="wow-connection">
-                <p>That photo on your phone? <strong>10 million boxes</strong> like this.</p>
-                <p>Each one just a 0 or 1. The computer doesn't "see" the photo &mdash; it just reads symbols.</p>
+                <p>Та фотка в твоём телефоне? <strong>10 миллионов ячеек</strong> как эта.</p>
+                <p>В каждой только 0 или 1. Компьютер не "видит" фото &mdash; он просто читает символы.</p>
             </div>
         """
     },
 
     # ============================================================
-    # MODULE 3: THE HEAD (Control - one cell at a time)
+    # МОДУЛЬ 3: ГОЛОВКА (Управление - одна ячейка за раз)
     # ============================================================
     {
         "id": "head",
-        "title": "The Head",
+        "title": "Головка",
         "practice_type": "control-head",
         "content": """
             <div class="concept-intro">
-                <p class="lead">The machine has a <strong>head</strong> &mdash; like a finger pointing at one box.</p>
+                <p class="lead">У машины есть <strong>головка</strong> &mdash; как палец, указывающий на одну ячейку.</p>
             </div>
 
             <div class="tape-visual-demo horizontal with-head">
@@ -84,28 +83,28 @@ LESSONS = [
                 <div class="tape-cell">1</div>
                 <div class="tape-cell blank">_</div>
             </div>
-            <div class="head-pointer">HEAD</div>
+            <div class="head-pointer">ГОЛОВКА</div>
 
             <div class="constraint-box">
-                <p class="constraint-title">The Catch:</p>
-                <p>The head can only see <strong>ONE box</strong> at a time.</p>
-                <p class="analogy"><em>Like reading a book through a keyhole &mdash; one letter at a time.</em></p>
+                <p class="constraint-title">Фишка:</p>
+                <p>Головка видит только <strong>ОДНУ ячейку</strong> за раз.</p>
+                <p class="analogy"><em>Как читать книгу через замочную скважину &mdash; по одной букве.</em></p>
             </div>
 
             <div class="actions-box">
-                <p>The head can do exactly <strong>3 things</strong>:</p>
+                <p>Головка умеет делать ровно <strong>3 вещи</strong>:</p>
                 <div class="action-list">
                     <div class="action-item">
                         <span class="action-icon">👁️</span>
-                        <span class="action-text"><strong>READ</strong> the symbol</span>
+                        <span class="action-text"><strong>ЧИТАТЬ</strong> символ</span>
                     </div>
                     <div class="action-item">
                         <span class="action-icon">✏️</span>
-                        <span class="action-text"><strong>WRITE</strong> a new symbol</span>
+                        <span class="action-text"><strong>ПИСАТЬ</strong> новый символ</span>
                     </div>
                     <div class="action-item">
                         <span class="action-icon">👆</span>
-                        <span class="action-text"><strong>MOVE</strong> left or right</span>
+                        <span class="action-text"><strong>ДВИГАТЬСЯ</strong> влево или вправо</span>
                     </div>
                 </div>
             </div>
@@ -113,199 +112,199 @@ LESSONS = [
     },
 
     # ============================================================
-    # MODULE 4: SIMPLE RULES (Rules that work WITHOUT states)
+    # МОДУЛЬ 4: ПРОСТЫЕ ПРАВИЛА (Правила которые работают БЕЗ состояний)
     # ============================================================
     {
         "id": "simple-rules",
-        "title": "Simple Rules",
+        "title": "Простые правила",
         "practice_type": "simple-rules",
         "content": """
             <div class="concept-intro">
-                <p class="lead">The machine follows <strong>rules</strong>.</p>
-                <p>Let's start simple: <strong>flip every bit</strong>.</p>
+                <p class="lead">Машина следует <strong>правилам</strong>.</p>
+                <p>Начнём просто: <strong>перевернём каждый бит</strong>.</p>
             </div>
 
             <div class="rules-display simple">
-                <div class="rule">See <strong>0</strong> → write <strong>1</strong>, move right</div>
-                <div class="rule">See <strong>1</strong> → write <strong>0</strong>, move right</div>
-                <div class="rule">See <strong>_</strong> → stop</div>
+                <div class="rule">Вижу <strong>0</strong> → пишу <strong>1</strong>, иду вправо</div>
+                <div class="rule">Вижу <strong>1</strong> → пишу <strong>0</strong>, иду вправо</div>
+                <div class="rule">Вижу <strong>_</strong> → стоп</div>
             </div>
 
             <div class="insight-box">
-                <p>That's it. <strong>"When I see X, do Y."</strong></p>
-                <p>Every program ever written &mdash; from Instagram to Excel &mdash; is just rules like this. Lots of them.</p>
+                <p>Вот и всё. <strong>"Когда вижу X, делаю Y."</strong></p>
+                <p>Любая программа &mdash; от Instagram до Excel &mdash; это просто такие правила. Много правил.</p>
             </div>
         """
     },
 
     # ============================================================
-    # MODULE 5: THE LOCK PUZZLE (NOW introduce states)
+    # МОДУЛЬ 5: ЗАГАДКА ЗАМКА (ТЕПЕРЬ вводим состояния)
     # ============================================================
     {
         "id": "lock-puzzle",
-        "title": "The Lock Puzzle",
+        "title": "Загадка замка",
         "practice_type": "lock-puzzle",
         "content": """
             <div class="puzzle-intro">
-                <p class="lead">Here's a lock with code <strong>1-2-3-4</strong>.</p>
-                <p>Try to open it.</p>
+                <p class="lead">Вот замок с кодом <strong>1-2-3-4</strong>.</p>
+                <p>Попробуй открыть его.</p>
             </div>
 
             <div class="puzzle-question">
-                <p>Think about it: if the lock only had <strong>simple rules</strong>...</p>
-                <p class="dim">"When I see 1 → check. When I see 2 → check..."</p>
-                <p>...it would open when you press <strong>any</strong> correct digit!</p>
+                <p>Подумай: если бы замок работал по <strong>простым правилам</strong>...</p>
+                <p class="dim">"Когда вижу 1 → проверить. Когда вижу 2 → проверить..."</p>
+                <p>...он бы открылся когда ты нажмёшь <strong>любую</strong> правильную цифру!</p>
             </div>
 
             <div class="puzzle-insight">
-                <p>But that's not how locks work.</p>
-                <p>The lock must <strong>remember</strong> which digit it's waiting for.</p>
-                <p class="dim">First it waits for 1. Then for 2. Then for 3. Then for 4.</p>
+                <p>Но замки так не работают.</p>
+                <p>Замок должен <strong>помнить</strong> какую цифру он ждёт.</p>
+                <p class="dim">Сначала он ждёт 1. Потом 2. Потом 3. Потом 4.</p>
             </div>
 
             <div class="puzzle-reveal">
-                <p>That memory &mdash; knowing <em>what to expect next</em> &mdash; is called a <strong>STATE</strong>.</p>
+                <p>Эта память &mdash; знание <em>чего ожидать дальше</em> &mdash; называется <strong>СОСТОЯНИЕ</strong>.</p>
             </div>
         """
     },
 
     # ============================================================
-    # MODULE 6: STATES SOLVE EVERYTHING
+    # МОДУЛЬ 6: СОСТОЯНИЯ РЕШАЮТ ВСЁ
     # ============================================================
     {
         "id": "states",
-        "title": "States Solve Everything",
+        "title": "Состояния решают всё",
         "practice_type": "states-solve",
         "content": """
             <div class="solution-intro">
-                <p class="lead">Remember the lock?</p>
-                <p>It remembered which digit to expect next. That memory is called a <strong>STATE</strong>.</p>
+                <p class="lead">Помнишь замок?</p>
+                <p>Он помнил какую цифру ожидать следующей. Эта память называется <strong>СОСТОЯНИЕ</strong>.</p>
             </div>
 
             <div class="lock-timeline">
-                <div class="lock-timeline-title">The lock moves through states:</div>
+                <div class="lock-timeline-title">Замок проходит через состояния:</div>
                 <div class="lock-timeline-flow">
                     <div class="lock-step">
-                        <div class="lock-step-label">WAIT_1</div>
-                        <div class="lock-step-meaning">expecting<br>1st digit</div>
+                        <div class="lock-step-label">ЖДУ_1</div>
+                        <div class="lock-step-meaning">жду<br>1-ю цифру</div>
                     </div>
                     <div class="lock-step-arrow"></div>
                     <div class="lock-step">
-                        <div class="lock-step-label">WAIT_2</div>
-                        <div class="lock-step-meaning">expecting<br>2nd digit</div>
+                        <div class="lock-step-label">ЖДУ_2</div>
+                        <div class="lock-step-meaning">жду<br>2-ю цифру</div>
                     </div>
                     <div class="lock-step-arrow"></div>
                     <div class="lock-step">
-                        <div class="lock-step-label">WAIT_3</div>
-                        <div class="lock-step-meaning">expecting<br>3rd digit</div>
+                        <div class="lock-step-label">ЖДУ_3</div>
+                        <div class="lock-step-meaning">жду<br>3-ю цифру</div>
                     </div>
                     <div class="lock-step-arrow"></div>
                     <div class="lock-step">
-                        <div class="lock-step-label">WAIT_4</div>
-                        <div class="lock-step-meaning">expecting<br>4th digit</div>
+                        <div class="lock-step-label">ЖДУ_4</div>
+                        <div class="lock-step-meaning">жду<br>4-ю цифру</div>
                     </div>
                     <div class="lock-step-arrow"></div>
                     <div class="lock-step open">
-                        <div class="lock-step-label">OPEN</div>
-                        <div class="lock-step-meaning">unlocked!</div>
+                        <div class="lock-step-label">ОТКРЫТ</div>
+                        <div class="lock-step-meaning">разблокирован!</div>
                     </div>
                 </div>
             </div>
 
             <div class="key-insight">
-                <div class="key-insight-header">KEY INSIGHT</div>
+                <div class="key-insight-header">КЛЮЧЕВАЯ МЫСЛЬ</div>
                 <div class="key-insight-content">
-                    <p>Same button press &rarr; <strong>different result</strong></p>
-                    <p class="dim">depending on which state the lock is in</p>
+                    <p>Одно и то же нажатие &rarr; <strong>разный результат</strong></p>
+                    <p class="dim">в зависимости от состояния замка</p>
                 </div>
             </div>
 
             <div class="transition-box">
-                <p>Our Turing machine needs the same thing!</p>
-                <p class="dim">Different states = different behavior for the same symbol</p>
+                <p>Нашей машине Тьюринга нужно то же самое!</p>
+                <p class="dim">Разные состояния = разное поведение для одного символа</p>
             </div>
 
             <div class="tm-states-showcase">
                 <div class="tm-state-card cyan">
                     <div class="tm-state-icon">🔍</div>
-                    <div class="tm-state-name">SCAN</div>
-                    <div class="tm-state-desc">Looking for the end</div>
+                    <div class="tm-state-name">СКАН</div>
+                    <div class="tm-state-desc">Ищу конец числа</div>
                 </div>
                 <div class="tm-states-arrow"></div>
                 <div class="tm-state-card orange">
                     <div class="tm-state-icon">➕</div>
-                    <div class="tm-state-name">ADD</div>
-                    <div class="tm-state-desc">Adding 1 to digits</div>
+                    <div class="tm-state-name">СЛОЖЕНИЕ</div>
+                    <div class="tm-state-desc">Прибавляю 1</div>
                 </div>
                 <div class="tm-states-arrow"></div>
                 <div class="tm-state-card green">
                     <div class="tm-state-icon">✅</div>
-                    <div class="tm-state-name">DONE</div>
-                    <div class="tm-state-desc">Finished!</div>
+                    <div class="tm-state-name">ГОТОВО</div>
+                    <div class="tm-state-desc">Закончил!</div>
                 </div>
             </div>
 
             <div class="conclusion-box">
-                <p>Now the machine knows what to do:</p>
-                <p class="highlight">In <strong>SCAN</strong> + see <strong>1</strong> &rarr; keep going right</p>
-                <p class="highlight">In <strong>ADD</strong> + see <strong>1</strong> &rarr; write 0, carry left</p>
-                <p class="dim">Same symbol, different state = different action!</p>
+                <p>Теперь машина знает что делать:</p>
+                <p class="highlight">В <strong>СКАН</strong> + вижу <strong>1</strong> &rarr; иду вправо</p>
+                <p class="highlight">В <strong>СЛОЖЕНИЕ</strong> + вижу <strong>1</strong> &rarr; пишу 0, несу влево</p>
+                <p class="dim">Один символ, разные состояния = разные действия!</p>
             </div>
         """
     },
 
     # ============================================================
-    # MODULE 7: YOU NOW UNDERSTAND COMPUTERS
+    # МОДУЛЬ 7: ТЫ ТЕПЕРЬ ПОНИМАЕШЬ КОМПЬЮТЕРЫ
     # ============================================================
     {
         "id": "finale",
-        "title": "You Now Understand Computers",
+        "title": "Ты теперь понимаешь компьютеры",
         "practice_type": "finale",
         "content": """
             <div class="finale-intro">
-                <h2>The Complete Picture</h2>
+                <h2>Полная картина</h2>
             </div>
 
             <div class="recap-box">
                 <div class="recap-item">
                     <span class="num">1</span>
-                    <strong>Tape</strong> = memory (0s and 1s)
+                    <strong>Лента</strong> = память (нули и единицы)
                 </div>
                 <div class="recap-item">
                     <span class="num">2</span>
-                    <strong>Head</strong> = processor (read, write, move)
+                    <strong>Головка</strong> = процессор (читать, писать, двигаться)
                 </div>
                 <div class="recap-item">
                     <span class="num">3</span>
-                    <strong>States</strong> = what the CPU is "thinking about"
+                    <strong>Состояния</strong> = о чём "думает" процессор
                 </div>
                 <div class="recap-item">
                     <span class="num">4</span>
-                    <strong>Rules</strong> = the program
+                    <strong>Правила</strong> = программа
                 </div>
             </div>
 
             <div class="wow-box">
-                <p>That game on your phone? It's just rules.</p>
-                <p>Very complicated rules, but rules.</p>
-                <p>The CPU reads data, checks what mode it's in, and follows rules.</p>
+                <p>Та игра в телефоне? Это просто правила.</p>
+                <p>Очень сложные правила, но правила.</p>
+                <p>Процессор читает данные, проверяет в каком режиме находится, и следует правилам.</p>
             </div>
 
             <div class="final-revelation">
-                <p>The <strong>ONLY</strong> difference between this Turing Machine and your iPhone?</p>
-                <p class="revelation-answer"><strong>SPEED.</strong></p>
-                <p>Your phone does this <strong>3,000,000,000</strong> times per second.</p>
+                <p><strong>ЕДИНСТВЕННАЯ</strong> разница между этой машиной Тьюринга и твоим iPhone?</p>
+                <p class="revelation-answer"><strong>СКОРОСТЬ.</strong></p>
+                <p>Твой телефон делает это <strong>3,000,000,000</strong> раз в секунду.</p>
             </div>
         """
     }
 ]
 
-# The main example with educational content
+# Основной пример с обучающим контентом
 EXAMPLES = {
     "binary_increment": {
-        "name": "Add 1 to Binary Number",
-        "description": "Take a binary number and add 1 to it",
-        "goal": "Add 1 to the binary number",
+        "name": "Прибавить 1 к двоичному числу",
+        "description": "Взять двоичное число и прибавить к нему 1",
+        "goal": "Прибавить 1 к двоичному числу",
         "initial_state": "scan",
         "accept_states": ["done"],
         "reject_states": [],
@@ -314,46 +313,46 @@ EXAMPLES = {
 
         "states": {
             "scan": {
-                "label": "SCAN",
+                "label": "СКАН",
                 "emoji": "🔍",
-                "description": "Looking for the end of the number"
+                "description": "Ищу конец числа"
             },
             "add": {
-                "label": "ADD",
+                "label": "СЛОЖЕНИЕ",
                 "emoji": "➕",
-                "description": "Adding 1 and handling carry"
+                "description": "Прибавляю 1 и обрабатываю перенос"
             },
             "done": {
-                "label": "DONE",
+                "label": "ГОТОВО",
                 "emoji": "✅",
-                "description": "Finished!"
+                "description": "Закончил!"
             }
         },
 
         "next_action_explanations": {
             "scan,0": {
-                "action": "Keep the 0, move RIGHT, stay in SCAN",
-                "why": "I'm still looking for the end of the number."
+                "action": "Оставляю 0, иду ВПРАВО, остаюсь в СКАН",
+                "why": "Всё ещё ищу конец числа."
             },
             "scan,1": {
-                "action": "Keep the 1, move RIGHT, stay in SCAN",
-                "why": "I'm still looking for the end of the number."
+                "action": "Оставляю 1, иду ВПРАВО, остаюсь в СКАН",
+                "why": "Всё ещё ищу конец числа."
             },
             "scan,_": {
-                "action": "Stay here, move LEFT, switch to ADD",
-                "why": "Found the end! Time to go back and start adding."
+                "action": "Остаюсь здесь, иду ВЛЕВО, переключаюсь на СЛОЖЕНИЕ",
+                "why": "Нашёл конец! Пора возвращаться и начинать сложение."
             },
             "add,0": {
-                "action": "Write 1, STOP, switch to DONE",
-                "why": "0 + 1 = 1. No carry needed. We're done!"
+                "action": "Пишу 1, СТОП, переключаюсь на ГОТОВО",
+                "why": "0 + 1 = 1. Перенос не нужен. Готово!"
             },
             "add,1": {
-                "action": "Write 0, move LEFT, stay in ADD",
-                "why": "1 + 1 = 2 = '10' in binary. Write 0, carry the 1 left."
+                "action": "Пишу 0, иду ВЛЕВО, остаюсь в СЛОЖЕНИЕ",
+                "why": "1 + 1 = 2 = '10' в двоичной. Пишу 0, переношу 1 влево."
             },
             "add,_": {
-                "action": "Write 1, STOP, switch to DONE",
-                "why": "No more digits, but we still have a carry. Write 1 here."
+                "action": "Пишу 1, СТОП, переключаюсь на ГОТОВО",
+                "why": "Цифр больше нет, но остался перенос. Пишу 1 сюда."
             }
         },
 
@@ -377,9 +376,9 @@ EXAMPLES = {
     },
 
     "bit_flip": {
-        "name": "Flip All Bits",
-        "description": "Turn every 0 into 1 and every 1 into 0",
-        "goal": "Invert all bits",
+        "name": "Перевернуть все биты",
+        "description": "Превратить каждый 0 в 1 и каждую 1 в 0",
+        "goal": "Инвертировать все биты",
         "initial_state": "flip",
         "accept_states": ["done"],
         "reject_states": [],
@@ -388,14 +387,14 @@ EXAMPLES = {
 
         "states": {
             "flip": {
-                "label": "FLIP",
+                "label": "ПЕРЕВОРОТ",
                 "emoji": "🔄",
-                "description": "Flipping bits one by one"
+                "description": "Переворачиваю биты по одному"
             },
             "done": {
-                "label": "DONE",
+                "label": "ГОТОВО",
                 "emoji": "✅",
-                "description": "Finished!"
+                "description": "Закончил!"
             }
         },
 

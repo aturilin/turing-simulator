@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Simulator :: TURING.MACHINE{% endblock %}
+{% block title %}Симулятор :: МАШИНА ТЬЮРИНГА{% endblock %}
 
 {% block content %}
 <div class="simulator-page">
     <!-- Input Row -->
     <div class="input-row">
         <input type="text" id="tape-input" class="tape-input" placeholder="1011" value="1011">
-        <button id="btn-set-tape" class="btn btn-set">SET</button>
+        <button id="btn-set-tape" class="btn btn-set">ВВОД</button>
     </div>
 
     <!-- Tape Section -->
     <section class="tape-section card">
-        <div class="card-header">TAPE</div>
+        <div class="card-header">ЛЕНТА</div>
         <div class="tape-container">
             <div class="tape" id="tape">
                 <!-- Tape cells render here dynamically with HEAD label -->
@@ -24,8 +24,8 @@
     <section class="state-section card">
         <div class="state-display">
             <span class="state-indicator" id="state-indicator"></span>
-            <span class="state-label">Mode:</span>
-            <span class="state-value" id="current-state">SCAN</span>
+            <span class="state-label">Режим:</span>
+            <span class="state-value" id="current-state">СКАН</span>
             <span class="state-emoji" id="state-emoji"></span>
             <span class="state-description" id="state-description"></span>
             <span id="status-badge" class="status-badge"></span>
@@ -37,20 +37,20 @@
         <div class="controls-container">
             <div class="controls-group">
                 <button id="btn-step" class="btn btn-secondary">
-                    <span class="btn-icon">|&gt;</span> STEP
+                    <span class="btn-icon">|&gt;</span> ШАГ
                 </button>
                 <button id="btn-run" class="btn btn-primary">
-                    <span class="btn-icon">&#9654;</span> RUN
+                    <span class="btn-icon">&#9654;</span> ПУСК
                 </button>
                 <button id="btn-pause" class="btn btn-outline" disabled>
-                    PAUSE
+                    ПАУЗА
                 </button>
                 <button id="btn-reset" class="btn btn-danger">
-                    <span class="btn-icon">&#8635;</span> RESET
+                    <span class="btn-icon">&#8635;</span> СБРОС
                 </button>
             </div>
             <div class="speed-control">
-                <span class="speed-label">SPD</span>
+                <span class="speed-label">СКР</span>
                 <input type="range" id="speed-slider" class="speed-slider" min="1" max="100" value="50">
                 <span class="speed-value" id="speed-value">5x</span>
             </div>
@@ -66,7 +66,7 @@
 
     <!-- Algorithm Footer -->
     <div class="algo-footer">
-        BINARY INCREMENT ALGORITHM &bull; ALAN TURING, 1936
+        АЛГОРИТМ ДВОИЧНОГО ИНКРЕМЕНТА &bull; АЛАН ТЬЮРИНГ, 1936
     </div>
 
     <!-- Hidden elements for JS compatibility -->
@@ -87,9 +87,9 @@
     <section class="challenge-prompt hidden" id="challenge-prompt">
         <div class="card">
             <div class="card-body text-center">
-                <h2 class="text-green">Computation Complete!</h2>
-                <p class="text-muted mt-2">Ready for a challenge?</p>
-                <a href="/challenge" class="btn btn-primary mt-3">Try Challenge Mode</a>
+                <h2 class="text-green">Вычисление завершено!</h2>
+                <p class="text-muted mt-2">Готов к испытанию?</p>
+                <a href="/challenge" class="btn btn-primary mt-3">Попробовать режим испытаний</a>
             </div>
         </div>
     </section>

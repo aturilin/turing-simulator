@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Define States - Challenge{% endblock %}
+{% block title %}Определение состояний - Испытание{% endblock %}
 
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 1: Design Your States</h1>
+        <h1>Шаг 1: Спроектируй свои состояния</h1>
 
         <!-- Task reminder -->
         <div class="challenge-reminder" id="challenge-reminder">
@@ -14,40 +14,40 @@
 
         <!-- Clear explanation -->
         <div class="explanation-box">
-            <h3>What Are States?</h3>
-            <p><strong>States = what the machine "remembers"</strong></p>
-            <p>The machine can only see ONE cell at a time. States let it remember what it has seen or what it's doing.</p>
+            <h3>Что такое состояния?</h3>
+            <p><strong>Состояния = что машина "помнит"</strong></p>
+            <p>Машина видит только ОДНУ ячейку за раз. Состояния позволяют ей помнить что она видела или что делает.</p>
 
             <div class="example-box">
-                <strong>Example:</strong> To count if there's an even or odd number of 1s:
+                <strong>Пример:</strong> Чтобы посчитать чётное или нечётное количество единиц:
                 <ul>
-                    <li><code>EVEN</code> = "So far, I've seen an EVEN number of 1s"</li>
-                    <li><code>ODD</code> = "So far, I've seen an ODD number of 1s"</li>
+                    <li><code>ЧЁТНОЕ</code> = "Пока я видел ЧЁТНОЕ количество единиц"</li>
+                    <li><code>НЕЧЁТНОЕ</code> = "Пока я видел НЕЧЁТНОЕ количество единиц"</li>
                 </ul>
             </div>
         </div>
 
         <!-- System states (always present) -->
         <div class="system-states">
-            <h3>System States (Always Present):</h3>
+            <h3>Системные состояния (всегда есть):</h3>
             <div class="state-row system">
-                <span class="state-badge start">START</span>
-                <span class="state-desc">Machine begins here. You'll define rules for this state.</span>
+                <span class="state-badge start">СТАРТ</span>
+                <span class="state-desc">Машина начинает здесь. Ты определишь правила для этого состояния.</span>
             </div>
             <div class="state-row system">
-                <span class="state-badge done">DONE</span>
-                <span class="state-desc">Machine stops here. Any state can "go to DONE" to finish.</span>
+                <span class="state-badge done">ГОТОВО</span>
+                <span class="state-desc">Машина останавливается здесь. Любое состояние может "перейти в ГОТОВО".</span>
             </div>
         </div>
 
         <!-- User states builder -->
         <div class="states-builder">
-            <h3>Your Working States:</h3>
-            <p class="hint">What does your machine need to remember? Name your states clearly.</p>
+            <h3>Твои рабочие состояния:</h3>
+            <p class="hint">Что твоя машина должна запоминать? Назови состояния понятно.</p>
 
             <!-- Suggested states from challenge -->
             <div class="suggested-states hidden" id="suggested-states">
-                <p><strong>Suggested states for this challenge:</strong></p>
+                <p><strong>Предложенные состояния для этого испытания:</strong></p>
                 <div id="suggested-states-list"></div>
             </div>
 
@@ -55,13 +55,13 @@
                 <!-- Dynamic state inputs -->
             </div>
 
-            <button id="btn-add-state" class="btn-secondary">+ Add Another State</button>
+            <button id="btn-add-state" class="btn-secondary">+ Добавить состояние</button>
         </div>
 
         <!-- Navigation -->
         <div class="validation-section">
-            <button id="btn-continue" class="btn-primary btn-large">Continue to Rules</button>
-            <p class="note">You'll define what each state does next.</p>
+            <button id="btn-continue" class="btn-primary btn-large">Продолжить к правилам</button>
+            <p class="note">Далее ты определишь что делает каждое состояние.</p>
         </div>
     </div>
 </div>
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const div = document.createElement('div');
         div.className = 'user-state-row';
         div.innerHTML = `
-            <input type="text" class="state-name-input" placeholder="STATE_NAME (e.g., SCANNING, COUNTING)" value="${name}">
+            <input type="text" class="state-name-input" placeholder="ИМЯ_СОСТОЯНИЯ (например, СКАНИРОВАНИЕ, ПОДСЧЁТ)" value="${name}">
             <button class="btn-remove" onclick="this.parentElement.remove(); updateSuggestedButtons();">×</button>
         `;
         statesList.appendChild(div);
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Allow proceeding even with 0 working states (for trivial challenges)
         // But warn the user if they have no states
         if (states.length < 2) {
-            const proceed = confirm('You have no working states. Some challenges can be solved with just START → DONE.\n\nDo you want to continue anyway?');
+            const proceed = confirm('У тебя нет рабочих состояний. Некоторые задачи можно решить только с СТАРТ → ГОТОВО.\n\nПродолжить?');
             if (!proceed) return;
         }
 

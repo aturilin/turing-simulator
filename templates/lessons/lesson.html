@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ lesson.title }} - Turing Machine{% endblock %}
+{% block title %}{{ lesson.title }} - Машина Тьюринга{% endblock %}
 
 {% block content %}
 <div class="lesson-page">
@@ -27,10 +27,10 @@
             <div class="practice-exercise" id="practice-magic">
                 <div class="magic-demo-container">
                     <div class="demo-intro" id="demo-intro">
-                        <p class="demo-prompt">I'm going to show you a machine that does <strong>math</strong>.</p>
-                        <p class="demo-prompt">It's going to add 1 to a binary number.</p>
-                        <p class="demo-context"><span class="binary">1011</span> (that's 11) will become <span class="binary">1100</span> (that's 12)</p>
-                        <button id="btn-start-magic" class="btn-primary btn-large">Show Me</button>
+                        <p class="demo-prompt">Я покажу тебе машину, которая делает <strong>математику</strong>.</p>
+                        <p class="demo-prompt">Она прибавит 1 к двоичному числу.</p>
+                        <p class="demo-context"><span class="binary">1011</span> (это 11) станет <span class="binary">1100</span> (это 12)</p>
+                        <button id="btn-start-magic" class="btn-primary btn-large">Покажи!</button>
                     </div>
 
                     <div class="magic-simulator hidden" id="magic-simulator">
@@ -52,11 +52,11 @@
                         </div>
 
                         <div class="sim-explanation" id="magic-explanation">
-                            <p>Starting...</p>
+                            <p>Начинаем...</p>
                         </div>
 
                         <div class="step-counter">
-                            Step: <strong id="magic-step">0</strong>
+                            Шаг: <strong id="magic-step">0</strong>
                         </div>
                     </div>
 
@@ -66,11 +66,11 @@
                             <p class="result-decimal">11 + 1 = 12</p>
                         </div>
                         <div class="result-reveal">
-                            <p>That machine just did <strong>math</strong>.</p>
-                            <p>Using only <strong>6 simple rules</strong>.</p>
-                            <p class="reveal-punchline">That's how <strong>EVERY computer works</strong>.</p>
+                            <p>Эта машина только что сделала <strong>математику</strong>.</p>
+                            <p>Используя всего <strong>6 простых правил</strong>.</p>
+                            <p class="reveal-punchline">Так работает <strong>КАЖДЫЙ компьютер</strong>.</p>
                         </div>
-                        <button id="btn-replay-magic" class="btn-secondary">Watch Again</button>
+                        <button id="btn-replay-magic" class="btn-secondary">Посмотреть ещё раз</button>
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                             <span class="lock-digit" id="lock-d3">_</span>
                             <span class="lock-digit" id="lock-d4">_</span>
                         </div>
-                        <div class="lock-status" id="lock-status">Enter code...</div>
+                        <div class="lock-status" id="lock-status">Введи код...</div>
                         <div class="lock-keypad">
                             <button class="key" data-key="1">1</button>
                             <button class="key" data-key="2">2</button>
@@ -114,28 +114,28 @@
 
                 <div class="lock-insight hidden" id="lock-insight">
                     <div class="insight-reveal">
-                        <p class="insight-question">Here's a question:</p>
-                        <p>When you pressed <strong>'3'</strong>...</p>
-                        <p>How did the lock know it was the <strong>third digit</strong>?</p>
+                        <p class="insight-question">А вот вопрос:</p>
+                        <p>Когда ты нажал <strong>'3'</strong>...</p>
+                        <p>Откуда замок знал, что это <strong>третья цифра</strong>?</p>
                     </div>
                     <div class="insight-answer">
-                        <p>The lock <strong>remembered</strong> that you already pressed two digits.</p>
-                        <p>It was keeping track of <strong>"which position am I at?"</strong></p>
-                        <p class="insight-term">We call this a <strong>STATE</strong>.</p>
+                        <p>Замок <strong>запомнил</strong>, что ты уже нажал две цифры.</p>
+                        <p>Он отслеживал <strong>"на какой я позиции?"</strong></p>
+                        <p class="insight-term">Это называется <strong>СОСТОЯНИЕ</strong>.</p>
                     </div>
                 </div>
 
                 <div class="lock-connection hidden" id="lock-connection">
-                    <p><strong>This is exactly what our machine needs!</strong></p>
-                    <p>Remember the add 1 problem? The machine couldn't tell if it was <em>scanning</em> or <em>adding</em>.</p>
-                    <p>If it could remember its <strong>state</strong> &mdash; like the lock does &mdash; problem solved!</p>
+                    <p><strong>Это именно то, что нужно нашей машине!</strong></p>
+                    <p>Помнишь задачу прибавления 1? Машина не могла понять, она <em>сканирует</em> или <em>складывает</em>.</p>
+                    <p>Если бы она могла запоминать своё <strong>состояние</strong> &mdash; как замок &mdash; проблема решена!</p>
                 </div>
             </div>
 
             {% elif practice_type == 'explore-tape' %}
             <!-- MODULE 3: EXPLORE THE TAPE -->
             <div class="practice-exercise" id="practice-tape">
-                <p class="practice-prompt">Click any cell to explore:</p>
+                <p class="practice-prompt">Нажми на любую ячейку:</p>
 
                 <div class="tape-wrapper practice-tape clickable">
                     <div class="tape" id="explore-tape">
@@ -150,8 +150,8 @@
 
                 <div class="cell-inspector" id="cell-inspector">
                     <div class="inspector-content">
-                        <span class="inspector-label">Selected:</span>
-                        <span class="inspector-value" id="inspector-value">Click a cell</span>
+                        <span class="inspector-label">Выбрано:</span>
+                        <span class="inspector-value" id="inspector-value">Нажми на ячейку</span>
                     </div>
                     <div class="inspector-edit hidden" id="inspector-edit">
                         <button class="edit-btn" data-write="0">0</button>
@@ -161,15 +161,15 @@
                 </div>
 
                 <div class="tape-stats">
-                    <p>Binary: <strong id="tape-binary">1011</strong></p>
-                    <p>Decimal: <strong id="tape-decimal">11</strong></p>
+                    <p>Двоичное: <strong id="tape-binary">1011</strong></p>
+                    <p>Десятичное: <strong id="tape-decimal">11</strong></p>
                 </div>
             </div>
 
             {% elif practice_type == 'control-head' %}
             <!-- MODULE 4: CONTROL THE HEAD -->
             <div class="practice-exercise" id="practice-head">
-                <p class="practice-prompt">Use the buttons to move the head:</p>
+                <p class="practice-prompt">Используй кнопки для перемещения головки:</p>
 
                 <div class="tape-wrapper practice-tape">
                     <div class="tape" id="head-tape">
@@ -180,40 +180,40 @@
                         <div class="tape-cell">1</div>
                         <div class="tape-cell blank">_</div>
                     </div>
-                    <div class="head-indicator">HEAD</div>
+                    <div class="head-indicator">ГОЛОВКА</div>
                 </div>
 
                 <div class="head-display">
-                    <span class="label">Head sees:</span>
+                    <span class="label">Головка видит:</span>
                     <span class="value" id="head-sees">1</span>
                 </div>
 
                 <div class="practice-controls">
-                    <button id="btn-left" class="btn-secondary">&larr; Left</button>
-                    <button id="btn-right" class="btn-secondary">Right &rarr;</button>
+                    <button id="btn-left" class="btn-secondary">&larr; Влево</button>
+                    <button id="btn-right" class="btn-secondary">Вправо &rarr;</button>
                 </div>
 
                 <div class="write-controls">
-                    <span class="label">Write:</span>
+                    <span class="label">Записать:</span>
                     <button class="write-btn" data-write="0">0</button>
                     <button class="write-btn" data-write="1">1</button>
                 </div>
 
                 <div class="head-insight hidden" id="head-insight">
-                    <p>Notice: the head can only see <strong>ONE</strong> cell at a time.</p>
-                    <p>Yet with simple rules, it can do amazing things!</p>
+                    <p>Заметь: головка видит только <strong>ОДНУ</strong> ячейку за раз.</p>
+                    <p>Но с простыми правилами она может делать удивительные вещи!</p>
                 </div>
             </div>
 
             {% elif practice_type == 'simple-rules' %}
             <!-- MODULE 5: SIMPLE RULES (Bit Flip) -->
             <div class="practice-exercise" id="practice-simple">
-                <p class="practice-prompt">Watch the machine flip every bit:</p>
+                <p class="practice-prompt">Смотри, как машина переворачивает каждый бит:</p>
 
                 <div class="rules-display active-rules">
-                    <div class="rule-item" id="rule-0">See <strong>0</strong> &rarr; write 1, move right</div>
-                    <div class="rule-item" id="rule-1">See <strong>1</strong> &rarr; write 0, move right</div>
-                    <div class="rule-item" id="rule-blank">See <strong>_</strong> &rarr; stop</div>
+                    <div class="rule-item" id="rule-0">Вижу <strong>0</strong> &rarr; пишу 1, иду вправо</div>
+                    <div class="rule-item" id="rule-1">Вижу <strong>1</strong> &rarr; пишу 0, иду вправо</div>
+                    <div class="rule-item" id="rule-blank">Вижу <strong>_</strong> &rarr; стоп</div>
                 </div>
 
                 <div class="tape-wrapper practice-tape">
@@ -225,35 +225,35 @@
                         <div class="tape-cell">0</div>
                         <div class="tape-cell blank">_</div>
                     </div>
-                    <div class="head-indicator">HEAD</div>
+                    <div class="head-indicator">ГОЛОВКА</div>
                 </div>
 
                 <div class="sim-status">
-                    <span>Sees: <strong id="simple-sees">1</strong></span>
-                    <span id="simple-action">Will write 0, move right</span>
+                    <span>Видит: <strong id="simple-sees">1</strong></span>
+                    <span id="simple-action">Запишет 0, пойдёт вправо</span>
                 </div>
 
                 <div class="practice-controls">
-                    <button id="btn-simple-step" class="btn-primary">Step</button>
-                    <button id="btn-simple-run" class="btn-secondary">Run All</button>
-                    <button id="btn-simple-reset" class="btn-secondary">Reset</button>
+                    <button id="btn-simple-step" class="btn-primary">Шаг</button>
+                    <button id="btn-simple-run" class="btn-secondary">Запустить всё</button>
+                    <button id="btn-simple-reset" class="btn-secondary">Сброс</button>
                 </div>
 
                 <div class="simple-result hidden" id="simple-result">
-                    <p class="success"><strong>1010</strong> became <strong>0101</strong></p>
-                    <p>Every bit flipped! Simple rules, powerful results.</p>
+                    <p class="success"><strong>1010</strong> стало <strong>0101</strong></p>
+                    <p>Каждый бит перевернулся! Простые правила, мощный результат.</p>
                 </div>
             </div>
 
             {% elif practice_type == 'the-problem' %}
             <!-- MODULE 6: THE PROBLEM -->
             <div class="practice-exercise" id="practice-problem">
-                <p class="practice-prompt">Let's try to add 1 with <strong>simple rules</strong>:</p>
+                <p class="practice-prompt">Попробуем прибавить 1 с <strong>простыми правилами</strong>:</p>
 
                 <div class="problem-attempt">
                     <div class="rules-display problem-rules">
-                        <div class="rule-item">See 0 &rarr; write 1, stop <span class="rule-note">(0+1=1, done)</span></div>
-                        <div class="rule-item">See 1 &rarr; write 0, move left <span class="rule-note">(carry)</span></div>
+                        <div class="rule-item">Вижу 0 &rarr; пишу 1, стоп <span class="rule-note">(0+1=1, готово)</span></div>
+                        <div class="rule-item">Вижу 1 &rarr; пишу 0, иду влево <span class="rule-note">(перенос)</span></div>
                     </div>
 
                     <div class="tape-wrapper practice-tape">
@@ -265,54 +265,54 @@
                             <div class="tape-cell head">1</div>
                             <div class="tape-cell blank">_</div>
                         </div>
-                        <div class="head-indicator">HEAD</div>
+                        <div class="head-indicator">ГОЛОВКА</div>
                     </div>
 
                     <div class="problem-question">
-                        <p>Wait... how did the head know to <strong>start at the end</strong>?</p>
-                        <p>With simple rules, it starts at the <strong>beginning</strong>!</p>
+                        <p>Подожди... откуда головка знает, что нужно <strong>начать с конца</strong>?</p>
+                        <p>С простыми правилами она начинает с <strong>начала</strong>!</p>
                     </div>
                 </div>
 
                 <div class="problem-reveal hidden" id="problem-reveal">
-                    <p class="reveal-title">The Problem:</p>
-                    <p>We need <strong>two phases</strong>:</p>
+                    <p class="reveal-title">Проблема:</p>
+                    <p>Нам нужны <strong>две фазы</strong>:</p>
                     <ol>
-                        <li>SCAN: Find the end of the number</li>
-                        <li>ADD: Do the math from right to left</li>
+                        <li>СКАН: Найти конец числа</li>
+                        <li>СЛОЖЕНИЕ: Сделать математику справа налево</li>
                     </ol>
-                    <p class="reveal-question">When the head sees '1', how does it know which phase it's in?</p>
-                    <p class="reveal-answer"><strong>It can't! Unless...</strong></p>
+                    <p class="reveal-question">Когда головка видит '1', как она знает, в какой она фазе?</p>
+                    <p class="reveal-answer"><strong>Никак! Если только...</strong></p>
                 </div>
 
                 <div class="practice-controls">
-                    <button id="btn-show-problem" class="btn-primary">Show Me The Problem</button>
+                    <button id="btn-show-problem" class="btn-primary">Покажи проблему</button>
                 </div>
             </div>
 
             {% elif practice_type == 'states-solve' %}
             <!-- MODULE 7: STATES SOLVE EVERYTHING -->
             <div class="practice-exercise" id="practice-states">
-                <p class="practice-prompt">Now watch with <strong>states</strong>:</p>
+                <p class="practice-prompt">Теперь смотри с <strong>состояниями</strong>:</p>
 
                 <div class="state-display">
                     <span class="state-emoji" id="states-emoji">🔍</span>
-                    <span class="state-label" id="states-label">SCAN</span>
-                    <span class="state-desc" id="states-desc">Looking for the end</span>
+                    <span class="state-label" id="states-label">СКАН</span>
+                    <span class="state-desc" id="states-desc">Ищу конец</span>
                 </div>
 
                 <div class="rules-reference">
                     <div class="rules-col" id="scan-col">
-                        <h4>🔍 SCAN</h4>
-                        <div class="rule-item" data-rule="scan,0">0 &rarr; keep, RIGHT</div>
-                        <div class="rule-item" data-rule="scan,1">1 &rarr; keep, RIGHT</div>
-                        <div class="rule-item" data-rule="scan,_">_ &rarr; LEFT, go ADD</div>
+                        <h4>🔍 СКАН</h4>
+                        <div class="rule-item" data-rule="scan,0">0 &rarr; оставить, ВПРАВО</div>
+                        <div class="rule-item" data-rule="scan,1">1 &rarr; оставить, ВПРАВО</div>
+                        <div class="rule-item" data-rule="scan,_">_ &rarr; ВЛЕВО, в СЛОЖЕНИЕ</div>
                     </div>
                     <div class="rules-col" id="add-col">
-                        <h4>➕ ADD</h4>
-                        <div class="rule-item" data-rule="add,0">0 &rarr; write 1, STOP</div>
-                        <div class="rule-item" data-rule="add,1">1 &rarr; write 0, LEFT</div>
-                        <div class="rule-item" data-rule="add,_">_ &rarr; write 1, STOP</div>
+                        <h4>➕ СЛОЖЕНИЕ</h4>
+                        <div class="rule-item" data-rule="add,0">0 &rarr; пишу 1, СТОП</div>
+                        <div class="rule-item" data-rule="add,1">1 &rarr; пишу 0, ВЛЕВО</div>
+                        <div class="rule-item" data-rule="add,_">_ &rarr; пишу 1, СТОП</div>
                     </div>
                 </div>
 
@@ -324,33 +324,33 @@
                         <div class="tape-cell">1</div>
                         <div class="tape-cell blank">_</div>
                     </div>
-                    <div class="head-indicator">HEAD</div>
+                    <div class="head-indicator">ГОЛОВКА</div>
                 </div>
 
                 <div class="sim-status">
-                    <span>State: <strong id="exp-state">SCAN</strong></span>
-                    <span>Sees: <strong id="exp-symbol">1</strong></span>
+                    <span>Состояние: <strong id="exp-state">СКАН</strong></span>
+                    <span>Видит: <strong id="exp-symbol">1</strong></span>
                 </div>
-                <div class="sim-action" id="exp-action">Will keep 1, move RIGHT, stay SCAN</div>
+                <div class="sim-action" id="exp-action">Оставит 1, пойдёт ВПРАВО, останется в СКАН</div>
 
                 <div class="practice-controls">
-                    <button id="btn-states-step" class="btn-primary">Step</button>
-                    <button id="btn-states-run" class="btn-secondary">Run All</button>
-                    <button id="btn-states-reset" class="btn-secondary">Reset</button>
+                    <button id="btn-states-step" class="btn-primary">Шаг</button>
+                    <button id="btn-states-run" class="btn-secondary">Запустить всё</button>
+                    <button id="btn-states-reset" class="btn-secondary">Сброс</button>
                 </div>
 
-                <div class="step-counter">Step: <strong id="states-step">0</strong></div>
+                <div class="step-counter">Шаг: <strong id="states-step">0</strong></div>
 
                 <div class="states-result hidden" id="states-result">
-                    <p class="success"><strong>111</strong> (7) became <strong>1000</strong> (8)!</p>
-                    <p>The state change from SCAN to ADD is the key!</p>
+                    <p class="success"><strong>111</strong> (7) стало <strong>1000</strong> (8)!</p>
+                    <p>Переход из СКАН в СЛОЖЕНИЕ — вот ключ!</p>
                 </div>
             </div>
 
             {% elif practice_type == 'finale' %}
             <!-- MODULE 8: FINALE -->
             <div class="practice-exercise" id="practice-finale">
-                <p class="practice-prompt">Test yourself! Predict the output:</p>
+                <p class="practice-prompt">Проверь себя! Предскажи результат:</p>
 
                 <div class="final-challenges">
                     <div class="challenge-card">
@@ -371,8 +371,8 @@
                 </div>
 
                 <div class="practice-controls">
-                    <button id="btn-check" class="btn-primary">Check Answers</button>
-                    <a href="/simulator" class="btn-success">Open Full Simulator</a>
+                    <button id="btn-check" class="btn-primary">Проверить ответы</button>
+                    <a href="/simulator" class="btn-success">Открыть симулятор</a>
                 </div>
 
                 <div class="final-score hidden" id="final-score">
@@ -380,8 +380,8 @@
                 </div>
 
                 <div class="final-message">
-                    <p><strong>Congratulations!</strong></p>
-                    <p>You now understand the fundamental principle behind every computer ever built.</p>
+                    <p><strong>Поздравляем!</strong></p>
+                    <p>Теперь ты понимаешь фундаментальный принцип работы каждого компьютера.</p>
                 </div>
             </div>
             {% endif %}
@@ -391,15 +391,15 @@
 
         <div class="lesson-nav">
             {% if lesson_num > 1 %}
-                <a href="/lesson/{{ lesson_num - 1 }}" class="btn-secondary">&larr; Back</a>
+                <a href="/lesson/{{ lesson_num - 1 }}" class="btn-secondary">&larr; Назад</a>
             {% else %}
                 <span></span>
             {% endif %}
 
             {% if lesson_num < total_lessons %}
-                <a href="/lesson/{{ lesson_num + 1 }}" class="btn-primary" id="btn-next">Next &rarr;</a>
+                <a href="/lesson/{{ lesson_num + 1 }}" class="btn-primary" id="btn-next">Дальше &rarr;</a>
             {% else %}
-                <a href="/simulator" class="btn-success btn-large">Open Full Simulator</a>
+                <a href="/simulator" class="btn-success btn-large">Открыть симулятор</a>
             {% endif %}
         </div>
     </div>
@@ -413,10 +413,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // State info
     const stateInfo = {
-        scan: { emoji: '🔍', label: 'SCAN', desc: 'Looking for the end' },
-        add: { emoji: '➕', label: 'ADD', desc: 'Adding 1 (with carry)' },
-        done: { emoji: '✅', label: 'DONE', desc: 'Finished!' },
-        flip: { emoji: '🔄', label: 'FLIP', desc: 'Flipping bits' }
+        scan: { emoji: '🔍', label: 'СКАН', desc: 'Ищу конец' },
+        add: { emoji: '➕', label: 'СЛОЖЕНИЕ', desc: 'Прибавляю 1 (с переносом)' },
+        done: { emoji: '✅', label: 'ГОТОВО', desc: 'Завершено!' },
+        flip: { emoji: '🔄', label: 'ПЕРЕВОРОТ', desc: 'Переворачиваю биты' }
     };
 
     // Transitions for binary increment
@@ -445,12 +445,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let magicStepCount = 0;
 
     const explanations = {
-        'scan,0': 'Scanning... see 0, keep going right',
-        'scan,1': 'Scanning... see 1, keep going right',
-        'scan,_': 'Found the end! Going back to add...',
-        'add,0': '0 + 1 = 1. Done!',
-        'add,1': '1 + 1 = 10. Write 0, carry the 1...',
-        'add,_': 'Need to write the carry. Done!'
+        'scan,0': 'Сканирую... вижу 0, иду дальше вправо',
+        'scan,1': 'Сканирую... вижу 1, иду дальше вправо',
+        'scan,_': 'Нашёл конец! Возвращаюсь для сложения...',
+        'add,0': '0 + 1 = 1. Готово!',
+        'add,1': '1 + 1 = 10. Пишу 0, переношу 1...',
+        'add,_': 'Нужно записать перенос. Готово!'
     };
 
     function updateMagicDisplay() {
@@ -562,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (keyVal === 'enter') {
                 if (lockCode === correctCode) {
-                    lockStatus.textContent = 'UNLOCKED!';
+                    lockStatus.textContent = 'ОТКРЫТО!';
                     lockStatus.className = 'lock-status success';
                     // Open the shackle with animation
                     const shackle = document.getElementById('lock-shackle');
@@ -572,13 +572,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('lock-connection').classList.remove('hidden');
                     }, 2000);
                 } else {
-                    lockStatus.textContent = 'WRONG CODE';
+                    lockStatus.textContent = 'НЕВЕРНЫЙ КОД';
                     lockStatus.className = 'lock-status error';
                     setTimeout(function() {
                         lockPosition = 0;
                         lockCode = '';
                         lockDigits.forEach(d => d.textContent = '_');
-                        lockStatus.textContent = 'Try again...';
+                        lockStatus.textContent = 'Попробуй ещё...';
                         lockStatus.className = 'lock-status';
                     }, 1000);
                 }
@@ -589,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 lockDigits[lockPosition].textContent = keyVal;
                 lockCode += keyVal;
                 lockPosition++;
-                lockStatus.textContent = 'Position ' + lockPosition + ' of 4';
+                lockStatus.textContent = 'Позиция ' + lockPosition + ' из 4';
             }
         });
     });
@@ -619,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedCell = this;
 
             const value = this.textContent.trim() || '_';
-            inspectorValue.textContent = value === '_' ? 'blank' : value;
+            inspectorValue.textContent = value === '_' ? 'пусто' : value;
             inspectorEdit.classList.remove('hidden');
         });
     });
@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const writeVal = this.dataset.write;
             selectedCell.textContent = writeVal;
             selectedCell.classList.toggle('blank', writeVal === '_');
-            inspectorValue.textContent = writeVal === '_' ? 'blank' : writeVal;
+            inspectorValue.textContent = writeVal === '_' ? 'пусто' : writeVal;
             updateTapeStats();
         });
     });
@@ -693,13 +693,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Update action
         if (simpleState === 'done') {
-            document.getElementById('simple-action').textContent = 'Done!';
+            document.getElementById('simple-action').textContent = 'Готово!';
         } else if (symbol === '0') {
-            document.getElementById('simple-action').textContent = 'Will write 1, move right';
+            document.getElementById('simple-action').textContent = 'Запишет 1, пойдёт вправо';
         } else if (symbol === '1') {
-            document.getElementById('simple-action').textContent = 'Will write 0, move right';
+            document.getElementById('simple-action').textContent = 'Запишет 0, пойдёт вправо';
         } else {
-            document.getElementById('simple-action').textContent = 'Reached blank - stopping';
+            document.getElementById('simple-action').textContent = 'Дошёл до пустой - стоп';
         }
     }
 
@@ -811,12 +811,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update action text
         const trans = transitions[ruleKey];
         if (currentState === 'done') {
-            document.getElementById('exp-action').textContent = 'Finished!';
+            document.getElementById('exp-action').textContent = 'Завершено!';
         } else if (trans) {
             const [nextState, write, dir] = trans;
-            const dirText = dir === 'R' ? 'move RIGHT' : dir === 'L' ? 'move LEFT' : 'STOP';
-            const stateText = nextState !== currentState ? ', switch to ' + nextState.toUpperCase() : '';
-            document.getElementById('exp-action').textContent = 'Will write ' + write + ', ' + dirText + stateText;
+            const dirText = dir === 'R' ? 'пойдёт ВПРАВО' : dir === 'L' ? 'пойдёт ВЛЕВО' : 'СТОП';
+            const stateText = nextState !== currentState ? ', перейдёт в ' + nextState.toUpperCase() : '';
+            document.getElementById('exp-action').textContent = 'Запишет ' + write + ', ' + dirText + stateText;
         }
     }
 
@@ -913,11 +913,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const scoreText = scoreSection.querySelector('.score-text');
 
         if (correct === 3) {
-            scoreText.innerHTML = '<strong>Perfect!</strong> You truly understand how computers work!';
+            scoreText.innerHTML = '<strong>Отлично!</strong> Ты действительно понимаешь как работают компьютеры!';
         } else if (correct >= 2) {
-            scoreText.innerHTML = '<strong>' + correct + '/3</strong> - Getting it!';
+            scoreText.innerHTML = '<strong>' + correct + '/3</strong> - Понимаешь!';
         } else {
-            scoreText.innerHTML = '<strong>' + correct + '/3</strong> - Try the simulator to see how it works!';
+            scoreText.innerHTML = '<strong>' + correct + '/3</strong> - Попробуй симулятор чтобы увидеть как это работает!';
         }
     });
     {% endif %}

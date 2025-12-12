@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Rules for {{ state_name }} - Challenge{% endblock %}
+{% block title %}Правила для {{ state_name }} - Испытание{% endblock %}
 
 {% block content %}
 <div class="challenge-page">
     <div class="challenge-container">
-        <h1>Step 2: Rules for <span class="current-state">{{ state_name }}</span></h1>
+        <h1>Шаг 2: Правила для <span class="current-state">{{ state_name }}</span></h1>
 
         <!-- Progress indicator -->
         <div class="progress-bar" id="progress-bar">
@@ -19,12 +19,12 @@
 
         <!-- Clear explanation for this state -->
         <div class="state-explanation">
-            <h3>What should happen in {{ state_name }}?</h3>
-            <p>Define what the machine does when it's in <strong>{{ state_name }}</strong> state and sees each symbol.</p>
+            <h3>Что должно происходить в {{ state_name }}?</h3>
+            <p>Определи что машина делает в состоянии <strong>{{ state_name }}</strong> когда видит каждый символ.</p>
 
             <div class="rule-template">
-                <strong>Each rule says:</strong><br>
-                "When I see [symbol] → write [something], move [direction], go to [next state]"
+                <strong>Каждое правило говорит:</strong><br>
+                "Когда вижу [символ] → записать [что-то], идти [направление], перейти в [состояние]"
             </div>
         </div>
 
@@ -35,27 +35,27 @@
                 <div class="rule-card-input">
                     <div class="rule-card-header">
                         <span class="symbol">0</span>
-                        When I see <strong>0</strong>
+                        Когда вижу <strong>0</strong>
                     </div>
                     <div class="rule-card-body">
                         <div class="rule-field">
-                            <label>Write:</label>
+                            <label>Записать:</label>
                             <select id="rule-0-write">
-                                <option value="0">0 (keep it)</option>
+                                <option value="0">0 (оставить)</option>
                                 <option value="1">1</option>
-                                <option value="_">blank</option>
+                                <option value="_">пусто</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Move:</label>
+                            <label>Идти:</label>
                             <select id="rule-0-move">
-                                <option value="right">Right →</option>
-                                <option value="left">← Left</option>
-                                <option value="stay">Stay (don't move)</option>
+                                <option value="right">Вправо →</option>
+                                <option value="left">← Влево</option>
+                                <option value="stay">Стоять (не двигаться)</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Go to state:</label>
+                            <label>Перейти в состояние:</label>
                             <select id="rule-0-goto" class="state-select"></select>
                         </div>
                     </div>
@@ -65,27 +65,27 @@
                 <div class="rule-card-input">
                     <div class="rule-card-header">
                         <span class="symbol">1</span>
-                        When I see <strong>1</strong>
+                        Когда вижу <strong>1</strong>
                     </div>
                     <div class="rule-card-body">
                         <div class="rule-field">
-                            <label>Write:</label>
+                            <label>Записать:</label>
                             <select id="rule-1-write">
-                                <option value="1">1 (keep it)</option>
+                                <option value="1">1 (оставить)</option>
                                 <option value="0">0</option>
-                                <option value="_">blank</option>
+                                <option value="_">пусто</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Move:</label>
+                            <label>Идти:</label>
                             <select id="rule-1-move">
-                                <option value="right">Right →</option>
-                                <option value="left">← Left</option>
-                                <option value="stay">Stay (don't move)</option>
+                                <option value="right">Вправо →</option>
+                                <option value="left">← Влево</option>
+                                <option value="stay">Стоять (не двигаться)</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Go to state:</label>
+                            <label>Перейти в состояние:</label>
                             <select id="rule-1-goto" class="state-select"></select>
                         </div>
                     </div>
@@ -95,27 +95,27 @@
                 <div class="rule-card-input">
                     <div class="rule-card-header">
                         <span class="symbol blank">_</span>
-                        When I see <strong>blank</strong> (end of input)
+                        Когда вижу <strong>пусто</strong> (конец ввода)
                     </div>
                     <div class="rule-card-body">
                         <div class="rule-field">
-                            <label>Write:</label>
+                            <label>Записать:</label>
                             <select id="rule-blank-write">
-                                <option value="_">blank (keep it)</option>
+                                <option value="_">пусто (оставить)</option>
                                 <option value="0">0</option>
                                 <option value="1">1</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Move:</label>
+                            <label>Идти:</label>
                             <select id="rule-blank-move">
-                                <option value="stay">Stay (don't move)</option>
-                                <option value="left">← Left</option>
-                                <option value="right">Right →</option>
+                                <option value="stay">Стоять (не двигаться)</option>
+                                <option value="left">← Влево</option>
+                                <option value="right">Вправо →</option>
                             </select>
                         </div>
                         <div class="rule-field">
-                            <label>Go to state:</label>
+                            <label>Перейти в состояние:</label>
                             <select id="rule-blank-goto" class="state-select"></select>
                         </div>
                     </div>
@@ -125,21 +125,21 @@
 
         <!-- Summary of what was defined -->
         <div class="rules-summary" id="rules-summary">
-            <h3>Your Rules Summary:</h3>
+            <h3>Сводка правил:</h3>
             <div id="summary-content"></div>
         </div>
 
         <!-- Navigation -->
         <div class="nav-buttons">
-            <a href="/challenge/states" class="btn-secondary">← Back to States</a>
-            <button id="btn-next" class="btn-primary btn-large">Save & Continue →</button>
+            <a href="/challenge/states" class="btn-secondary">← К состояниям</a>
+            <button id="btn-next" class="btn-primary btn-large">Сохранить и продолжить →</button>
         </div>
 
         <!-- Help section -->
         <div class="help-section hidden" id="help-section">
-            <button class="help-toggle" id="help-toggle">Show Answer</button>
+            <button class="help-toggle" id="help-toggle">Показать ответ</button>
             <div class="help-content hidden" id="help-content">
-                <p>Loading suggested answer...</p>
+                <p>Загрузка предложенного ответа...</p>
             </div>
         </div>
     </div>
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show task reminder
     const reminderDiv = document.getElementById('challenge-reminder');
     if (challenge.task) {
-        reminderDiv.innerHTML = `<p><strong>Task:</strong> ${challenge.task}</p>`;
+        reminderDiv.innerHTML = `<p><strong>Задача:</strong> ${challenge.task}</p>`;
     }
 
     // Build progress bar
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add DONE option
         const doneOption = document.createElement('option');
         doneOption.value = 'DONE';
-        doneOption.textContent = 'DONE (stop machine)';
+        doneOption.textContent = 'ГОТОВО (остановить машину)';
         select.appendChild(doneOption);
     });
 
@@ -237,9 +237,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const moveSymbol = (m) => m === 'right' ? '→' : m === 'left' ? '←' : '•';
         const summaryContent = document.getElementById('summary-content');
         summaryContent.innerHTML = `
-            <div class="summary-rule">See 0 → write ${r['0'].write}, ${moveSymbol(r['0'].move)}, go to ${r['0'].goto}</div>
-            <div class="summary-rule">See 1 → write ${r['1'].write}, ${moveSymbol(r['1'].move)}, go to ${r['1'].goto}</div>
-            <div class="summary-rule">See blank → write ${r['_'].write === '_' ? 'blank' : r['_'].write}, ${moveSymbol(r['_'].move)}, go to ${r['_'].goto}</div>
+            <div class="summary-rule">Вижу 0 → записать ${r['0'].write}, ${moveSymbol(r['0'].move)}, перейти в ${r['0'].goto}</div>
+            <div class="summary-rule">Вижу 1 → записать ${r['1'].write}, ${moveSymbol(r['1'].move)}, перейти в ${r['1'].goto}</div>
+            <div class="summary-rule">Вижу пусто → записать ${r['_'].write === '_' ? 'пусто' : r['_'].write}, ${moveSymbol(r['_'].move)}, перейти в ${r['_'].goto}</div>
         `;
     }
 
@@ -276,13 +276,13 @@ document.addEventListener('DOMContentLoaded', function() {
     helpToggle.addEventListener('click', async function() {
         if (!helpContent.classList.contains('hidden')) {
             helpContent.classList.add('hidden');
-            helpToggle.textContent = 'Show Answer';
+            helpToggle.textContent = 'Показать ответ';
             return;
         }
 
-        helpContent.innerHTML = '<p>Loading...</p>';
+        helpContent.innerHTML = '<p>Загрузка...</p>';
         helpContent.classList.remove('hidden');
-        helpToggle.textContent = 'Hide Answer';
+        helpToggle.textContent = 'Скрыть ответ';
 
         try {
             const response = await fetch('/api/challenge/get-answer', {
@@ -300,14 +300,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.rules) {
                 const r = result.rules;
                 helpContent.innerHTML = `
-                    <p><strong>Suggested rules for ${currentState}:</strong></p>
+                    <p><strong>Предложенные правила для ${currentState}:</strong></p>
                     <ul>
-                        <li>See 0 → write ${r['0']?.write || '?'}, move ${r['0']?.move || '?'}, go to ${r['0']?.goto || '?'}</li>
-                        <li>See 1 → write ${r['1']?.write || '?'}, move ${r['1']?.move || '?'}, go to ${r['1']?.goto || '?'}</li>
-                        <li>See blank → write ${r['_']?.write || '?'}, move ${r['_']?.move || '?'}, go to ${r['_']?.goto || '?'}</li>
+                        <li>Вижу 0 → записать ${r['0']?.write || '?'}, идти ${r['0']?.move || '?'}, перейти в ${r['0']?.goto || '?'}</li>
+                        <li>Вижу 1 → записать ${r['1']?.write || '?'}, идти ${r['1']?.move || '?'}, перейти в ${r['1']?.goto || '?'}</li>
+                        <li>Вижу пусто → записать ${r['_']?.write || '?'}, идти ${r['_']?.move || '?'}, перейти в ${r['_']?.goto || '?'}</li>
                     </ul>
                     ${result.explanation ? `<p><em>${result.explanation}</em></p>` : ''}
-                    <button class="btn-secondary" onclick="applyAnswer()">Apply This Answer</button>
+                    <button class="btn-secondary" onclick="applyAnswer()">Применить этот ответ</button>
                 `;
 
                 window.applyAnswer = function() {
@@ -329,10 +329,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateSummary();
                 };
             } else {
-                helpContent.innerHTML = '<p>Could not load answer. Try again.</p>';
+                helpContent.innerHTML = '<p>Не удалось загрузить ответ. Попробуй ещё раз.</p>';
             }
         } catch (error) {
-            helpContent.innerHTML = '<p>Error loading answer.</p>';
+            helpContent.innerHTML = '<p>Ошибка загрузки ответа.</p>';
         }
     });
 });

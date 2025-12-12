@@ -587,9 +587,9 @@ class TuringSimulator {
         if (lesson.id === 'states') {
             // Binary increment example states and transitions for the lesson graph
             const states = {
-                scan: { label: 'SCAN', emoji: '🔍', description: 'Looking for end' },
-                add: { label: 'ADD', emoji: '➕', description: 'Adding 1' },
-                done: { label: 'DONE', emoji: '✅', description: 'Finished' }
+                scan: { label: 'СКАН', emoji: '🔍', description: 'Ищу конец' },
+                add: { label: 'СЛОЖЕНИЕ', emoji: '➕', description: 'Прибавляю 1' },
+                done: { label: 'ГОТОВО', emoji: '✅', description: 'Закончил' }
             };
             const transitions = {
                 'scan,0': ['scan', '0', 'R'],
@@ -675,7 +675,7 @@ class TuringSimulator {
 
             // Show goal
             if (example.goal) {
-                this.goalDisplay.innerHTML = `<strong>Goal:</strong> ${example.goal}`;
+                this.goalDisplay.innerHTML = `<strong>Цель:</strong> ${example.goal}`;
             }
 
             // Show initial next action
@@ -916,14 +916,14 @@ class TuringSimulator {
         this.statusBadge.className = 'status-badge';
         if (this.machineState.halted) {
             if (this.machineState.accepted) {
-                this.statusBadge.textContent = 'DONE!';
+                this.statusBadge.textContent = 'ГОТОВО!';
                 this.statusBadge.classList.add('done');
             } else {
-                this.statusBadge.textContent = 'STOPPED';
+                this.statusBadge.textContent = 'ОСТАНОВЛЕНО';
                 this.statusBadge.classList.add('halted');
             }
         } else {
-            this.statusBadge.textContent = 'READY';
+            this.statusBadge.textContent = 'ГОТОВ';
             this.statusBadge.classList.add('running');
         }
 
@@ -942,7 +942,7 @@ class TuringSimulator {
 
         // Update display of current situation
         this.nextState.textContent = currentState ? currentState.toUpperCase() : '-';
-        this.nextSymbol.textContent = currentSymbol === '_' ? '(blank)' : currentSymbol;
+        this.nextSymbol.textContent = currentSymbol === '_' ? '(пусто)' : currentSymbol;
 
         // Get state info
         const stateInfo = this.currentExample.states?.[currentState];
@@ -951,8 +951,8 @@ class TuringSimulator {
             // Machine is done
             this.nextActionBox.classList.add('done');
             this.nextActionText.textContent = this.machineState.accepted ?
-                'Finished! The calculation is complete.' :
-                'Stopped - no matching rule found.';
+                'Закончил! Вычисление завершено.' :
+                'Остановлено - подходящее правило не найдено.';
             this.nextActionWhy.textContent = '';
             this.clearActiveRules();
         } else {
@@ -966,7 +966,7 @@ class TuringSimulator {
                 this.nextActionText.textContent = explanation.action;
                 this.nextActionWhy.textContent = explanation.why;
             } else {
-                this.nextActionText.textContent = 'Processing...';
+                this.nextActionText.textContent = 'Обработка...';
                 this.nextActionWhy.textContent = '';
             }
 
@@ -1018,10 +1018,10 @@ class TuringSimulator {
             table.innerHTML = `
                 <thead>
                     <tr>
-                        <th>READ</th>
-                        <th>WRITE</th>
-                        <th>MOVE</th>
-                        <th>NEXT STATE</th>
+                        <th>ВИЖУ</th>
+                        <th>ПИШУ</th>
+                        <th>ИДУ</th>
+                        <th>СЛЕД. СОСТ.</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -1037,12 +1037,12 @@ class TuringSimulator {
                 row.dataset.see = rule.see;
 
                 // Human readable values
-                const seeText = rule.see === '_' ? 'blank' : rule.see;
-                const writeText = rule.write === '_' ? 'blank' : rule.write;
+                const seeText = rule.see === '_' ? 'пусто' : rule.see;
+                const writeText = rule.write === '_' ? 'пусто' : rule.write;
                 const moveText = {
-                    'right': 'RIGHT',
-                    'left': 'LEFT',
-                    'stay': 'STAY'
+                    'right': 'ВПРАВО',
+                    'left': 'ВЛЕВО',
+                    'stay': 'СТОП'
                 }[rule.move] || rule.move.toUpperCase();
 
                 row.innerHTML = `
@@ -1115,11 +1115,11 @@ class TuringSimulator {
 
         let text = '';
         if (transition.halted) {
-            text = transition.reason === 'accepted' ? 'Finished!' : 'Stopped';
+            text = transition.reason === 'accepted' ? 'Закончил!' : 'Остановлено';
         } else {
             const moveSymbol = transition.direction === 'R' ? '→' :
                               transition.direction === 'L' ? '←' : '•';
-            text = `${transition.from_state.toUpperCase()}: saw "${transition.read}" → wrote "${transition.write}", moved ${moveSymbol}`;
+            text = `${transition.from_state.toUpperCase()}: вижу "${transition.read}" → пишу "${transition.write}", иду ${moveSymbol}`;
         }
 
         entry.innerHTML = `
@@ -1157,7 +1157,7 @@ class TuringSimulator {
 
     async getChallenge() {
         this.loadingOverlay.classList.remove('hidden');
-        this.challengeTask.innerHTML = '<p class="loading">Loading challenge...</p>';
+        this.challengeTask.innerHTML = '<p class="loading">Загрузка испытания...</p>';
         this.challengeExamples.innerHTML = '';
 
         // Reset feedback
