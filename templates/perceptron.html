@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перцептрон - Интерактивный курс</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #111 0%, #1a2e1a 50%, #111 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+        }
+        .terminal-glow {
+            text-shadow: 0 0 15px rgba(34, 197, 94, 0.7), 0 0 30px rgba(34, 197, 94, 0.5);
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(34, 197, 94, 0.7); }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="font-mono">
+    <div id="root"></div>
+
+    {% raw %}
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Constants
+        const GRID_7 = [1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0];
+        const GRID_2 = [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1];
+        const GRID_1 = [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1];
+        const EMPTY_GRID = Array(15).fill(0);
+        const ZERO_WEIGHTS = Array(15).fill(0);
+
+        // Step IDs
+        const StepId = {
+            INTRO: 0,
+            DIGITIZATION: 1,
+            POSITIVE_WEIGHTS: 2,
+            CONFLICT: 3,
+            NEGATIVE_WEIGHTS: 4,
+            ACTIVATION: 5,
+            LEARNING_AUTO: 6,
+            ZOOM_OUT: 7
+        };
+
+        // GridCell Component
+        const GridCell = ({ index, value, weight = 0, onClick, showWeights = false, highlightColor }) => {
+            const isActive = value === 1;
+            let bgColor = 'bg-zinc-800/70';
+            if (isActive) {
+                bgColor = highlightColor || 'bg-green-500';
+            }
+
+            const isPositive = weight > 0;
+            const isNegative = weight < 0;
+            const opacity = Math.min(Math.abs(weight) / 10, 1);
+
+            return (
+                <div
+                    onClick={onClick}
+                    className={`relative w-16 h-16 md:w-20 md:h-20 border border-green-700/50 cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 flex flex-col items-center justify-center overflow-hidden ${bgColor} ${isActive ? 'shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''}`}
+                >
+                    {showWeights && (
+                        <div
+                            className="absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300"
+                            style={{
+                                backgroundColor: isPositive
+                                    ? `rgba(34, 197, 94, ${opacity * 0.5})`
+                                    : isNegative
+                                        ? `rgba(239, 68, 68, ${opacity * 0.5})`
+                                        : 'transparent',
+                                border: weight !== 0 ? `2px solid ${isPositive ? '#22c55e' : '#ef4444'}` : '1px solid rgba(34, 197, 94, 0.2)'
+                            }}
+                        >
+                            <span className={`text-sm font-bold ${isPositive ? 'text-green-300' : isNegative ? 'text-red-300' : 'text-gray-600'}`}>
+                                {weight > 0 ? `+${weight}` : weight < 0 ? weight : ''}
+                            </span>
+                        </div>
+                    )}
+                    {!showWeights && (
+                        <span className={`text-sm font-bold ${isActive ? 'text-black' : 'text-gray-500'}`}>
+                            {isActive ? '1' : '0'}
+                        </span>
+                    )}
+                </div>
+            );
+        };
+
+        // TerminalLayout Component
+        const TerminalLayout = ({ children, stepName, progress }) => (
+            <div className="min-h-screen flex flex-col p-4 md:p-8 max-w-5xl mx-auto font-mono">
+                <div className="border border-green-600 bg-zinc-900/70 p-3 mb-6 flex justify-between items-center rounded-t-lg shadow-lg">
+                    <div className="flex items-center space-x-2">
+                        <a href="/" className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors" title="На главную"></a>
+                        <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-xs uppercase ml-4 text-green-400 tracking-widest">PERCEPTRON_OS v1.0.4</span>
+                    </div>
+                    <div className="text-xs text-green-400">
+                        [{stepName}] - {progress}% COMPLETE
+                    </div>
+                </div>
+                <div className="flex-1 border-x border-b border-green-700/60 bg-black/60 backdrop-blur-sm p-6 rounded-b-lg flex flex-col overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-green-900/40">
+                        <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                    </div>
+                    {children}
+                </div>
+                <div className="mt-4 text-[10px] text-green-600 flex justify-between px-2 uppercase tracking-tighter">
+                    <span>sys_link: established</span>
+                    <span>encoding: utf-8</span>
+                    <span>kernel: neurons_core_x64</span>
+                </div>
+            </div>
+        );
+
+        // Main App Component
+        const App = () => {
+            const [state, setState] = useState({
+                step: StepId.INTRO,
+                input: EMPTY_GRID,
+                weights: ZERO_WEIGHTS,
+                threshold: 5,
+                trainingActive: false
+            });
+            const [score, setScore] = useState(0);
+
+            useEffect(() => {
+                const newScore = state.input.reduce((sum, val, idx) => sum + val * state.weights[idx], 0);
+                setScore(newScore);
+            }, [state.input, state.weights]);
+
+            const nextStep = () => {
+                setState(prev => {
+                    const nextId = prev.step + 1;
+                    if (nextId === StepId.DIGITIZATION) return { ...prev, step: nextId, input: EMPTY_GRID };
+                    if (nextId === StepId.POSITIVE_WEIGHTS) return { ...prev, step: nextId, input: GRID_7 };
+                    if (nextId === StepId.CONFLICT) return { ...prev, step: nextId, input: GRID_2 };
+                    if (nextId === StepId.LEARNING_AUTO) return { ...prev, step: nextId, weights: ZERO_WEIGHTS, trainingActive: false };
+                    return { ...prev, step: nextId };
+                });
+            };
+
+            const prevStep = () => {
+                setState(prev => ({ ...prev, step: Math.max(0, prev.step - 1) }));
+            };
+
+            const toggleCell = (idx) => {
+                setState(prev => {
+                    const newInput = [...prev.input];
+                    newInput[idx] = newInput[idx] === 1 ? 0 : 1;
+                    return { ...prev, input: newInput };
+                });
+            };
+
+            const setWeightValue = (idx, val) => {
+                setState(prev => {
+                    const newWeights = [...prev.weights];
+                    newWeights[idx] = val;
+                    return { ...prev, weights: newWeights };
+                });
+            };
+
+            const runAutoTraining = () => {
+                setState(prev => ({ ...prev, trainingActive: true }));
+                let iter = 0;
+                const interval = setInterval(() => {
+                    setState(prev => {
+                        const newWeights = [...prev.weights];
+                        for (let i = 0; i < 15; i++) {
+                            if (GRID_7[i] === 1) newWeights[i] = Math.min(10, newWeights[i] + 1);
+                            if (GRID_2[i] === 1 && GRID_7[i] === 0) newWeights[i] = Math.max(-10, newWeights[i] - 1);
+                        }
+                        iter++;
+                        if (iter >= 10) {
+                            clearInterval(interval);
+                            return { ...prev, weights: newWeights, trainingActive: false };
+                        }
+                        return { ...prev, weights: newWeights };
+                    });
+                }, 200);
+            };
+
+            const stepInfo = [
+                { name: "INTRO", progress: 0 },
+                { name: "DIGITIZATION", progress: 14 },
+                { name: "POSITIVE_WEIGHTS", progress: 28 },
+                { name: "CONFLICT", progress: 42 },
+                { name: "NEGATIVE_WEIGHTS", progress: 56 },
+                { name: "THRESHOLD", progress: 70 },
+                { name: "AUTO_TRAIN", progress: 85 },
+                { name: "ZOOM_OUT", progress: 100 }
+            ];
+
+            const renderGrid = (mode = 'input') => (
+                <div className="grid grid-cols-3 gap-2 mx-auto">
+                    {state.input.map((val, i) => (
+                        <GridCell
+                            key={i}
+                            index={i}
+                            value={val}
+                            weight={state.weights[i]}
+                            onClick={() => {
+                                if (state.step === StepId.DIGITIZATION) toggleCell(i);
+                                if (state.step === StepId.POSITIVE_WEIGHTS) setWeightValue(i, state.weights[i] === 0 ? 5 : 0);
+                                if (state.step === StepId.NEGATIVE_WEIGHTS) setWeightValue(i, state.weights[i] === 0 ? -10 : 0);
+                            }}
+                            showWeights={mode !== 'input'}
+                            highlightColor={state.step === StepId.NEGATIVE_WEIGHTS && state.weights[i] < 0 ? 'bg-red-500/50' : undefined}
+                        />
+                    ))}
+                </div>
+            );
+
+            return (
+                <TerminalLayout stepName={stepInfo[state.step].name} progress={stepInfo[state.step].progress}>
+                    <div className="flex-1 flex flex-col items-center justify-center space-y-8">
+
+                        {state.step === StepId.INTRO && (
+                            <div className="text-center max-w-2xl space-y-6">
+                                <h1 className="text-4xl font-bold terminal-glow uppercase">Смена мышления</h1>
+                                <div className="grid grid-cols-2 gap-4 text-left">
+                                    <div className="border border-red-700/60 p-4 bg-zinc-900/50">
+                                        <h3 className="text-red-400 mb-2 font-bold">Раньше:</h3>
+                                        <p className="text-sm text-gray-300">
+                                            Программист пишет правила вручную:
+                                            <code className="block mt-2 text-gray-400 bg-black p-2">if(p[1][1] == 0) ...</code>
+                                        </p>
+                                    </div>
+                                    <div className="border border-green-500/60 p-4 bg-green-950/30">
+                                        <h3 className="text-green-400 mb-2 font-bold">Сейчас:</h3>
+                                        <p className="text-sm text-gray-200">
+                                            Мы создаем структуру (Перцептрон) и показываем примеры. Робот сам настраивает "рычаги".
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-green-300 text-lg">Цель: Понять, как работают эти рычаги (Веса).</p>
+                            </div>
+                        )}
+
+                        {state.step === StepId.DIGITIZATION && (
+                            <div className="flex flex-col md:flex-row items-center gap-12 w-full max-w-4xl">
+                                <div className="flex-1 space-y-4">
+                                    <h2 className="text-2xl font-bold uppercase text-white">1. Оцифровка</h2>
+                                    <p className="text-sm text-gray-300">Робот слеп. Он видит не линии, а вектор из 0 и 1.</p>
+                                    <div className="p-4 bg-green-900/30 border border-green-600 rounded">
+                                        <p className="text-sm font-bold text-green-400">ЗАДАНИЕ:</p>
+                                        <p className="text-sm text-green-200 mt-1">Нарисуйте цифру 7 на сетке, кликая по ячейкам.</p>
+                                    </div>
+                                    <div className="bg-black/70 p-4 font-mono text-xs break-all border border-gray-700 text-gray-300">
+                                        VECTOR: [{state.input.join(', ')}]
+                                    </div>
+                                </div>
+                                {renderGrid('input')}
+                            </div>
+                        )}
+
+                        {state.step === StepId.POSITIVE_WEIGHTS && (
+                            <div className="flex flex-col md:flex-row items-center gap-12 w-full max-w-4xl">
+                                <div className="flex-1 space-y-4">
+                                    <h2 className="text-2xl font-bold uppercase text-white">2. Поиск сути (+)</h2>
+                                    <p className="text-sm text-gray-300">Научим робота "любить" семерку. Отметим важные для нее пиксели положительным весом.</p>
+                                    <div className="p-4 bg-green-900/30 border border-green-600 rounded">
+                                        <p className="text-sm font-bold text-green-400">ЗАДАНИЕ:</p>
+                                        <p className="text-sm text-green-200 mt-1">Кликните по ячейкам, где проходит линия 7, чтобы выставить вес +5.</p>
+                                    </div>
+                                    <div className="flex justify-between items-center p-3 border border-green-500/50 bg-black/70">
+                                        <span className="text-sm text-gray-300">СУММА (Σ x*w):</span>
+                                        <span className="text-3xl font-bold text-green-400">{score}</span>
+                                    </div>
+                                </div>
+                                {renderGrid('weights')}
+                            </div>
+                        )}
+
+                        {state.step === StepId.CONFLICT && (
+                            <div className="flex flex-col md:flex-row items-center gap-12 w-full max-w-4xl">
+                                <div className="flex-1 space-y-4">
+                                    <h2 className="text-2xl font-bold uppercase text-amber-400">3. Конфликт: Ловушка 2</h2>
+                                    <p className="text-sm text-gray-300">Пришла Двойка. У неё тоже есть "крыша" и "диагональ". Она нажимает на наши "плюсы"!</p>
+                                    <div className="flex justify-between items-center p-3 border border-amber-500/50 bg-amber-900/20">
+                                        <span className="text-sm text-gray-300">СУММА ДЛЯ ДВОЙКИ:</span>
+                                        <span className="text-3xl font-bold text-amber-400">{score}</span>
+                                    </div>
+                                    <p className="text-sm text-amber-300 italic">"Робот думает, что это 7, потому что сумма все еще высокая!"</p>
+                                </div>
+                                <div className="relative">
+                                    {renderGrid('weights')}
+                                    <div className="absolute inset-0 bg-red-500/20 pointer-events-none border-2 border-dashed border-red-500/50 animate-pulse"></div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state.step === StepId.NEGATIVE_WEIGHTS && (
+                            <div className="flex flex-col md:flex-row items-center gap-12 w-full max-w-4xl">
+                                <div className="flex-1 space-y-4">
+                                    <h2 className="text-2xl font-bold uppercase text-red-400">4. Торможение (-)</h2>
+                                    <p className="text-sm text-gray-300">Найдем пиксель, который есть у 2, но НЕ ДОЛЖЕН быть у 7. Это "хвост" двойки.</p>
+                                    <div className="p-4 bg-red-900/30 border border-red-600 rounded">
+                                        <p className="text-sm font-bold text-red-400">ЗАДАНИЕ:</p>
+                                        <p className="text-sm text-red-200 mt-1">Кликните на нижние пиксели (хвост двойки), чтобы установить штраф -10.</p>
+                                    </div>
+                                    <div className="flex justify-between items-center p-3 border border-red-500/50 bg-black/70">
+                                        <span className="text-sm text-gray-300">ИТОГОВАЯ СУММА:</span>
+                                        <span className="text-3xl font-bold text-red-400">{score}</span>
+                                    </div>
+                                </div>
+                                {renderGrid('weights')}
+                            </div>
+                        )}
+
+                        {state.step === StepId.ACTIVATION && (
+                            <div className="flex flex-col md:flex-row items-center gap-12 w-full max-w-4xl">
+                                <div className="flex-1 space-y-4">
+                                    <h2 className="text-2xl font-bold uppercase text-white">5. Вердикт (Порог)</h2>
+                                    <p className="text-sm text-gray-300">Установим порог срабатывания. Если сумма выше — мы видим Семерку.</p>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm text-gray-300">
+                                            <span>ПОРОГ: {state.threshold}</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="-10"
+                                            max="20"
+                                            value={state.threshold}
+                                            onChange={(e) => setState(prev => ({ ...prev, threshold: parseInt(e.target.value) }))}
+                                            className="w-full accent-green-500"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <button onClick={() => setState(p => ({ ...p, input: GRID_7 }))} className={`p-2 border text-sm font-bold ${JSON.stringify(state.input) === JSON.stringify(GRID_7) ? 'bg-green-500 text-black' : 'border-gray-600 text-gray-300 hover:border-green-500'}`}>ТЕСТ 7</button>
+                                        <button onClick={() => setState(p => ({ ...p, input: GRID_2 }))} className={`p-2 border text-sm font-bold ${JSON.stringify(state.input) === JSON.stringify(GRID_2) ? 'bg-green-500 text-black' : 'border-gray-600 text-gray-300 hover:border-green-500'}`}>ТЕСТ 2</button>
+                                        <button onClick={() => setState(p => ({ ...p, input: GRID_1 }))} className={`p-2 border text-sm font-bold ${JSON.stringify(state.input) === JSON.stringify(GRID_1) ? 'bg-green-500 text-black' : 'border-gray-600 text-gray-300 hover:border-green-500'}`}>ТЕСТ 1</button>
+                                    </div>
+                                    <div className={`p-6 border-2 flex items-center justify-center transition-all ${score > state.threshold ? 'bg-green-500/30 border-green-500' : 'bg-zinc-900/70 border-gray-700'}`}>
+                                        <span className={`text-xl font-bold ${score > state.threshold ? 'text-green-400' : 'text-gray-500'}`}>
+                                            {score > state.threshold ? "ЭТО СЕМЕРКА! [YES]" : "НЕ СЕМЕРКА [NO]"}
+                                        </span>
+                                    </div>
+                                </div>
+                                {renderGrid('combined')}
+                            </div>
+                        )}
+
+                        {state.step === StepId.LEARNING_AUTO && (
+                            <div className="flex flex-col items-center space-y-6 w-full max-w-2xl text-center">
+                                <h2 className="text-2xl font-bold uppercase text-white">6. Как это происходит само</h2>
+                                <p className="text-sm text-gray-300">Мы настраивали вручную. В реальности алгоритм (Backpropagation) гоняет тысячи картинок и сам двигает ползунки.</p>
+                                <div className="flex gap-8 items-center">
+                                    {renderGrid('weights')}
+                                    <div className="space-y-4 flex-1 text-left">
+                                        <button
+                                            onClick={runAutoTraining}
+                                            disabled={state.trainingActive}
+                                            className={`w-full py-4 font-bold border-2 transition-all ${state.trainingActive ? 'bg-green-500/30 border-green-500 animate-pulse text-green-400' : 'border-green-500 text-green-400 hover:bg-green-500 hover:text-black'}`}
+                                        >
+                                            {state.trainingActive ? "ИДЕТ ОБУЧЕНИЕ..." : "ЗАПУСТИТЬ ОБУЧЕНИЕ"}
+                                        </button>
+                                        <div className="bg-black/70 p-4 text-xs text-gray-400 border border-gray-700 font-mono">
+                                            <p>Epoch: {state.trainingActive ? 'Running...' : 'Ready'}</p>
+                                            <p>Loss: {state.trainingActive ? '0.0023...' : 'N/A'}</p>
+                                            <p>Adjusting weights based on error...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {state.step === StepId.ZOOM_OUT && (
+                            <div className="text-center max-w-3xl space-y-12 py-8">
+                                <div className="space-y-4">
+                                    <h2 className="text-4xl font-bold terminal-glow uppercase">Зум-аут: Глубокое обучение</h2>
+                                    <p className="text-green-300 text-lg">Мы разобрали один атом. ChatGPT — это миллиарды таких атомов, стоящих друг у друга на плечах.</p>
+                                </div>
+                                <div className="relative h-32 flex items-center justify-center">
+                                    <div className="absolute left-0 w-8 h-8 bg-green-500 blur-sm animate-ping"></div>
+                                    <div className="flex space-x-12 relative z-10">
+                                        <div className="w-12 h-24 border border-green-500/50 flex flex-col justify-around p-1">
+                                            <div className="h-2 bg-green-500/60"></div>
+                                            <div className="h-2 bg-green-500/60"></div>
+                                            <div className="h-2 bg-green-500/60"></div>
+                                        </div>
+                                        <div className="w-12 h-32 border border-green-500/70 flex flex-col justify-around p-1">
+                                            <div className="h-2 bg-green-500/80"></div>
+                                            <div className="h-2 bg-green-500/80"></div>
+                                            <div className="h-2 bg-green-500/80"></div>
+                                            <div className="h-2 bg-green-500/80"></div>
+                                        </div>
+                                        <div className="w-12 h-24 border border-green-500/50 flex flex-col justify-around p-1">
+                                            <div className="h-2 bg-green-500/60"></div>
+                                            <div className="h-2 bg-green-500/60"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-4 text-sm">
+                                    <div className="p-3 border border-green-700/60 text-gray-300">1 Слой: Видит линии</div>
+                                    <div className="p-3 border border-green-700/60 text-gray-300">2 Слой: Собирает углы</div>
+                                    <div className="p-3 border border-green-700/60 text-gray-300">3 Слой: Узнает объекты</div>
+                                </div>
+                                <button
+                                    onClick={() => setState(prev => ({ ...prev, step: StepId.INTRO }))}
+                                    className="mt-8 px-8 py-3 bg-green-600 text-black font-bold uppercase hover:bg-green-400 transition-colors"
+                                >
+                                    ПОВТОРИТЬ КУРС
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Navigation */}
+                        <div className="w-full flex justify-between mt-auto pt-8 border-t border-green-800/50">
+                            <button
+                                onClick={prevStep}
+                                disabled={state.step === 0}
+                                className={`px-4 py-2 border border-green-700/60 text-sm uppercase tracking-widest transition-colors text-gray-300 ${state.step === 0 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-green-900/30 hover:border-green-500'}`}
+                            >
+                                &lt; НАЗАД
+                            </button>
+                            <div className="flex space-x-2">
+                                {stepInfo.map((_, i) => (
+                                    <div key={i} className={`w-2 h-2 rounded-full ${state.step === i ? 'bg-green-500 shadow-[0_0_10px_#22c55e]' : 'bg-gray-700'}`}></div>
+                                ))}
+                            </div>
+                            <button
+                                onClick={nextStep}
+                                disabled={state.step === stepInfo.length - 1}
+                                className={`px-4 py-2 bg-green-600 text-black text-sm font-bold uppercase tracking-widest transition-colors ${state.step === stepInfo.length - 1 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-green-400'}`}
+                            >
+                                ДАЛЕЕ &gt;
+                            </button>
+                        </div>
+                    </div>
+                </TerminalLayout>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    {% endraw %}
+</body>
+</html>

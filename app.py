@@ -298,9 +298,14 @@ def verify_solution(rules, test_cases):
 
 @app.route("/")
 def index():
-    """Redirect to first lesson."""
-    from flask import redirect
-    return redirect("/lesson/1")
+    """Landing page - choose Turing or Perceptron."""
+    return render_template("landing.html")
+
+
+@app.route("/perceptron")
+def perceptron():
+    """Perceptron interactive course."""
+    return render_template("perceptron.html")
 
 
 @app.route("/lesson/<int:lesson_num>")
@@ -351,6 +356,18 @@ def lesson_practice(lesson_num):
 def simulator():
     """Simulator page."""
     return render_template("simulator/index.html", active_page="simulator")
+
+
+@app.route("/steve")
+def steve():
+    """КРИПЕР УКРАЛ ДРОБИ - урок по сложению дробей для детей."""
+    return render_template("steve/pages/ch1_page1.html")
+
+
+@app.route("/steve/<page>")
+def steve_page(page):
+    """Steve game pages."""
+    return render_template(f"steve/pages/{page}.html")
 
 
 @app.route("/challenge")
